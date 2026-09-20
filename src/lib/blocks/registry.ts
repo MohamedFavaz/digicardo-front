@@ -1,0 +1,208 @@
+import type { BlockType, BlockCategory, BlockConfig } from "@/types/blocks";
+import {
+  Link2,
+  Heading,
+  AlignLeft,
+  Minus,
+  Share2,
+  Image as ImageIcon,
+  Video,
+  Music,
+  MapPin,
+  Mail,
+  Phone,
+  MessageSquare,
+  Send,
+  Calendar,
+  HelpCircle,
+  LayoutGrid,
+  Clock,
+  Sparkles,
+  type LucideIcon,
+} from "lucide-react";
+
+export interface BlockMetadata {
+  type: BlockType;
+  label: string;
+  description: string;
+  category: BlockCategory;
+  icon: LucideIcon;
+  defaultConfig: BlockConfig;
+}
+
+export const BLOCK_CATEGORIES: { id: BlockCategory; label: string }[] = [
+  { id: "BASIC", label: "Basic" },
+  { id: "MEDIA", label: "Media & Audio" },
+  { id: "CONTACT", label: "Contact & Reach" },
+  { id: "BUSINESS", label: "Business & CTA" },
+  { id: "CONTENT", label: "Interactive Content" },
+];
+
+export const BLOCK_DEFINITIONS: Record<BlockType, BlockMetadata> = {
+  link: {
+    type: "link",
+    label: "Link",
+    description: "Button linking to any website or external URL",
+    category: "BASIC",
+    icon: Link2,
+    defaultConfig: { title: "My Link", url: "https://example.com" },
+  },
+  heading: {
+    type: "heading",
+    label: "Heading",
+    description: "Section header text to organize your page",
+    category: "BASIC",
+    icon: Heading,
+    defaultConfig: { text: "Section Title", level: "h2" },
+  },
+  text: {
+    type: "text",
+    label: "Text Paragraph",
+    description: "Formatted announcement or bio text paragraph",
+    category: "BASIC",
+    icon: AlignLeft,
+    defaultConfig: { content: "Welcome to my official page!", align: "center" },
+  },
+  divider: {
+    type: "divider",
+    label: "Divider",
+    description: "Visual line, dots, or whitespace separator",
+    category: "BASIC",
+    icon: Minus,
+    defaultConfig: { style: "line" },
+  },
+  social: {
+    type: "social",
+    label: "Social Icon",
+    description: "Social media profile badge with icon",
+    category: "BASIC",
+    icon: Share2,
+    defaultConfig: { platform: "github", url: "https://github.com" },
+  },
+  image: {
+    type: "image",
+    label: "Image Banner",
+    description: "Upload an image with optional link and caption",
+    category: "MEDIA",
+    icon: ImageIcon,
+    defaultConfig: { media_id: "", alt_text: "Image Banner" },
+  },
+  video: {
+    type: "video",
+    label: "Video Embed",
+    description: "Responsive YouTube or Vimeo player",
+    category: "MEDIA",
+    icon: Video,
+    defaultConfig: { provider: "youtube", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
+  },
+  music: {
+    type: "music",
+    label: "Music Player",
+    description: "Spotify, Apple Music, or SoundCloud audio player",
+    category: "MEDIA",
+    icon: Music,
+    defaultConfig: { provider: "spotify", url: "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT" },
+  },
+  gallery: {
+    type: "gallery",
+    label: "Photo Gallery",
+    description: "Grid, carousel, or masonry photo gallery",
+    category: "MEDIA",
+    icon: LayoutGrid,
+    defaultConfig: { layout: "grid", media_ids: [] },
+  },
+  contact: {
+    type: "contact",
+    label: "Contact Form",
+    description: "Direct message form with spam protection",
+    category: "CONTACT",
+    icon: Send,
+    defaultConfig: {
+      title: "Contact Me",
+      description: "Send me a message directly.",
+      name_enabled: true,
+      email_enabled: true,
+      phone_enabled: false,
+      message_enabled: true,
+      button_label: "Send Message",
+    },
+  },
+  email: {
+    type: "email",
+    label: "Email Me",
+    description: "One-click mailto button with preset subject",
+    category: "CONTACT",
+    icon: Mail,
+    defaultConfig: { label: "Email Inquiry", email: "hello@example.com" },
+  },
+  phone: {
+    type: "phone",
+    label: "Call Phone",
+    description: "Direct one-tap phone call button",
+    category: "CONTACT",
+    icon: Phone,
+    defaultConfig: { label: "Call Us", phone: "+1 (555) 000-0000" },
+  },
+  whatsapp: {
+    type: "whatsapp",
+    label: "WhatsApp Chat",
+    description: "Direct WhatsApp chat link with prefilled text",
+    category: "CONTACT",
+    icon: MessageSquare,
+    defaultConfig: { label: "Chat on WhatsApp", phone: "+15550000000", message: "Hi!" },
+  },
+  booking: {
+    type: "booking",
+    label: "Appointment Booking",
+    description: "Calendly or Cal.com appointment scheduler",
+    category: "BUSINESS",
+    icon: Calendar,
+    defaultConfig: { provider: "calendly", url: "https://calendly.com", title: "Book a Meeting", display_mode: "button" },
+  },
+  map: {
+    type: "map",
+    label: "Location / Map",
+    description: "Google Maps location card or embedded map",
+    category: "BUSINESS",
+    icon: MapPin,
+    defaultConfig: { label: "Our Location", address: "San Francisco, CA", map_provider: "google_maps", display_mode: "card" },
+  },
+  cta: {
+    type: "cta",
+    label: "Call to Action",
+    description: "Highlighted conversion card with header & button",
+    category: "BUSINESS",
+    icon: Sparkles,
+    defaultConfig: {
+      title: "Join Our Community",
+      description: "Get weekly updates and exclusive resources.",
+      button_label: "Join Now",
+      url: "https://example.com",
+      style: "primary",
+      size: "medium",
+    },
+  },
+  faq: {
+    type: "faq",
+    label: "FAQ Accordion",
+    description: "Expandable accordion with questions and answers",
+    category: "CONTENT",
+    icon: HelpCircle,
+    defaultConfig: {
+      title: "Frequently Asked Questions",
+      items: [{ id: "faq-1", question: "What is Digicardo?", answer: "A modern multi-user profile platform." }],
+    },
+  },
+  countdown: {
+    type: "countdown",
+    label: "Countdown Timer",
+    description: "Live countdown timer to a target launch date",
+    category: "CONTENT",
+    icon: Clock,
+    defaultConfig: {
+      title: "Next Event Starts In",
+      target_date: new Date(Date.now() + 7 * 86400000).toISOString(),
+      expired_message: "The event is live now!",
+    },
+  },
+};

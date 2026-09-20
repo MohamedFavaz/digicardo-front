@@ -1,0 +1,1232 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CSC Janaseva Kendram</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #08090d;
+            --card: rgba(255, 255, 255, .07);
+            --border: rgba(255, 255, 255, .11);
+            --text: #ffffff;
+            --muted: #a1a1aa;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            --blue: #3b82f6;
+            --green: #25d366;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            width: 450px;
+            height: 450px;
+            background: var(--purple);
+            filter: blur(180px);
+            opacity: .18;
+            top: -180px;
+            left: -150px;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: var(--pink);
+            filter: blur(180px);
+            opacity: .13;
+            right: -150px;
+            bottom: -100px;
+            pointer-events: none;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 520px;
+            min-height: 100vh;
+            margin: auto;
+            position: relative;
+            padding: 18px 16px 110px;
+        }
+
+        /* TOP */
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-weight: 800;
+            letter-spacing: -1px;
+            font-size: 17px;
+        }
+
+        .brand span {
+            color: var(--purple);
+        }
+
+        .top-buttons {
+            display: flex;
+            gap: 9px;
+        }
+
+        .top-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            backdrop-filter: blur(15px);
+            color: white;
+            cursor: pointer;
+            transition: .25s;
+        }
+
+        .top-btn:hover {
+            transform: translateY(-3px);
+            border-color: var(--purple);
+        }
+
+        /* PROFILE */
+
+        .profile {
+            text-align: center;
+            padding: 42px 15px 25px;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            margin: auto;
+            border-radius: 35px;
+            padding: 3px;
+            background: linear-gradient(135deg,
+                    var(--purple),
+                    var(--pink),
+                    var(--blue));
+            box-shadow:
+                0 20px 60px rgba(139, 92, 246, .3);
+        }
+
+        .profile-image-inner {
+            width: 100%;
+            height: 100%;
+            background: #111217;
+            border-radius: 32px;
+            overflow: hidden;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .verified {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            background: var(--blue);
+            border-radius: 50%;
+            font-size: 9px;
+            margin-left: 5px;
+        }
+
+        .profile h1 {
+            margin-top: 18px;
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .profile p {
+            color: var(--muted);
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+        .online-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 15px;
+            padding: 8px 13px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            font-size: 11px;
+        }
+
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #22c55e;
+        }
+
+        /* PRIMARY ACTIONS */
+
+        .primary-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 11px;
+            margin-top: 8px;
+        }
+
+        .primary-action {
+            min-height: 60px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: .25s;
+        }
+
+        .primary-action:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, .11);
+        }
+
+        .primary-action.main {
+            background:
+                linear-gradient(135deg,
+                    var(--purple),
+                    var(--blue));
+            border: none;
+            grid-column: span 2;
+            box-shadow: 0 12px 35px rgba(99, 102, 241, .25);
+        }
+
+        /* SECTION */
+
+        .section {
+            margin-top: 28px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 13px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ddd;
+        }
+
+        .section-more {
+            color: var(--purple);
+            font-size: 11px;
+        }
+
+        /* QUICK ACTIONS */
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 9px;
+        }
+
+        .quick-item {
+            min-height: 88px;
+            border-radius: 18px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            gap: 9px;
+            cursor: pointer;
+            transition: .25s;
+        }
+
+        .quick-item:hover {
+            transform: translateY(-4px);
+            border-color: rgba(139, 92, 246, .6);
+        }
+
+        .quick-icon {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: rgba(139, 92, 246, .16);
+            color: #bba1ff;
+        }
+
+        .quick-item span {
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        /* SERVICES */
+
+        .service-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .service-card {
+            min-height: 76px;
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            border-radius: 20px;
+            text-decoration: none;
+            color: white;
+            transition: .25s;
+        }
+
+        .service-card:hover {
+            transform: scale(1.015);
+            background: rgba(255, 255, 255, .1);
+        }
+
+        .service-icon {
+            width: 50px;
+            height: 50px;
+            display: grid;
+            place-items: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg,
+                    rgba(139, 92, 246, .3),
+                    rgba(59, 130, 246, .2));
+            font-size: 19px;
+            color: #c4b5fd;
+        }
+
+        .service-content {
+            flex: 1;
+            padding-left: 14px;
+        }
+
+        .service-content h3 {
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .service-content p {
+            font-size: 10px;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .service-arrow {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .06);
+            color: var(--muted);
+        }
+
+        /* INFO CARD */
+
+        .info-card {
+            padding: 17px;
+            border-radius: 22px;
+            border: 1px solid var(--border);
+            background:
+                linear-gradient(135deg,
+                    rgba(139, 92, 246, .12),
+                    rgba(59, 130, 246, .05));
+        }
+
+        .info-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-icon {
+            width: 45px;
+            height: 45px;
+            display: grid;
+            place-items: center;
+            background: rgba(34, 197, 94, .12);
+            color: #4ade80;
+            border-radius: 15px;
+        }
+
+        .info-text strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .info-text span {
+            color: var(--muted);
+            font-size: 10px;
+            display: block;
+            margin-top: 4px;
+        }
+
+        /* SHARE */
+
+        .share-box {
+            padding: 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--card);
+        }
+
+        .share-box p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .share-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .share-row input {
+            flex: 1;
+            min-width: 0;
+            height: 48px;
+            padding: 0 14px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid var(--border);
+            color: white;
+            outline: none;
+        }
+
+        .share-row button {
+            width: 52px;
+            border: none;
+            border-radius: 14px;
+            background: var(--green);
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* SOCIAL */
+
+        .socials {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .social {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: white;
+            text-decoration: none;
+            transition: .25s;
+        }
+
+        .social:hover {
+            transform: translateY(-4px);
+            color: #c4b5fd;
+        }
+
+        /* STATS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 9px;
+        }
+
+        .stat {
+            padding: 15px 8px;
+            text-align: center;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+        }
+
+        .stat i {
+            color: #a78bfa;
+            font-size: 14px;
+        }
+
+        .stat strong {
+            display: block;
+            margin-top: 8px;
+            font-size: 17px;
+        }
+
+        .stat span {
+            display: block;
+            margin-top: 4px;
+            font-size: 9px;
+            color: var(--muted);
+        }
+
+        /* BOTTOM */
+
+        .bottom-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .bottom-btn {
+            height: 48px;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* FLOATING */
+
+        .floating-whatsapp {
+            position: fixed;
+            width: 58px;
+            height: 58px;
+            border-radius: 20px;
+            right: 22px;
+            bottom: 22px;
+            display: grid;
+            place-items: center;
+            color: white;
+            background: #25d366;
+            text-decoration: none;
+            font-size: 23px;
+            box-shadow: 0 15px 35px rgba(37, 211, 102, .28);
+            transition: .25s;
+        }
+
+        .floating-whatsapp:hover {
+            transform: scale(1.08);
+        }
+
+        /* MODAL */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, .75);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 350px;
+            padding: 25px;
+            border-radius: 28px;
+            background: #15161d;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            float: right;
+            border: none;
+            background: transparent;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            background: white;
+            padding: 14px;
+            border-radius: 18px;
+        }
+
+        #qrcode img {
+            max-width: 100%;
+        }
+
+        /* TOAST */
+
+        .toast {
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            bottom: 95px;
+            transform: translate(-50%, 30px);
+            opacity: 0;
+            padding: 12px 18px;
+            border-radius: 50px;
+            background: white;
+            color: #111;
+            font-size: 11px;
+            transition: .3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        @media(max-width: 400px) {
+            .quick-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .profile h1 {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <div class="topbar">
+            <div class="brand">
+                v<span>Card</span>
+            </div>
+
+            <div class="top-buttons">
+                <button class="top-btn" onclick="shareCard()">
+                    <i class="fa-solid fa-share-nodes"></i>
+                </button>
+
+                <button class="top-btn" onclick="copyLink()">
+                    <i class="fa-solid fa-link"></i>
+                </button>
+            </div>
+        </div>
+
+        <section class="profile">
+
+            <div class="profile-image">
+                <div class="profile-image-inner">
+                    <img src="https://placehold.co/500x500/15151d/ffffff?text=CSC" alt="CSC">
+                </div>
+            </div>
+
+            <h1>
+                CSC JANASEVA KENDRAM
+                <span class="verified">
+                    <i class="fa-solid fa-check"></i>
+                </span>
+            </h1>
+
+            <p>
+                Akshaya Services & Digital Solutions
+            </p>
+
+            <div class="online-status">
+                <span class="online-dot"></span>
+                Open for enquiries
+            </div>
+
+        </section>
+
+        <section class="primary-actions">
+
+            <a href="#services" class="primary-action main">
+                <i class="fa-solid fa-layer-group"></i>
+                Explore Our Services
+            </a>
+
+            <a href="tel:+919999999999" class="primary-action">
+                <i class="fa-solid fa-phone"></i>
+                Call Now
+            </a>
+
+            <a href="https://wa.me/919999999999" target="_blank" class="primary-action">
+                <i class="fa-brands fa-whatsapp"></i>
+                WhatsApp
+            </a>
+
+        </section>
+
+        <section class="section">
+
+            <div class="section-header">
+                <h2 class="section-title">Quick Access</h2>
+            </div>
+
+            <div class="quick-grid">
+
+                <a href="tel:+919999999999" class="quick-item">
+                    <div class="quick-icon">
+                        <i class="fa-solid fa-phone"></i>
+                    </div>
+                    <span>Call</span>
+                </a>
+
+                <a href="mailto:example@email.com" class="quick-item">
+                    <div class="quick-icon">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <span>Email</span>
+                </a>
+
+                <button class="quick-item" onclick="openMap()">
+                    <div class="quick-icon">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <span>Location</span>
+                </button>
+
+                <button class="quick-item" onclick="openQR()">
+                    <div class="quick-icon">
+                        <i class="fa-solid fa-qrcode"></i>
+                    </div>
+                    <span>QR Code</span>
+                </button>
+
+                <button class="quick-item" onclick="saveContact()">
+                    <div class="quick-icon">
+                        <i class="fa-solid fa-address-book"></i>
+                    </div>
+                    <span>Save</span>
+                </button>
+
+                <button class="quick-item" onclick="showToast('Payment link can be connected here')">
+                    <div class="quick-icon">
+                        <i class="fa-solid fa-credit-card"></i>
+                    </div>
+                    <span>Pay</span>
+                </button>
+
+                <button class="quick-item" onclick="showToast('Booking system can be connected here')">
+                    <div class="quick-icon">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <span>Book</span>
+                </button>
+
+                <button class="quick-item" onclick="showToast('Google Form can be connected here')">
+                    <div class="quick-icon">
+                        <i class="fa-solid fa-file-lines"></i>
+                    </div>
+                    <span>Form</span>
+                </button>
+
+            </div>
+
+        </section>
+
+        <section class="section" id="services">
+
+            <div class="section-header">
+                <h2 class="section-title">Our Services</h2>
+                <span class="section-more">Digital Services</span>
+            </div>
+
+            <div class="service-list">
+
+                <a href="#" class="service-card">
+
+                    <div class="service-icon">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+
+                    <div class="service-content">
+                        <h3>Government Services</h3>
+                        <p>Applications, certificates and online assistance.</p>
+                    </div>
+
+                    <div class="service-arrow">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+
+                </a>
+
+                <a href="#" class="service-card">
+
+                    <div class="service-icon">
+                        <i class="fa-solid fa-id-card"></i>
+                    </div>
+
+                    <div class="service-content">
+                        <h3>ID & Document Services</h3>
+                        <p>PAN, Aadhaar, certificates and documentation.</p>
+                    </div>
+
+                    <div class="service-arrow">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+
+                </a>
+
+                <a href="#" class="service-card">
+
+                    <div class="service-icon">
+                        <i class="fa-solid fa-print"></i>
+                    </div>
+
+                    <div class="service-content">
+                        <h3>Printing & Online Services</h3>
+                        <p>Printing, scanning and digital services.</p>
+                    </div>
+
+                    <div class="service-arrow">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+
+        <section class="section">
+
+            <div class="info-card">
+
+                <div class="info-top">
+
+                    <div class="info-icon">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+
+                    <div class="info-text">
+                        <strong>Open 24 × 7</strong>
+                        <span>Available for online enquiries and services</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="section">
+
+            <div class="section-header">
+                <h2 class="section-title">Share this Card</h2>
+            </div>
+
+            <div class="share-box">
+
+                <p>
+                    Send this digital card directly through WhatsApp.
+                </p>
+
+                <div class="share-row">
+
+                    <input type="tel" id="phoneInput" placeholder="WhatsApp number">
+
+                    <button onclick="shareWhatsApp()">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="section">
+
+            <div class="section-header">
+                <h2 class="section-title">Connect With Us</h2>
+            </div>
+
+            <div class="socials">
+
+                <a href="#" class="social">
+                    <i class="fa-brands fa-facebook-f"></i>
+                </a>
+
+                <a href="#" class="social">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+
+                <a href="#" class="social">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+
+                <a href="#" class="social">
+                    <i class="fa-solid fa-star"></i>
+                </a>
+
+            </div>
+
+        </section>
+
+        <section class="section">
+
+            <div class="section-header">
+                <h2 class="section-title">Card Activity</h2>
+            </div>
+
+            <div class="stats">
+
+                <div class="stat">
+                    <i class="fa-regular fa-eye"></i>
+                    <strong id="views">128</strong>
+                    <span>Views</span>
+                </div>
+
+                <div class="stat">
+                    <i class="fa-solid fa-arrow-pointer"></i>
+                    <strong id="clicks">64</strong>
+                    <span>Clicks</span>
+                </div>
+
+                <div class="stat">
+                    <i class="fa-solid fa-bolt"></i>
+                    <strong id="actions">22</strong>
+                    <span>Actions</span>
+                </div>
+
+            </div>
+
+        </section>
+
+        <div class="bottom-actions">
+
+            <button class="bottom-btn" onclick="saveContact()">
+                <i class="fa-solid fa-user-plus"></i>
+                Save Contact
+            </button>
+
+            <button class="bottom-btn" onclick="openQR()">
+                <i class="fa-solid fa-qrcode"></i>
+                Show QR
+            </button>
+
+        </div>
+
+    </div>
+
+    <a class="floating-whatsapp" href="https://wa.me/919999999999" target="_blank">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <div class="modal" id="qrModal">
+
+        <div class="modal-content">
+
+            <button class="modal-close" onclick="closeQR()">×</button>
+
+            <h3>Scan Digital Card</h3>
+
+            <div id="qrcode"></div>
+
+        </div>
+
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+
+        const CARD = {
+            name: "CSC JANASEVA KENDRAM",
+            phone: "919999999999",
+            email: "example@email.com",
+            website: window.location.href,
+            location: "https://maps.google.com/?q=Kerala"
+        };
+
+        /* VIEW COUNT */
+
+        window.addEventListener("load", function () {
+
+            const views = document.getElementById("views");
+
+            views.innerText =
+                Number(views.innerText) + 1;
+
+        });
+
+        /* TOAST */
+
+        function showToast(message) {
+
+            const toast =
+                document.getElementById("toast");
+
+            toast.innerText = message;
+
+            toast.classList.add("show");
+
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 2500);
+
+        }
+
+        /* SHARE */
+
+        async function shareCard() {
+
+            try {
+
+                if (navigator.share) {
+
+                    await navigator.share({
+                        title: CARD.name,
+                        text: "Check out " + CARD.name,
+                        url: CARD.website
+                    });
+
+                } else {
+
+                    copyLink();
+
+                }
+
+            } catch (error) { }
+
+        }
+
+        /* COPY LINK */
+
+        function copyLink() {
+
+            navigator.clipboard.writeText(CARD.website);
+
+            increaseClicks();
+
+            showToast("Link copied successfully");
+
+        }
+
+        /* MAP */
+
+        function openMap() {
+
+            increaseClicks();
+
+            window.open(
+                CARD.location,
+                "_blank"
+            );
+
+        }
+
+        /* QR */
+
+        function openQR() {
+
+            const modal =
+                document.getElementById("qrModal");
+
+            const qr =
+                document.getElementById("qrcode");
+
+            qr.innerHTML = "";
+
+            new QRCode(qr, {
+                text: CARD.website,
+                width: 210,
+                height: 210
+            });
+
+            modal.classList.add("active");
+
+            increaseActions();
+
+        }
+
+        function closeQR() {
+
+            document
+                .getElementById("qrModal")
+                .classList
+                .remove("active");
+
+        }
+
+        /* WHATSAPP SHARE */
+
+        function shareWhatsApp() {
+
+            let number =
+                document
+                    .getElementById("phoneInput")
+                    .value
+                    .replace(/\D/g, "");
+
+            const message =
+                encodeURIComponent(
+                    "Check out " +
+                    CARD.name +
+                    "\n" +
+                    CARD.website
+                );
+
+            let url;
+
+            if (number) {
+
+                url =
+                    "https://wa.me/" +
+                    number +
+                    "?text=" +
+                    message;
+
+            } else {
+
+                url =
+                    "https://wa.me/?text=" +
+                    message;
+
+            }
+
+            increaseActions();
+
+            window.open(url, "_blank");
+
+        }
+
+        /* SAVE CONTACT */
+
+        function saveContact() {
+
+            const vCard =
+                `BEGIN:VCARD
+VERSION:3.0
+FN:${CARD.name}
+TEL;TYPE=CELL:+${CARD.phone}
+EMAIL:${CARD.email}
+URL:${CARD.website}
+END:VCARD`;
+
+            const blob =
+                new Blob(
+                    [vCard],
+                    {
+                        type: "text/vcard"
+                    }
+                );
+
+            const url =
+                URL.createObjectURL(blob);
+
+            const link =
+                document.createElement("a");
+
+            link.href = url;
+
+            link.download =
+                "csc-janaseva-kendram.vcf";
+
+            link.click();
+
+            URL.revokeObjectURL(url);
+
+            increaseActions();
+
+            showToast("Contact saved");
+
+        }
+
+        /* ANALYTICS */
+
+        function increaseClicks() {
+
+            const element =
+                document.getElementById("clicks");
+
+            element.innerText =
+                Number(element.innerText) + 1;
+
+        }
+
+        function increaseActions() {
+
+            const element =
+                document.getElementById("actions");
+
+            element.innerText =
+                Number(element.innerText) + 1;
+
+        }
+
+        /* CLOSE MODAL */
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target.classList.contains("modal")
+                ) {
+
+                    event.target.classList.remove("active");
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
+```

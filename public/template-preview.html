@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digicardo — Profile Template Options</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0B0F19;
+      color: #F8FAFC;
+      min-height: 100vh;
+      padding: 40px 24px 80px;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #A5B4FC;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .title {
+      font-size: clamp(2rem, 3.5vw, 2.75rem);
+      font-weight: 900;
+      color: #FFFFFF;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+    .subtitle {
+      color: #94A3B8;
+      font-size: 1.05rem;
+      max-width: 640px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 36px;
+      align-items: stretch;
+    }
+
+    /* Template Card Column */
+    .card-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+    }
+    .card-meta h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-tag {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Phone Shell */
+    .phone-preview {
+      border-radius: 36px;
+      border: 3px solid rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+    }
+    .phone-preview:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Dynamic Island */
+    .dynamic-island {
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 10;
+      padding-top: 10px;
+    }
+    .island-pill {
+      width: 80px;
+      height: 14px;
+      background: #000000;
+      border-radius: 20px;
+    }
+
+    /* ===================================================
+       OPTION 1: NOIR EXECUTIVE (Dark Luxury / Finance)
+       =================================================== */
+    .theme-noir {
+      background: #0D0F14;
+      color: #F8FAFC;
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 640px;
+    }
+    .noir-banner {
+      height: 120px;
+      background: linear-gradient(135deg, #161B26 0%, #0F131D 50%, #1A2234 100%);
+      position: relative;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+    }
+    .noir-brand {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: #D4AF37;
+      font-weight: 800;
+    }
+    .noir-avatar-box {
+      margin-top: -50px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+    .noir-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 3px solid #D4AF37;
+      background: #1A202C;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.2);
+    }
+    .noir-content {
+      padding: 16px 20px 24px;
+      text-align: center;
+    }
+    .noir-name {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.02em;
+    }
+    .noir-role {
+      font-size: 0.78rem;
+      color: #94A3B8;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .noir-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 8px;
+      padding: 3px 12px;
+      border-radius: 999px;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      color: #E5C365;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .noir-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 20px 0 16px;
+    }
+    .noir-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #161C28;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      color: #FFFFFF;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .noir-btn span.gold { color: #D4AF37; }
+
+    .noir-dock {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      background: rgba(22, 28, 40, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 18px;
+      padding: 12px 8px;
+      margin-bottom: 16px;
+    }
+    .noir-icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .noir-icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #111520;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    .noir-icon-label {
+      font-size: 0.6rem;
+      color: #94A3B8;
+      font-weight: 600;
+    }
+
+    .noir-cta {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #D4AF37 0%, #B89025 100%);
+      color: #090A0F;
+      font-size: 0.85rem;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
+      letter-spacing: 0.02em;
+    }
+
+    /* ===================================================
+       OPTION 2: AURORA GLASS (Creator / Vibrant / Modern)
+       =================================================== */
+    .theme-aurora {
+      background: #0B0A1E;
+      color: #FFFFFF;
+      font-family: 'Outfit', sans-serif;
+      min-height: 640px;
+      position: relative;
+      overflow: hidden;
+    }
+    .aurora-bg-glow1 {
+      position: absolute;
+      top: -40px;
+      left: -40px;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.45) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .aurora-bg-glow2 {
+      position: absolute;
+      bottom: 60px;
+      right: -40px;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.35) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .aurora-content {
+      position: relative;
+      z-index: 2;
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .aurora-avatar-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+    .aurora-avatar {
+      width: 98px;
+      height: 98px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      box-shadow: 0 12px 30px rgba(139, 92, 246, 0.4), 0 0 0 4px rgba(255, 255, 255, 0.15);
+    }
+    .aurora-name {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.02em;
+    }
+    .aurora-handle {
+      font-size: 0.82rem;
+      color: #38BDF8;
+      font-weight: 600;
+      margin-top: 3px;
+    }
+    .aurora-bio {
+      font-size: 0.78rem;
+      color: #CBD5E1;
+      line-height: 1.5;
+      margin: 10px auto 16px;
+      max-width: 280px;
+    }
+    .aurora-socials {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .aurora-social {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+    }
+    .aurora-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .aurora-link-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #F8FAFC;
+    }
+    .aurora-link-item span.accent { color: #A78BFA; }
+    .aurora-cta {
+      width: 100%;
+      padding: 14px;
+      border-radius: 16px;
+      background: linear-gradient(90deg, #8B5CF6 0%, #2563EB 100%);
+      color: #FFFFFF;
+      font-size: 0.88rem;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.45);
+    }
+
+    /* ===================================================
+       OPTION 3: LOTUS EDITORIAL (Warm Minimal / Editorial)
+       =================================================== */
+    .theme-lotus {
+      background: #FAF7F2;
+      color: #2D231E;
+      font-family: 'Inter', sans-serif;
+      min-height: 640px;
+    }
+    .lotus-banner {
+      height: 110px;
+      background: linear-gradient(135deg, #F3E8DF 0%, #EAD8CC 100%);
+      position: relative;
+    }
+    .lotus-avatar-box {
+      margin-top: -48px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+    .lotus-avatar {
+      width: 94px;
+      height: 94px;
+      border-radius: 50%;
+      border: 4px solid #FAF7F2;
+      background: #DFBBA8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      box-shadow: 0 10px 24px rgba(196, 123, 98, 0.2);
+    }
+    .lotus-content {
+      padding: 16px 20px 24px;
+      text-align: center;
+    }
+    .lotus-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #231815;
+    }
+    .lotus-role {
+      font-size: 0.74rem;
+      color: #9C6652;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+    .lotus-bio {
+      font-size: 0.76rem;
+      color: #78665E;
+      line-height: 1.6;
+      margin: 10px auto 16px;
+      max-width: 270px;
+    }
+    .lotus-dock {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+    .lotus-icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: #FFFFFF;
+      border: 1px solid #EADBCE;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 8px rgba(160, 120, 100, 0.06);
+    }
+    .lotus-icon-label {
+      font-size: 0.6rem;
+      color: #8C756B;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .lotus-services {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .lotus-service-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #FFFFFF;
+      border-radius: 14px;
+      border: 1px solid #EADBCE;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #2D231E;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    }
+    .lotus-service-card span.price {
+      color: #9C6652;
+      font-weight: 800;
+    }
+    .lotus-cta {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #C47B62 0%, #A65A42 100%);
+      color: #FFFFFF;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(196, 123, 98, 0.35);
+    }
+
+    /* Choose Button Below Card */
+    .choose-btn {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 16px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .choose-btn:hover {
+      transform: scale(1.02);
+    }
+
+    .desc {
+      font-size: 0.82rem;
+      color: #64748B;
+      text-align: center;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="badge">✦ Digicardo SaaS Design Studio</div>
+      <h1 class="title">Pick Your Next Profile Template</h1>
+      <p class="subtitle">
+        Review these 3 distinct design architectures built with the <strong>UI/UX PRO MAX</strong> design intelligence.
+        Select your favorite to implement it into your codebase.
+      </p>
+    </div>
+
+    <div class="grid">
+      <!-- ================= OPTION 1 ================= -->
+      <div class="card-wrap">
+        <div class="card-meta">
+          <h3>🖤 1. Noir Executive</h3>
+          <span class="card-tag" style="background: rgba(212,175,55,0.15); color: #E5C365; border: 1px solid rgba(212,175,55,0.3);">Luxury Corporate</span>
+        </div>
+
+        <div class="phone-preview theme-noir">
+          <div class="dynamic-island"><div class="island-pill"></div></div>
+          <div class="noir-banner">
+            <div class="noir-brand">DIGICARDO VIP</div>
+          </div>
+          <div class="noir-avatar-box">
+            <div class="noir-avatar">🧑‍💼</div>
+          </div>
+          <div class="noir-content">
+            <div class="noir-name">Vikram Malhotra</div>
+            <div class="noir-role">Senior Partner · Corporate Legal</div>
+            <div class="noir-badge">★ Verified Executive</div>
+
+            <div class="noir-actions">
+              <div class="noir-btn"><span class="gold">📞</span> Call Direct</div>
+              <div class="noir-btn"><span class="gold">💬</span> WhatsApp</div>
+              <div class="noir-btn"><span class="gold">💳</span> Pay / Bank</div>
+              <div class="noir-btn"><span class="gold">📍</span> Office Map</div>
+            </div>
+
+            <div class="noir-dock">
+              <div class="noir-icon-item">
+                <div class="noir-icon-btn">📞</div>
+                <span class="noir-icon-label">Phone</span>
+              </div>
+              <div class="noir-icon-item">
+                <div class="noir-icon-btn">✉️</div>
+                <span class="noir-icon-label">Email</span>
+              </div>
+              <div class="noir-icon-item">
+                <div class="noir-icon-btn">🌐</div>
+                <span class="noir-icon-label">Site</span>
+              </div>
+              <div class="noir-icon-item">
+                <div class="noir-icon-btn">💼</div>
+                <span class="noir-icon-label">LinkedIn</span>
+              </div>
+              <div class="noir-icon-item">
+                <div class="noir-icon-btn">⭐</div>
+                <span class="noir-icon-label">Reviews</span>
+              </div>
+            </div>
+
+            <button class="noir-cta">📥 Save VIP Contact (vCard)</button>
+          </div>
+        </div>
+
+        <button class="choose-btn" style="background: #D4AF37; color: #090A0F;" onclick="selectTemplate('noir')">
+          Select Noir Executive →
+        </button>
+        <p class="desc">Obsidian black & gold aesthetic. Ideal for Finance, Law, High-End Real Estate, Executives, and CAs.</p>
+      </div>
+
+      <!-- ================= OPTION 2 ================= -->
+      <div class="card-wrap">
+        <div class="card-meta">
+          <h3>🌌 2. Aurora Glass</h3>
+          <span class="card-tag" style="background: rgba(139,92,246,0.2); color: #C4B5FD; border: 1px solid rgba(139,92,246,0.4);">Creator & Tech</span>
+        </div>
+
+        <div class="phone-preview theme-aurora">
+          <div class="dynamic-island"><div class="island-pill"></div></div>
+          <div class="aurora-bg-glow1"></div>
+          <div class="aurora-bg-glow2"></div>
+
+          <div class="aurora-content">
+            <div class="aurora-avatar-wrap">
+              <div class="aurora-avatar">🚀</div>
+            </div>
+            <div class="aurora-name">Aarav Sen</div>
+            <div class="aurora-handle">@aarav.digital · 124K</div>
+            <p class="aurora-bio">Tech builder & digital creator. Designing the future of web apps and micro-SaaS products ✨</p>
+
+            <div class="aurora-socials">
+              <div class="aurora-social">📸</div>
+              <div class="aurora-social">▶️</div>
+              <div class="aurora-social">🎵</div>
+              <div class="aurora-social">🐦</div>
+              <div class="aurora-social">🎧</div>
+            </div>
+
+            <div class="aurora-links">
+              <div class="aurora-link-item">
+                <span><span class="accent">✦</span> Watch Latest YouTube Video</span>
+                <span>→</span>
+              </div>
+              <div class="aurora-link-item">
+                <span><span class="accent">✦</span> Tech Stack & Gear Guide</span>
+                <span>→</span>
+              </div>
+              <div class="aurora-link-item">
+                <span><span class="accent">✦</span> Sponsor / Brand Inquiry</span>
+                <span>→</span>
+              </div>
+            </div>
+
+            <button class="aurora-cta">⚡ Collaborate With Me</button>
+          </div>
+        </div>
+
+        <button class="choose-btn" style="background: linear-gradient(90deg, #8B5CF6, #3B82F6); color: #FFFFFF;" onclick="selectTemplate('aurora')">
+          Select Aurora Glass →
+        </button>
+        <p class="desc">Vibrant cosmic glassmorphism. Ideal for Influencers, Creators, Indie Hackers, Designers, and Startups.</p>
+      </div>
+
+      <!-- ================= OPTION 3 ================= -->
+      <div class="card-wrap">
+        <div class="card-meta">
+          <h3>🌸 3. Lotus Editorial</h3>
+          <span class="card-tag" style="background: rgba(196,123,98,0.18); color: #C47B62; border: 1px solid rgba(196,123,98,0.35);">Serif Editorial</span>
+        </div>
+
+        <div class="phone-preview theme-lotus">
+          <div class="dynamic-island"><div class="island-pill"></div></div>
+          <div class="lotus-banner"></div>
+          <div class="lotus-avatar-box">
+            <div class="lotus-avatar">🌿</div>
+          </div>
+          <div class="lotus-content">
+            <div class="lotus-name">Ananya Roy</div>
+            <div class="lotus-role">Holistic Nutrition &amp; Wellness</div>
+            <p class="lotus-bio">Empowering conscious living, tailored plant-based nutrition plans, and daily mindfulness practices.</p>
+
+            <div class="lotus-dock">
+              <div class="noir-icon-item">
+                <div class="lotus-icon-btn">📞</div>
+                <span class="lotus-icon-label">Call</span>
+              </div>
+              <div class="noir-icon-item">
+                <div class="lotus-icon-btn">💬</div>
+                <span class="lotus-icon-label">Chat</span>
+              </div>
+              <div class="noir-icon-item">
+                <div class="lotus-icon-btn">✉️</div>
+                <span class="lotus-icon-label">Email</span>
+              </div>
+              <div class="noir-icon-item">
+                <div class="lotus-icon-btn">📍</div>
+                <span class="lotus-icon-label">Studio</span>
+              </div>
+              <div class="noir-icon-item">
+                <div class="lotus-icon-btn">🌐</div>
+                <span class="lotus-icon-label">Site</span>
+              </div>
+            </div>
+
+            <div class="lotus-services">
+              <div class="lotus-service-card">
+                <span>🥗 1-on-1 Nutrition Consultation</span>
+                <span class="price">₹1,500</span>
+              </div>
+              <div class="lotus-service-card">
+                <span>🧘 Mindfulness & Yoga Class</span>
+                <span class="price">₹850</span>
+              </div>
+            </div>
+
+            <button class="lotus-cta">🌿 Book An Appointment</button>
+          </div>
+        </div>
+
+        <button class="choose-btn" style="background: #C47B62; color: #FFFFFF;" onclick="selectTemplate('lotus')">
+          Select Lotus Editorial →
+        </button>
+        <p class="desc">Warm ivory serif elegance. Ideal for Wellness, Nutritionists, Doctors, Boutiques, Architecture & Luxury Spas.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function selectTemplate(id) {
+      alert('Selected: ' + id + '. Antigravity will now build this production template into Digicardo!');
+    }
+  </script>
+</body>
+</html>
