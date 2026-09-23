@@ -23,6 +23,7 @@ export interface TemplateSettingsProps {
   onChangeTheme: (updated: Partial<ThemeTokens>) => void;
   onSave?: () => Promise<void>;
   isSaving?: boolean;
+  onUpdateProfile?: (updated: Partial<Profile>) => void;
 }
 
 export type TemplateSupportedSection =

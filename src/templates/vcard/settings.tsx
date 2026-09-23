@@ -9,8 +9,10 @@ import { VCardSettingsPicker } from "@/components/appearance/VCardSettingsPicker
 import type { FontFamily, ButtonRadius } from "@/types/profile";
 
 export function VCardSettings({
+  profile,
   themeTokens,
   onChangeTheme,
+  onUpdateProfile,
 }: TemplateSettingsProps) {
   return (
     <div className="space-y-6">
@@ -39,10 +41,12 @@ export function VCardSettings({
 
       {/* ── 4. Business Card Settings (VCard specific) ── */}
       <VCardSettingsPicker
+        profile={profile}
         themeTokens={themeTokens}
         stepNumber={4}
         defaultOpen={true}
         onChangeTheme={onChangeTheme}
+        onUpdateProfile={onUpdateProfile}
       />
     </div>
   );

@@ -310,6 +310,7 @@ export function BotanicalSettings({
   onChangeTheme,
   onSave,
   isSaving,
+  onUpdateProfile,
 }: TemplateSettingsProps) {
   const custom: TemplateAppearanceOptions = themeTokens.custom_options || {};
 
@@ -476,6 +477,10 @@ export function BotanicalSettings({
           updateCustom({
             profile_image_url: remoteUrl,
             custom_avatar_url: remoteUrl,
+          });
+          onUpdateProfile?.({
+            avatar_url: remoteUrl,
+            version: (profile?.version ?? 0) + 1,
           });
         }
       } catch (err) {
@@ -1070,7 +1075,10 @@ export function BotanicalSettings({
                   {custom.profile_image_url && (
                     <button
                       type="button"
-                      onClick={() => updateCustom({ profile_image_url: undefined })}
+                      onClick={() => {
+                        updateCustom({ profile_image_url: undefined, custom_avatar_url: undefined });
+                        onUpdateProfile?.({ avatar_url: undefined });
+                      }}
                       className="text-[11px] text-red-600 hover:underline text-left cursor-pointer font-medium"
                     >
                       Remove custom photo

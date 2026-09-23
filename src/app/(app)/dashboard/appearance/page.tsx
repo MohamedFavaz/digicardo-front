@@ -174,6 +174,10 @@ export default function AppearanceEditorPage() {
     setThemeTokens(tDef.default_theme);
   };
 
+  const handleUpdateProfile = React.useCallback((updated: Partial<Profile>) => {
+    setProfile((prev) => (prev ? { ...prev, ...updated } : prev));
+  }, []);
+
   // Save / Publish Appearance
   const handleSaveAppearance = async () => {
     if (!profile) return;
@@ -190,13 +194,16 @@ export default function AppearanceEditorPage() {
 
     setIsSaving(true);
     setSaveState("saving");
-    try {
-      const updated = await profileApi.updateAppearance({
+
+    const performSave = async (versionToUse: number): Promise<Profile> => {
+      return await profileApi.updateAppearance({
         template_id: selectedTemplateId,
         theme_tokens: parseResult.data,
-        version: profile.version,
+        version: versionToUse,
       });
+    };
 
+    const applySuccessfulSave = (updated: Profile) => {
       const tDef = getTemplate(selectedTemplateId);
       const serverTokens = updated.theme_tokens ?? parseResult.data;
       const submittedCustom = (parseResult.data.custom_options as Record<string, any>) || {};
@@ -230,10 +237,32 @@ export default function AppearanceEditorPage() {
       setSaveState("saved");
       setSuccessToast("Customization saved and published live! 🎉");
       setTimeout(() => setSuccessToast(null), 4000);
+    };
+
+    try {
+      try {
+        const updated = await performSave(profile.version);
+        applySuccessfulSave(updated);
+      } catch (saveErr: unknown) {
+        if (saveErr instanceof ApiConflictError) {
+          // If conflict occurred, resolve current version and auto-retry once
+          let targetVersion = saveErr.currentVersion;
+          if (!targetVersion) {
+            const fresh = await profileApi.getProfile();
+            targetVersion = fresh.version;
+          }
+
+          if (targetVersion && targetVersion !== profile.version) {
+            const updated = await performSave(targetVersion);
+            applySuccessfulSave(updated);
+            return;
+          }
+        }
+        throw saveErr;
+      }
     } catch (err: unknown) {
       if (err instanceof ApiConflictError) {
-        setErrorMessage("Conflict: Appearance was modified in another tab. Reloading latest...");
-        await loadData();
+        setErrorMessage("Appearance was modified concurrently. Please review your changes and try again.");
       } else if (err instanceof ApiClientError) {
         setErrorMessage(err.message);
       } else {
@@ -326,6 +355,7 @@ export default function AppearanceEditorPage() {
               }
               onSave={handleSaveAppearance}
               isSaving={isSaving}
+              onUpdateProfile={handleUpdateProfile}
             />
           ) : (
             <div className="space-y-6">

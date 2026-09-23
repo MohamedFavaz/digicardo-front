@@ -104,15 +104,16 @@ const DribbbleIcon = ({ className }: { className?: string }) => (
 
 import { Input } from "@/components/ui/input";
 import { mediaApi } from "@/lib/api/media";
-import { ApiClientError } from "@/lib/api/errors";
-import type { ThemeTokens, VCardCustomOptions, VCardActionIconToggles, VCardProduct, VCardService } from "@/types/profile";
+import type { Profile, ThemeTokens, VCardCustomOptions, VCardActionIconToggles, VCardProduct, VCardService } from "@/types/profile";
 import { cn } from "@/lib/utils";
 
 export interface VCardSettingsPickerProps {
+  profile?: Profile | null;
   themeTokens: ThemeTokens;
   onChangeTheme: (updated: Partial<ThemeTokens>) => void;
   stepNumber?: number;
   defaultOpen?: boolean;
+  onUpdateProfile?: (updated: Partial<Profile>) => void;
 }
 
 const BANNER_PRESETS = [
@@ -322,10 +323,12 @@ function ProductEditor({ product, index, onUpdate, onRemove }: ProductEditorProp
 }
 
 export function VCardSettingsPicker({
+  profile,
   themeTokens,
   onChangeTheme,
   stepNumber = 4,
   defaultOpen = false,
+  onUpdateProfile,
 }: VCardSettingsPickerProps) {
   const [isCardOpen, setIsCardOpen] = React.useState(defaultOpen);
   const [openSection, setOpenSection] = React.useState<
@@ -650,11 +653,13 @@ export function VCardSettingsPicker({
 
       try {
         const media = await mediaApi.uploadAvatar(croppedFile);
-        updateCustomOptions({ custom_avatar_url: media.url });
+        updateCustomOptions({ custom_avatar_url: media.url, profile_image_url: media.url });
+        onUpdateProfile?.({
+          avatar_url: media.url,
+          version: (profile?.version ?? 0) + 1,
+        });
       } catch (err: unknown) {
-        if (err instanceof ApiClientError) {
-          setUploadError(err.message);
-        }
+        setUploadError(err instanceof Error ? err.message : "Failed to upload avatar");
       } finally {
         setIsUploadingAvatar(false);
         setCropImageSrc(null);
@@ -664,7 +669,8 @@ export function VCardSettingsPicker({
 
   // Remove Avatar
   const handleRemoveAvatar = async () => {
-    updateCustomOptions({ custom_avatar_url: "" });
+    updateCustomOptions({ custom_avatar_url: "", profile_image_url: "" });
+    onUpdateProfile?.({ avatar_url: undefined });
     try {
       await mediaApi.deleteAvatar();
     } catch {
