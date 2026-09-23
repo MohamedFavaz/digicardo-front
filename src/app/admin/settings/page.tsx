@@ -148,7 +148,15 @@ export default function AdminSettingsPage() {
                 <p className="text-[11px] text-slate-400">Configure prices for each duration tier</p>
               </div>
             </div>
-            <span className="text-xs font-semibold text-slate-400">{plans.length} Active Plans</span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-semibold text-slate-400">{plans.length} Plans</span>
+              <Link
+                href="/admin/plans"
+                className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 hover:underline"
+              >
+                Manage Plans &rarr;
+              </Link>
+            </div>
           </div>
 
           <div className="divide-y divide-slate-100">

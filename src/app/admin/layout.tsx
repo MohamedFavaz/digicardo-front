@@ -14,6 +14,7 @@ import {
   LogOut,
   Menu,
   ShieldCheck,
+  Sparkles,
 } from "lucide-react";
 
 interface NavItem {
@@ -42,6 +43,12 @@ const NAV: NavItem[] = [
     label: "Admin Panel",
     href: "/admin/admin-panel",
     icon: Users,
+  },
+  {
+    id: "plans",
+    label: "Validity Plans",
+    href: "/admin/plans",
+    icon: Sparkles,
   },
   {
     id: "access-requests",
