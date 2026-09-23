@@ -553,24 +553,36 @@ export function BotanicalSettings({
 
   // ── Social Media Management ──
   const socialLinks: SocialLink[] = useMemo(() => {
-    const raw = custom.social_links && Array.isArray(custom.social_links) && custom.social_links.length > 0
-      ? custom.social_links
-      : [
-          { id: "1", platform: "linkedin", url: "https://linkedin.com", enabled: true, is_active: true, order: 1 },
-          { id: "2", platform: "x", url: "https://x.com", enabled: true, is_active: true, order: 2 },
-          { id: "3", platform: "google_business", url: "https://google.com", enabled: true, is_active: true, order: 3 },
-          { id: "4", platform: "youtube", url: "https://youtube.com", enabled: true, is_active: true, order: 4 },
-          { id: "5", platform: "instagram", url: "https://instagram.com", enabled: true, is_active: true, order: 5 },
-          { id: "6", platform: "website", url: "https://example.com", enabled: true, is_active: true, order: 6 },
-        ];
-    return raw.map((s: any, idx: number) => ({
-      id: s.id || `social_${s.platform || idx}_${idx}`,
-      platform: s.platform || "custom",
-      name: s.name || (s.platform ? s.platform.replace("_", " ").toUpperCase() : "Link"),
-      url: s.url || "",
-      enabled: s.enabled !== undefined ? Boolean(s.enabled) : (s.is_active !== undefined ? Boolean(s.is_active) : true),
-      is_active: s.is_active !== undefined ? Boolean(s.is_active) : (s.enabled !== undefined ? Boolean(s.enabled) : true),
-      order: s.order ?? idx + 1,
+    // If custom.social_links is explicitly defined as an array (even if empty []), respect it!
+    if (custom.social_links !== undefined && Array.isArray(custom.social_links)) {
+      return custom.social_links.map((s: any, idx: number) => ({
+        id: s.id || `social_${s.platform || idx}_${idx}`,
+        platform: s.platform || "custom",
+        name: s.name || (s.platform ? s.platform.replace("_", " ").toUpperCase() : "Link"),
+        url: s.url || "",
+        enabled: s.enabled !== undefined ? Boolean(s.enabled) : (s.is_active !== undefined ? Boolean(s.is_active) : true),
+        is_active: s.is_active !== undefined ? Boolean(s.is_active) : (s.enabled !== undefined ? Boolean(s.enabled) : true),
+        order: s.order ?? idx + 1,
+      }));
+    }
+
+    // Default placeholder social links only when never initialized
+    const defaultRaw = [
+      { id: "1", platform: "linkedin", url: "https://linkedin.com", enabled: true, is_active: true, order: 1 },
+      { id: "2", platform: "x", url: "https://x.com", enabled: true, is_active: true, order: 2 },
+      { id: "3", platform: "google_business", url: "https://google.com", enabled: true, is_active: true, order: 3 },
+      { id: "4", platform: "youtube", url: "https://youtube.com", enabled: true, is_active: true, order: 4 },
+      { id: "5", platform: "instagram", url: "https://instagram.com", enabled: true, is_active: true, order: 5 },
+      { id: "6", platform: "website", url: "https://example.com", enabled: true, is_active: true, order: 6 },
+    ];
+    return defaultRaw.map((s: any, idx: number) => ({
+      id: s.id,
+      platform: s.platform,
+      name: s.platform.replace("_", " ").toUpperCase(),
+      url: s.url,
+      enabled: true,
+      is_active: true,
+      order: idx + 1,
     }));
   }, [custom.social_links]);
 
@@ -608,71 +620,82 @@ export function BotanicalSettings({
   };
 
   // ── Content Links Management ──
-  const rawContentLinks: any[] = custom.content_links || [];
-  const contentLinks: ContentLink[] = (rawContentLinks.length > 0
-    ? rawContentLinks
-    : [
-        {
-          id: "1",
-          headline: "Corporate Services & Solutions",
-          description: "Explore enterprise offerings & portfolio",
-          url: "https://example.com/services",
-          icon: "services",
-          featured: true,
-          enabled: true,
-          order: 1,
-        },
-        {
-          id: "2",
-          headline: "Bank & Payment Details",
-          description: "Account, IFSC, UPI & billing info",
-          url: "https://example.com/payment",
-          icon: "bank",
-          featured: false,
-          enabled: true,
-          order: 2,
-        },
-        {
-          id: "3",
-          headline: "Schedule Consultation",
-          description: "Book a 30-min executive strategy call",
-          url: "https://calendly.com",
-          icon: "meeting",
-          featured: false,
-          enabled: true,
-          order: 3,
-        },
-        {
-          id: "4",
-          headline: "Download Company Profile",
-          description: "Corporate brochure & credentials (PDF)",
-          url: "https://example.com/brochure.pdf",
-          icon: "brochure",
-          featured: false,
-          enabled: true,
-          order: 4,
-        },
-        {
-          id: "5",
-          headline: "Corporate Headquarters",
-          description: "Business Park, Tower B, Level 8",
-          url: "https://maps.google.com",
-          icon: "location",
-          featured: false,
-          enabled: true,
-          order: 5,
-        },
-      ]
-  ).map((l: any, idx: number) => ({
-    id: l.id || `link_${idx + 1}`,
-    headline: l.headline || l.title || "",
-    description: l.description || "",
-    url: l.url || "",
-    icon: l.icon || "services",
-    featured: l.featured !== undefined ? l.featured : (l.is_featured !== undefined ? l.is_featured : false),
-    enabled: l.enabled !== undefined ? l.enabled : (l.is_active !== undefined ? l.is_active : true),
-    order: l.order || idx + 1,
-  }));
+  const contentLinks: ContentLink[] = useMemo(() => {
+    if (custom.content_links !== undefined && Array.isArray(custom.content_links)) {
+      return custom.content_links.map((l: any, idx: number) => ({
+        id: l.id || `link_${idx + 1}`,
+        headline: l.headline || l.title || "",
+        description: l.description || "",
+        url: l.url || "",
+        icon: l.icon || "services",
+        featured: l.featured !== undefined ? l.featured : (l.is_featured !== undefined ? l.is_featured : false),
+        enabled: l.enabled !== undefined ? l.enabled : (l.is_active !== undefined ? l.is_active : true),
+        order: l.order || idx + 1,
+      }));
+    }
+    const defaultContentRaw = [
+      {
+        id: "1",
+        headline: "Corporate Services & Solutions",
+        description: "Explore enterprise offerings & portfolio",
+        url: "https://example.com/services",
+        icon: "services",
+        featured: true,
+        enabled: true,
+        order: 1,
+      },
+      {
+        id: "2",
+        headline: "Bank & Payment Details",
+        description: "Account, IFSC, UPI & billing info",
+        url: "https://example.com/payment",
+        icon: "bank",
+        featured: false,
+        enabled: true,
+        order: 2,
+      },
+      {
+        id: "3",
+        headline: "Schedule Consultation",
+        description: "Book a 30-min executive strategy call",
+        url: "https://calendly.com",
+        icon: "meeting",
+        featured: false,
+        enabled: true,
+        order: 3,
+      },
+      {
+        id: "4",
+        headline: "Download Company Profile",
+        description: "Corporate brochure & credentials (PDF)",
+        url: "https://example.com/brochure.pdf",
+        icon: "brochure",
+        featured: false,
+        enabled: true,
+        order: 4,
+      },
+      {
+        id: "5",
+        headline: "Corporate Headquarters",
+        description: "Business Park, Tower B, Level 8",
+        url: "https://maps.google.com",
+        icon: "location",
+        featured: false,
+        enabled: true,
+        order: 5,
+      },
+    ];
+    return defaultContentRaw.map((l: any, idx: number) => ({
+      id: l.id || `link_${idx + 1}`,
+      headline: l.headline || l.title || "",
+      description: l.description || "",
+      url: l.url || "",
+      icon: l.icon || "services",
+      featured: l.featured !== undefined ? l.featured : (l.is_featured !== undefined ? l.is_featured : false),
+      enabled: l.enabled !== undefined ? l.enabled : (l.is_active !== undefined ? l.is_active : true),
+      order: l.order || idx + 1,
+    }));
+  }, [custom.content_links]);
 
   const handleAddLink = () => {
     const newId = `link_${Date.now()}`;
@@ -1146,8 +1169,8 @@ export function BotanicalSettings({
                 Full Name / Display Name
               </label>
               <Input
-                value={custom.display_name_override || profile?.display_name || ""}
-                placeholder="e.g. Alex Morgan"
+                value={custom.display_name_override !== undefined ? custom.display_name_override : (profile?.display_name || "")}
+                placeholder={profile?.display_name || "e.g. Alex Morgan"}
                 onChange={(e) => updateCustom({ display_name_override: e.target.value })}
                 className="text-xs"
               />
@@ -1325,8 +1348,8 @@ export function BotanicalSettings({
             </div>
             <textarea
               rows={2}
-              value={custom.bio_override || profile?.bio || ""}
-              placeholder={custom.show_bio === false || custom.show_bio === "false" ? "[Hidden from card]" : "e.g. Enterprise digital solutions & strategic consulting."}
+              value={custom.bio_override !== undefined ? custom.bio_override : (profile?.bio || "")}
+              placeholder={custom.show_bio === false || custom.show_bio === "false" ? "[Hidden from card]" : (profile?.bio || "e.g. Enterprise digital solutions & strategic consulting.")}
               onChange={(e) => updateCustom({ bio_override: e.target.value })}
               disabled={custom.show_bio === false || custom.show_bio === "false"}
               className={`w-full rounded-xl border border-input bg-transparent px-3 py-2 text-xs shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-all ${
@@ -1382,45 +1405,52 @@ export function BotanicalSettings({
               </div>
             </div>
 
-            <div className="space-y-2">
-              {socialLinks.map((s) => (
-                <div
-                  key={s.id}
-                  className="flex items-center gap-2 p-3 rounded-2xl border border-border bg-card shadow-xs"
-                >
-                  <input
-                    type="checkbox"
-                    checked={s.enabled}
-                    onChange={(e) => handleUpdateSocial(s.id, "enabled", e.target.checked)}
-                    className="w-4 h-4 rounded text-brand-600 cursor-pointer"
-                    title="Enable / Disable"
-                  />
-                  <div className="w-24 text-xs font-extrabold uppercase text-foreground truncate">
-                    {s.name || s.platform}
-                  </div>
-                  <Input
-                    value={s.url}
-                    placeholder={
-                      s.platform === "email" ? "mailto:name@domain.com" :
-                      s.platform === "phone" ? "tel:+1234567890" :
-                      s.platform === "whatsapp" ? "https://wa.me/..." :
-                      s.platform === "custom" ? "https://..." :
-                      `https://${s.platform}.com/...`
-                    }
-                    onChange={(e) => handleUpdateSocial(s.id, "url", e.target.value)}
-                    className="text-xs flex-1"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteSocial(s.id)}
-                    className="text-muted-foreground hover:text-red-600 p-1.5 rounded-lg transition-colors cursor-pointer"
-                    title="Delete Platform"
+            {socialLinks.length === 0 ? (
+              <div className="p-8 rounded-2xl border border-dashed border-border/80 text-center space-y-2 bg-muted/10">
+                <p className="text-xs font-bold text-muted-foreground">No social media platforms configured.</p>
+                <p className="text-[11px] text-muted-foreground">Select a platform from the dropdown above to add your links.</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {socialLinks.map((s) => (
+                  <div
+                    key={s.id}
+                    className="flex items-center gap-2 p-3 rounded-2xl border border-border bg-card shadow-xs"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              ))}
-            </div>
+                    <input
+                      type="checkbox"
+                      checked={s.enabled}
+                      onChange={(e) => handleUpdateSocial(s.id, "enabled", e.target.checked)}
+                      className="w-4 h-4 rounded text-brand-600 cursor-pointer"
+                      title="Enable / Disable"
+                    />
+                    <div className="w-24 text-xs font-extrabold uppercase text-foreground truncate">
+                      {s.name || s.platform}
+                    </div>
+                    <Input
+                      value={s.url}
+                      placeholder={
+                        s.platform === "email" ? "mailto:name@domain.com" :
+                        s.platform === "phone" ? "tel:+1234567890" :
+                        s.platform === "whatsapp" ? "https://wa.me/..." :
+                        s.platform === "custom" ? "https://..." :
+                        `https://${s.platform}.com/...`
+                      }
+                      onChange={(e) => handleUpdateSocial(s.id, "url", e.target.value)}
+                      className="text-xs flex-1"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteSocial(s.id)}
+                      className="text-muted-foreground hover:text-red-600 p-1.5 rounded-lg transition-colors cursor-pointer"
+                      title="Delete Platform"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -1570,7 +1600,13 @@ export function BotanicalSettings({
             </Button>
           </div>
 
-          <div className="space-y-3">
+          {contentLinks.length === 0 ? (
+            <div className="p-8 rounded-2xl border border-dashed border-border/80 text-center space-y-2 bg-muted/10">
+              <p className="text-xs font-bold text-muted-foreground">No content link cards added.</p>
+              <p className="text-[11px] text-muted-foreground">Click &ldquo;+ Add Link&rdquo; above to add your custom links and services.</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
             {contentLinks.map((link, idx) => (
               <div
                 key={link.id}
@@ -1741,6 +1777,7 @@ export function BotanicalSettings({
               </div>
             ))}
           </div>
+          )}
         </div>
       )}
 

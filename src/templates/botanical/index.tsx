@@ -110,7 +110,10 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
 
   // ── Content Link Cards ──
   const contentLinks = useMemo(() => {
-    if (custom.content_links && Array.isArray(custom.content_links) && custom.content_links.length > 0) {
+    if (custom.content_links !== undefined && Array.isArray(custom.content_links)) {
+      if (custom.content_links.length === 0) {
+        return [];
+      }
       return custom.content_links
         .filter((l: any) => l.enabled !== false && l.is_active !== false)
         .map((l: any) => ({
@@ -237,18 +240,19 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
   // ── Social Links (With automatic platform detection from URL & type) ──
   const socialLinks = useMemo(() => {
     // 1. From custom_options.social_links
-    if (custom.social_links && Array.isArray(custom.social_links) && custom.social_links.length > 0) {
-      const active = custom.social_links.filter((s: any) => s.enabled !== false && s.is_active !== false && s.url);
-      if (active.length > 0) {
-        return active.map((s: any) => {
-          const detected = detectSocialPlatform(s.platform, s.url);
-          return {
-            platform: detected,
-            url: s.url,
-            title: s.name || detected.toUpperCase(),
-          };
-        });
+    if (custom.social_links !== undefined && Array.isArray(custom.social_links)) {
+      if (custom.social_links.length === 0) {
+        return [];
       }
+      const active = custom.social_links.filter((s: any) => s.enabled !== false && s.is_active !== false && s.url);
+      return active.map((s: any) => {
+        const detected = detectSocialPlatform(s.platform, s.url);
+        return {
+          platform: detected,
+          url: s.url,
+          title: s.name || detected.toUpperCase(),
+        };
+      });
     }
 
     // 2. Fallback to blocks if present
