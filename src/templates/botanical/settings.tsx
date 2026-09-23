@@ -12,6 +12,7 @@ import type {
 } from "@/types/profile";
 import { BOTANICAL_PALETTES } from "./constants";
 import { mediaApi } from "@/lib/api/media";
+import { resolveMediaUrl } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -377,7 +378,7 @@ export function BotanicalSettings({
 
   // Allow re-cropping current avatar
   const handleOpenExistingCrop = () => {
-    const currentUrl = custom.profile_image_url || profile?.avatar_url;
+    const currentUrl = resolveMediaUrl(custom.profile_image_url || custom.custom_avatar_url || profile?.avatar_url);
     if (!currentUrl) return;
     setCropImageSrc(currentUrl);
     setCropZoom(1);
@@ -454,11 +455,29 @@ export function BotanicalSettings({
       const localDataUrl = canvas.toDataURL("image/png");
 
       // Set immediately in custom options so Live Preview updates instantly
-      updateCustom({ profile_image_url: localDataUrl });
+      updateCustom({
+        profile_image_url: localDataUrl,
+        custom_avatar_url: localDataUrl,
+      });
 
       try {
-        const media = await mediaApi.uploadImage(croppedFile, "Profile Avatar");
-        updateCustom({ profile_image_url: media.url });
+        let remoteUrl = "";
+        try {
+          // 1. Primary: upload as profile avatar so database row is updated
+          const media = await mediaApi.uploadAvatar(croppedFile);
+          remoteUrl = resolveMediaUrl(media.url);
+        } catch {
+          // 2. Fallback: upload as generic media image
+          const media = await mediaApi.uploadImage(croppedFile, "Profile Avatar");
+          remoteUrl = resolveMediaUrl(media.url);
+        }
+
+        if (remoteUrl) {
+          updateCustom({
+            profile_image_url: remoteUrl,
+            custom_avatar_url: remoteUrl,
+          });
+        }
       } catch (err) {
         alert(err instanceof Error ? err.message : "Failed to upload cropped photo");
       } finally {
@@ -971,12 +990,20 @@ export function BotanicalSettings({
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={custom.profile_image_url || profile?.avatar_url || "/placeholder-avatar.png"}
+                    src={
+                      resolveMediaUrl(
+                        custom.profile_image_url ||
+                        custom.custom_avatar_url ||
+                        profile?.avatar_url
+                      ) || "/placeholder-avatar.png"
+                    }
                     alt="Profile"
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&h=300&q=80";
+                      const target = e.target as HTMLImageElement;
+                      if (!target.src.includes("placeholder-avatar.png")) {
+                        target.src = "/placeholder-avatar.png";
+                      }
                     }}
                   />
                   <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white text-[10px] font-bold">

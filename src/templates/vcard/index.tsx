@@ -19,6 +19,7 @@
 
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import Image from "next/image";
+import { resolveMediaUrl } from "@/lib/utils";
 import {
   Phone,
   MessageCircle,
@@ -277,7 +278,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
   // ── Extract Business Details with safe fallbacks ────────────────────────────
   const displayName = customOpts.display_name_override?.trim() || profile.display_name || "CSC JANASEVA KENDRAM";
   const bio = customOpts.tagline_override?.trim() || profile.bio || "Akshaya services and sales";
-  const avatarUrl = customOpts.custom_avatar_url || profile.avatar_url;
+  const avatarUrl = resolveMediaUrl(customOpts.custom_avatar_url || customOpts.profile_image_url || profile.avatar_url);
   const categoryText = customOpts.category_badge_text || displayName;
 
   // Banner images list (custom options or fallbacks)

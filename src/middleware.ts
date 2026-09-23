@@ -61,6 +61,6 @@ export const config = {
      * - /login, /register, /forgot-password, /reset-password, /verify-email (Auth pages)
      * - Static asset files (.png, .jpg, .svg, .webp, .ico, etc.)
      */
-    "/((?!api|_next|admin|dashboard|login|register|forgot-password|reset-password|verify-email|.*\\.(?:ico|png|jpg|jpeg|svg|webp|gif|css|js|woff|woff2|ttf|eot)$).*)",
+    "/((?!api|_next|admin|dashboard|storage|login|register|forgot-password|reset-password|verify-email|.*\\.(?:ico|png|jpg|jpeg|svg|webp|gif|css|js|woff|woff2|ttf|eot)$).*)",
   ],
 };

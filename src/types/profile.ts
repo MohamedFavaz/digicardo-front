@@ -99,6 +99,7 @@ export interface VCardCustomOptions {
   banner_image_url?: string;
   banner_images?: string[];
   custom_avatar_url?: string;
+  profile_image_url?: string;
   category_badge_text?: string;
   /** Override the profile display_name shown on the card */
   display_name_override?: string;

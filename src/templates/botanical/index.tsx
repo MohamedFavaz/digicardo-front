@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { QrCode, X, Copy, Check, Download, Share2, ExternalLink } from "lucide-react";
 import type { TemplateProps } from "../types";
 import { BOTANICAL_PALETTES } from "./constants";
+import { resolveMediaUrl } from "@/lib/utils";
 
 export { BOTANICAL_PALETTES };
 
@@ -72,8 +73,11 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
     "Enterprise digital solutions & strategic consulting.";
 
   const avatarUrl =
-    (custom.profile_image_url as string) ||
-    (profile?.avatar_url as string) ||
+    resolveMediaUrl(
+      (custom.profile_image_url as string) ||
+      (custom.custom_avatar_url as string) ||
+      (profile?.avatar_url as string)
+    ) ||
     "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&h=300&q=80";
 
   const companyLogoUrl =
@@ -2768,8 +2772,11 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
                     alt={displayName}
                     className="avatar-img"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&h=300&q=80";
+                      const target = e.target as HTMLImageElement;
+                      if (!target.src.includes("photo-1507003211169")) {
+                        target.src =
+                          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&h=300&q=80";
+                      }
                     }}
                   />
                 </div>
