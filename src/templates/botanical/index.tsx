@@ -46,7 +46,7 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
 
   const showCompanyName =
     !isHiddenVal(custom.show_company_name) &&
-    (custom.company_name !== undefined ? custom.company_name.trim() !== "" : true);
+    (custom.company_name != null ? String(custom.company_name).trim() !== "" : true);
 
   const companyName =
     custom.company_name !== undefined
@@ -55,7 +55,7 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
 
   const showExecutiveRole =
     !isHiddenVal(custom.show_executive_role) &&
-    (custom.executive_role !== undefined ? custom.executive_role.trim() !== "" : true);
+    (custom.executive_role != null ? String(custom.executive_role).trim() !== "" : true);
 
   const executiveRole =
     custom.executive_role !== undefined
@@ -64,7 +64,7 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
 
   const showBio =
     !isHiddenVal(custom.show_bio) &&
-    (custom.bio_override !== undefined ? custom.bio_override.trim() !== "" : Boolean(profile?.bio || true));
+    (custom.bio_override != null ? String(custom.bio_override).trim() !== "" : Boolean(profile?.bio || true));
 
   const bio =
     (custom.bio_override as string) ||
