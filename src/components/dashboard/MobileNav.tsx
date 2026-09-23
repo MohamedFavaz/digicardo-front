@@ -33,7 +33,45 @@ import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-export function MobileNav() {
+export function MobileTopHeader() {
+  const [profile, setProfile] = React.useState<Profile | null>(null);
+
+  React.useEffect(() => {
+    profileApi
+      .getProfile()
+      .then((p) => setProfile(p))
+      .catch(() => {});
+  }, []);
+
+  const username = profile?.username;
+
+  return (
+    <header className="h-16 bg-card/90 dark:bg-card/80 backdrop-blur-2xl border-b border-border/80 px-4 flex items-center justify-between select-none shadow-2xs md:hidden">
+      <Link href="/dashboard" className="flex items-center">
+        <DigicardoLogo size="sm" proBadge />
+      </Link>
+
+      {/* Live URL Pill + Notification */}
+      <div className="flex items-center gap-2">
+        {username && (
+          <Link
+            href={`/${username}`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-[11px] font-bold text-brand-600 bg-brand-50 dark:bg-brand-950/60 px-2.5 py-1 rounded-full border border-brand-200 dark:border-brand-800 shadow-2xs"
+          >
+            <span>View</span>
+            <ExternalLink className="w-3 h-3" />
+          </Link>
+        )}
+
+        <NotificationBell />
+      </div>
+    </header>
+  );
+}
+
+export function MobileBottomNav() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
@@ -41,6 +79,7 @@ export function MobileNav() {
   const [copied, setCopied] = React.useState(false);
   const [moreOpen, setMoreOpen] = React.useState(false);
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
+
   React.useEffect(() => {
     profileApi
       .getProfile()
@@ -175,33 +214,9 @@ export function MobileNav() {
     pathname.startsWith("/dashboard/qr");
 
   return (
-    <div className="md:hidden">
-      {/* ── 1. Top Mobile Header ── */}
-      <header className="h-16 bg-card/90 dark:bg-card/80 backdrop-blur-2xl border-b border-border/80 px-4 flex items-center justify-between select-none shadow-2xs">
-        <Link href="/dashboard" className="flex items-center">
-          <DigicardoLogo size="sm" proBadge />
-        </Link>
-
-        {/* Live URL Pill + Notification */}
-        <div className="flex items-center gap-2">
-          {username && (
-            <Link
-              href={`/${username}`}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1 text-[11px] font-bold text-brand-600 bg-brand-50 dark:bg-brand-950/60 px-2.5 py-1 rounded-full border border-brand-200 dark:border-brand-800 shadow-2xs"
-            >
-              <span>View</span>
-              <ExternalLink className="w-3 h-3" />
-            </Link>
-          )}
-
-          <NotificationBell />
-        </div>
-      </header>
-
-      {/* ── 2. Floating Bottom Navigation Dock ── */}
-      <nav className="fixed bottom-3 left-3 right-3 z-40 bg-card/90 dark:bg-card/80 backdrop-blur-2xl border border-border/80 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] p-1.5 flex items-center justify-around select-none">
+    <>
+      {/* ── Floating Bottom Navigation Dock ── */}
+      <nav className="fixed bottom-3 left-3 right-3 sm:left-6 sm:right-6 max-w-md sm:mx-auto z-40 bg-card/95 dark:bg-card/90 backdrop-blur-2xl border border-border/80 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.18)] p-1.5 flex items-center justify-around select-none md:hidden pb-[calc(0.375rem+env(safe-area-inset-bottom,0px))]">
         {primaryTabs.map((tab) => {
           const Icon = tab.icon;
           return (
@@ -256,9 +271,9 @@ export function MobileNav() {
         </button>
       </nav>
 
-      {/* ── 3. "More" Slide-Up Mobile Sheet Drawer ── */}
+      {/* ── "More" Slide-Up Mobile Sheet Drawer ── */}
       {moreOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/60 backdrop-blur-md animate-in fade-in duration-200 md:hidden">
           <div
             className="fixed inset-0"
             onClick={() => setMoreOpen(false)}
@@ -299,82 +314,86 @@ export function MobileNav() {
                   <span className="block text-[10px] font-mono uppercase font-bold text-muted-foreground">
                     Public Link
                   </span>
-                  <span className="block font-mono text-xs font-bold text-foreground truncate">
+                  <p className="text-xs font-mono font-bold text-foreground truncate">
                     digicardo.app/{username}
-                  </span>
+                  </p>
                 </div>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={handleCopy}
-                  className="h-8 px-3 text-xs font-bold gap-1 rounded-xl shadow-2xs"
-                >
-                  {copied ? (
-                    <>
+
+                <div className="flex items-center gap-1.5 flex-shrink-0">
+                  <button
+                    type="button"
+                    onClick={handleCopy}
+                    className="p-2 rounded-xl bg-card border border-border text-muted-foreground hover:text-foreground transition-colors"
+                    title="Copy link"
+                  >
+                    {copied ? (
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Copied</span>
-                    </>
-                  ) : (
-                    <>
+                    ) : (
                       <Copy className="w-3.5 h-3.5" />
-                      <span>Copy</span>
-                    </>
-                  )}
-                </Button>
+                    )}
+                  </button>
+
+                  <Link
+                    href={`/${username}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-2 rounded-xl bg-brand-500 text-white hover:bg-brand-600 transition-colors"
+                    title="Open live link"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
               </div>
             )}
 
-            {/* Navigation Grid */}
-            <div className="space-y-1.5">
-              <div className="text-[10px] font-mono font-extrabold tracking-widest text-muted-foreground/70 uppercase px-1 mb-2">
-                All Studio Tools
-              </div>
+            {/* Secondary Menu Links */}
+            <div className="space-y-1">
+              <span className="text-[10px] font-mono uppercase font-bold text-muted-foreground px-1">
+                Studio Tools
+              </span>
 
               {moreItems.map((item) => {
                 const Icon = item.icon;
-                const active = pathname === item.href;
+                const active = pathname.startsWith(item.href);
 
                 return (
                   <Link
-                    key={item.title}
+                    key={item.href}
                     href={item.href}
                     onClick={() => setMoreOpen(false)}
                     className={cn(
-                      "flex items-center justify-between p-3.5 rounded-2xl transition-all duration-200 active:scale-[0.98]",
+                      "flex items-center justify-between p-3 rounded-2xl transition-colors",
                       active
-                        ? "bg-brand-500/10 border border-brand-500/30 text-brand-600 dark:text-brand-300 font-black shadow-2xs"
-                        : "bg-muted/25 border border-border/50 text-foreground hover:bg-muted/60"
+                        ? "bg-brand-500/10 text-brand-600 font-bold"
+                        : "hover:bg-muted/60 text-foreground"
                     )}
                   >
-                    <div className="flex items-center gap-3.5 min-w-0">
+                    <div className="flex items-center gap-3">
                       <div
                         className={cn(
-                          "w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors",
+                          "w-9 h-9 rounded-xl flex items-center justify-center",
                           active
-                            ? "bg-brand-600 text-white shadow-xs"
-                            : "bg-card border border-border/80 text-muted-foreground"
+                            ? "bg-brand-500 text-white"
+                            : "bg-muted text-muted-foreground"
                         )}
                       >
                         <Icon className="w-4 h-4" />
                       </div>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-black truncate leading-tight">
-                          {item.title}
-                        </span>
-                        <span className="text-[11px] text-muted-foreground truncate font-medium">
+                      <div>
+                        <p className="text-xs font-bold leading-tight">{item.title}</p>
+                        <p className="text-[11px] text-muted-foreground leading-tight">
                           {item.description}
-                        </span>
+                        </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="flex items-center gap-1.5">
                       {item.badge && (
-                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-brand-50 dark:bg-brand-950 text-brand-600 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200">
                           {item.badge}
                         </span>
                       )}
-                      <ChevronRight className="w-4 h-4 text-muted-foreground/60" />
+                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
                     </div>
                   </Link>
                 );
@@ -397,6 +416,15 @@ export function MobileNav() {
           </div>
         </div>
       )}
-    </div>
+    </>
+  );
+}
+
+export function MobileNav() {
+  return (
+    <>
+      <MobileTopHeader />
+      <MobileBottomNav />
+    </>
   );
 }

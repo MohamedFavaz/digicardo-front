@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
-import { MobileNav } from "./MobileNav";
+import { MobileTopHeader, MobileBottomNav } from "./MobileNav";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { authApi } from "@/lib/api/auth";
@@ -111,8 +111,8 @@ export function AppShell({ children, className }: AppShellProps) {
           {/* Desktop / Tablet Top Bar */}
           <TopBar className="hidden md:flex" />
 
-          {/* Mobile Top Header */}
-          <MobileNav />
+          {/* Mobile Top Header (Branding & Quick Actions) */}
+          <MobileTopHeader />
         </div>
 
         {/* Dynamic Route View Content Container */}
@@ -125,6 +125,9 @@ export function AppShell({ children, className }: AppShellProps) {
           {children}
         </main>
       </div>
+
+      {/* ── 3. Mobile Floating Bottom Navigation Dock (Placed outside any overflow or backdrop-blur containers) ── */}
+      <MobileBottomNav />
     </div>
   );
 }

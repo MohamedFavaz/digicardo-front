@@ -257,9 +257,76 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       </div>
 
       {/* ── Main content ── */}
-      <main className="flex-1 min-h-screen overflow-auto lg:pl-[240px] pt-14 lg:pt-0">
+      <main className="flex-1 min-h-screen overflow-auto lg:pl-[240px] pt-14 lg:pt-0 pb-24 lg:pb-0">
         {children}
       </main>
+
+      {/* ── Admin Mobile Bottom Navigation Dock ── */}
+      <nav className="fixed bottom-3 left-3 right-3 sm:left-6 sm:right-6 max-w-md sm:mx-auto z-40 bg-white/95 backdrop-blur-xl border border-slate-200 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.15)] p-1.5 flex items-center justify-around select-none lg:hidden pb-[calc(0.375rem+env(safe-area-inset-bottom,0px))]">
+        <Link
+          href="/admin/dashboard"
+          className={`flex flex-col items-center justify-center flex-1 py-1 text-center transition-all ${
+            pathname === "/admin/dashboard" ? "text-indigo-600 font-extrabold" : "text-slate-500 font-medium"
+          }`}
+        >
+          <div className={`p-1.5 rounded-2xl ${pathname === "/admin/dashboard" ? "bg-indigo-50 text-indigo-600" : ""}`}>
+            <LayoutDashboard className="w-5 h-5" />
+          </div>
+          <span className="text-[10px] mt-0.5">Overview</span>
+        </Link>
+
+        <Link
+          href="/admin/my-links"
+          className={`flex flex-col items-center justify-center flex-1 py-1 text-center transition-all ${
+            pathname.startsWith("/admin/my-links") ? "text-indigo-600 font-extrabold" : "text-slate-500 font-medium"
+          }`}
+        >
+          <div className={`p-1.5 rounded-2xl ${pathname.startsWith("/admin/my-links") ? "bg-indigo-50 text-indigo-600" : ""}`}>
+            <Link2 className="w-5 h-5" />
+          </div>
+          <span className="text-[10px] mt-0.5">My Links</span>
+        </Link>
+
+        <Link
+          href="/admin/admin-panel"
+          className={`flex flex-col items-center justify-center flex-1 py-1 text-center transition-all ${
+            pathname.startsWith("/admin/admin-panel") ? "text-indigo-600 font-extrabold" : "text-slate-500 font-medium"
+          }`}
+        >
+          <div className={`p-1.5 rounded-2xl ${pathname.startsWith("/admin/admin-panel") ? "bg-indigo-50 text-indigo-600" : ""}`}>
+            <Users className="w-5 h-5" />
+          </div>
+          <span className="text-[10px] mt-0.5">Users</span>
+        </Link>
+
+        <Link
+          href="/admin/analytics"
+          className={`flex flex-col items-center justify-center flex-1 py-1 text-center transition-all ${
+            pathname.startsWith("/admin/analytics") ? "text-indigo-600 font-extrabold" : "text-slate-500 font-medium"
+          }`}
+        >
+          <div className={`p-1.5 rounded-2xl ${pathname.startsWith("/admin/analytics") ? "bg-indigo-50 text-indigo-600" : ""}`}>
+            <BarChart3 className="w-5 h-5" />
+          </div>
+          <span className="text-[10px] mt-0.5">Stats</span>
+        </Link>
+
+        <button
+          type="button"
+          onClick={() => setMobileOpen(true)}
+          className={`flex flex-col items-center justify-center flex-1 py-1 text-center transition-all ${
+            mobileOpen || (!["/admin/dashboard", "/admin/my-links", "/admin/admin-panel", "/admin/analytics"].includes(pathname))
+              ? "text-indigo-600 font-extrabold"
+              : "text-slate-500 font-medium"
+          }`}
+          aria-label="Open full admin menu"
+        >
+          <div className="p-1.5 rounded-2xl">
+            <Menu className="w-5 h-5" />
+          </div>
+          <span className="text-[10px] mt-0.5">Menu</span>
+        </button>
+      </nav>
     </div>
   );
 }
