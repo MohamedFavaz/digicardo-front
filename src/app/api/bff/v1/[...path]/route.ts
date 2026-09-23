@@ -161,15 +161,15 @@ async function handleProxy(
     });
     return response;
   } catch (error: unknown) {
+    const err = error as Error & { cause?: any };
     return NextResponse.json(
       {
         success: false,
         error: {
           code: "SERVER_ERROR",
-          message:
-            error instanceof Error
-              ? error.message
-              : "Failed to communicate with upstream API service.",
+          message: err?.message || "Failed to communicate with upstream API service.",
+          target: targetUrl,
+          cause: err?.cause ? String(err.cause) : undefined,
         },
       },
       { status: 502 }
