@@ -199,13 +199,29 @@ export default function AppearanceEditorPage() {
 
       const tDef = getTemplate(selectedTemplateId);
       const serverTokens = updated.theme_tokens ?? parseResult.data;
+      const submittedCustom = (parseResult.data.custom_options as Record<string, any>) || {};
+      const serverCustom = (serverTokens.custom_options as Record<string, any>) || {};
+
       const savedTokens: ThemeTokens = {
         ...tDef.default_theme,
         ...serverTokens,
-        custom_options: serverTokens.custom_options ?? parseResult.data.custom_options,
+        custom_options: {
+          ...(tDef.default_theme.custom_options || {}),
+          ...submittedCustom,
+          ...serverCustom,
+        },
       };
 
-      setProfile(updated);
+      const finalProfile: Profile = {
+        ...updated,
+        avatar_url:
+          updated.avatar_url ||
+          submittedCustom.profile_image_url ||
+          submittedCustom.custom_avatar_url ||
+          profile.avatar_url,
+      };
+
+      setProfile(finalProfile);
       setThemeTokens(savedTokens);
       setInitialState({
         templateId: selectedTemplateId,

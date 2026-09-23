@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import type { TemplateSettingsProps } from "../types";
 import type {
   SocialLink,
@@ -547,23 +547,37 @@ export function BotanicalSettings({
   };
 
   // ── Social Media Management ──
-  const socialLinks: SocialLink[] = custom.social_links || [
-    { id: "1", platform: "linkedin", url: "https://linkedin.com", enabled: true, order: 1 },
-    { id: "2", platform: "x", url: "https://x.com", enabled: true, order: 2 },
-    { id: "3", platform: "google_business", url: "https://google.com", enabled: true, order: 3 },
-    { id: "4", platform: "youtube", url: "https://youtube.com", enabled: true, order: 4 },
-    { id: "5", platform: "instagram", url: "https://instagram.com", enabled: true, order: 5 },
-    { id: "6", platform: "website", url: "https://example.com", enabled: true, order: 6 },
-  ];
+  const socialLinks: SocialLink[] = useMemo(() => {
+    const raw = custom.social_links && Array.isArray(custom.social_links) && custom.social_links.length > 0
+      ? custom.social_links
+      : [
+          { id: "1", platform: "linkedin", url: "https://linkedin.com", enabled: true, is_active: true, order: 1 },
+          { id: "2", platform: "x", url: "https://x.com", enabled: true, is_active: true, order: 2 },
+          { id: "3", platform: "google_business", url: "https://google.com", enabled: true, is_active: true, order: 3 },
+          { id: "4", platform: "youtube", url: "https://youtube.com", enabled: true, is_active: true, order: 4 },
+          { id: "5", platform: "instagram", url: "https://instagram.com", enabled: true, is_active: true, order: 5 },
+          { id: "6", platform: "website", url: "https://example.com", enabled: true, is_active: true, order: 6 },
+        ];
+    return raw.map((s: any, idx: number) => ({
+      id: s.id || `social_${s.platform || idx}_${idx}`,
+      platform: s.platform || "custom",
+      name: s.name || (s.platform ? s.platform.replace("_", " ").toUpperCase() : "Link"),
+      url: s.url || "",
+      enabled: s.enabled !== undefined ? Boolean(s.enabled) : (s.is_active !== undefined ? Boolean(s.is_active) : true),
+      is_active: s.is_active !== undefined ? Boolean(s.is_active) : (s.enabled !== undefined ? Boolean(s.enabled) : true),
+      order: s.order ?? idx + 1,
+    }));
+  }, [custom.social_links]);
 
   const handleAddSocial = (platform: string) => {
-    const newId = `social_${Date.now()}`;
+    const newId = `social_${platform}_${Date.now()}`;
     const newLink: SocialLink = {
       id: newId,
       platform,
       name: platform === "custom" ? "Custom Link" : platform.replace("_", " ").toUpperCase(),
       url: "",
       enabled: true,
+      is_active: true,
       order: socialLinks.length + 1,
     };
     updateCustom({ social_links: [...socialLinks, newLink] });
@@ -571,7 +585,15 @@ export function BotanicalSettings({
 
   const handleUpdateSocial = (id: string | undefined, field: keyof SocialLink, val: any) => {
     if (!id) return;
-    const updated = socialLinks.map((s) => (s.id === id ? { ...s, [field]: val } : s));
+    const updated = socialLinks.map((s) => {
+      if (s.id === id) {
+        const next = { ...s, [field]: val };
+        if (field === "enabled") next.is_active = val;
+        if (field === "is_active") next.enabled = val;
+        return next;
+      }
+      return s;
+    });
     updateCustom({ social_links: updated });
   };
 
