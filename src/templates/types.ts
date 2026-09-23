@@ -17,11 +17,53 @@ export interface TemplateProps {
   theme: ThemeTokens;
 }
 
+export interface TemplateSettingsProps {
+  profile: Profile | null;
+  themeTokens: ThemeTokens;
+  onChangeTheme: (updated: Partial<ThemeTokens>) => void;
+  onSave?: () => Promise<void>;
+  isSaving?: boolean;
+}
+
+export type TemplateSupportedSection =
+  | "profile"
+  | "socials"
+  | "quickActions"
+  | "links"
+  | "pdf"
+  | "drive"
+  | "background"
+  | "palette"
+  | "qr"
+  | "vcard"
+  | "share";
+
+export interface TemplateSupportedBackground {
+  id: string;
+  name: string;
+  icon?: string;
+  label?: string;
+}
+
+export interface TemplateSupportedColorPalette {
+  id: string;
+  name: string;
+  primary: string;
+  secondary: string;
+  accent?: string;
+  background?: string;
+}
+
 export interface TemplateDefinition {
   id: string;
   name: string;
   description: string;
   category: TemplateCategory;
+  preview?: string;
   default_theme: ThemeTokens;
   Component: React.ComponentType<TemplateProps>;
+  SettingsComponent?: React.ComponentType<TemplateSettingsProps>;
+  supportedSections?: TemplateSupportedSection[];
+  supportedBackgrounds?: TemplateSupportedBackground[];
+  supportedColorPalettes?: TemplateSupportedColorPalette[];
 }

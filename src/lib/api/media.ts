@@ -47,6 +47,18 @@ export const mediaApi = {
   },
 
   /**
+   * Upload PDF document (brochure, catalog, profile).
+   */
+  uploadDocument: async (file: File, title?: string): Promise<MediaItem> => {
+    const formData = new FormData();
+    formData.append("document", file);
+    if (title) {
+      formData.append("title", title);
+    }
+    return apiClient.post<MediaItem>("/media/documents", formData);
+  },
+
+  /**
    * Delete an unreferenced media item.
    */
   deleteMedia: async (mediaId: string): Promise<void> => {

@@ -50,7 +50,7 @@ export function EditorPreview({ profile, blocks, selectedTemplateId }: EditorPre
   };
 
   return (
-    <div className="rounded-[28px] sm:rounded-[36px] border border-border/80 bg-card p-4 sm:p-6 shadow-card space-y-5 sticky top-20">
+    <div className="rounded-[24px] sm:rounded-[36px] border border-border/80 bg-card p-3.5 sm:p-6 shadow-card space-y-4 sm:space-y-5 sticky top-20">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
@@ -91,21 +91,21 @@ export function EditorPreview({ profile, blocks, selectedTemplateId }: EditorPre
         </div>
       </div>
 
-      {/* Realistic Mobile Device Frame */}
-      <div className="relative mx-auto flex h-[580px] sm:h-[660px] w-full max-w-[305px] sm:max-w-[325px] flex-col overflow-hidden rounded-[40px] sm:rounded-[44px] border-[5px] border-slate-900 bg-black shadow-float select-none ring-1 ring-slate-800">
+      {/* Realistic Mobile Device Frame (iPhone 15 Pro Aesthetic) - Responsive */}
+      <div className="relative mx-auto flex h-[600px] sm:h-[720px] md:h-[740px] w-full max-w-[335px] sm:max-w-[385px] flex-col overflow-hidden rounded-[40px] sm:rounded-[52px] border-[6px] sm:border-[7px] border-slate-900 bg-slate-950 shadow-2xl select-none ring-1 ring-slate-800">
         {/* Status Bar */}
-        <div className="absolute top-0 left-0 right-0 z-40 h-8 px-6 flex items-center justify-between text-white/90 text-[11px] font-bold pointer-events-none">
-          <span className="tracking-tight">9:41</span>
-          <div className="h-4 w-20 rounded-full bg-slate-900 shadow-xs border border-white/5 mx-auto" />
-          <div className="flex items-center gap-1.5 text-white/80">
+        <div className="absolute top-0 left-0 right-0 z-40 h-8 px-7 flex items-center justify-between text-slate-800 dark:text-white/90 text-[11px] font-bold pointer-events-none">
+          <span className="tracking-tight font-semibold">9:41</span>
+          <div className="h-4 w-24 rounded-full bg-black shadow-xs border border-white/10 mx-auto" />
+          <div className="flex items-center gap-1.5 text-slate-700 dark:text-white/80">
             <Signal className="w-3 h-3" />
             <Wifi className="w-3 h-3" />
             <Battery className="w-3.5 h-3.5 stroke-[2.5]" />
           </div>
         </div>
 
-        {/* Live Render Area using Unified ProfileRenderer */}
-        <div className="h-full w-full overflow-y-auto pt-7 pb-6 no-scrollbar">
+        {/* Live Render Area with Unified in-phone-frame Scope */}
+        <div className="in-phone-frame h-full w-full overflow-y-auto pt-7 pb-6 no-scrollbar">
           <ProfileRenderer
             profile={profile}
             blocks={blocks}
@@ -115,7 +115,7 @@ export function EditorPreview({ profile, blocks, selectedTemplateId }: EditorPre
         </div>
 
         {/* Home Indicator Bar */}
-        <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 z-40 h-1 w-28 rounded-full bg-white/40 pointer-events-none" />
+        <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 z-40 h-1 w-28 rounded-full bg-slate-800/40 dark:bg-white/40 pointer-events-none" />
       </div>
     </div>
   );

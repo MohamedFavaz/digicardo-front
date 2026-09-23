@@ -9,6 +9,7 @@ export interface SEOChecklistCardProps {
   seoDescription: string;
   ogImageUrl: string | null;
   indexable: boolean;
+  keywords?: string[];
 }
 
 export function SEOChecklistCard({
@@ -16,26 +17,32 @@ export function SEOChecklistCard({
   seoDescription,
   ogImageUrl,
   indexable,
+  keywords = [],
 }: SEOChecklistCardProps) {
   const items = [
     {
       label: "Custom Page Title",
-      desc: "Optimized title for browser tabs and search engines",
+      desc: "Browser tab & Google snippet headline (40–60 chars)",
       isComplete: Boolean(seoTitle.trim()),
     },
     {
       label: "Meta Description",
-      desc: "Brief summary shown beneath search snippet results",
+      desc: "Clear profile overview for search results (120–160 chars)",
       isComplete: Boolean(seoDescription.trim()),
     },
     {
-      label: "Social Share Card Image",
-      desc: "Visual banner for WhatsApp, iMessage, and Twitter",
+      label: "Target Keywords",
+      desc: "Search intent tags for metadata indexing",
+      isComplete: keywords.length > 0,
+    },
+    {
+      label: "Social Share Card Banner",
+      desc: "Custom visual preview for iMessage, WhatsApp & X",
       isComplete: Boolean(ogImageUrl),
     },
     {
       label: "Search Engine Indexing",
-      desc: "Allowing Google & Bing bots to crawl and rank profile",
+      desc: "Crawlers allowed to index and rank your link profile",
       isComplete: indexable,
     },
   ];
@@ -44,21 +51,28 @@ export function SEOChecklistCard({
   const progressPercent = Math.round((completedCount / items.length) * 100);
 
   return (
-    <div className="rounded-xl border border-border bg-white p-6 space-y-4">
+    <div className="rounded-2xl border border-border bg-card p-5 space-y-4 shadow-xs">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-sm text-foreground">
-              SEO Readiness Checklist
+            <h3 className="font-bold text-sm text-foreground">
+              SEO Readiness Score
             </h3>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold">
+            <span
+              className={cn(
+                "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold",
+                progressPercent === 100
+                  ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
+                  : "bg-primary/10 text-primary"
+              )}
+            >
               <Sparkles className="w-2.5 h-2.5" />
-              <span>{completedCount}/{items.length} Ready</span>
+              <span>{progressPercent}% Complete ({completedCount}/{items.length})</span>
             </span>
           </div>
-          <p className="text-xs text-muted-foreground font-medium">
-            Essential settings for optimal search engine discovery.
+          <p className="text-[11px] text-muted-foreground font-medium">
+            Recommendations for top visibility and click-through rates.
           </p>
         </div>
       </div>
@@ -70,34 +84,41 @@ export function SEOChecklistCard({
             "h-full rounded-full transition-all duration-500",
             progressPercent === 100
               ? "bg-emerald-500"
-              : "bg-gradient-to-r from-brand-500 to-emerald-400"
+              : progressPercent >= 60
+              ? "bg-primary"
+              : "bg-amber-500"
           )}
           style={{ width: `${progressPercent}%` }}
         />
       </div>
 
       {/* Checklist Items */}
-      <div className="space-y-2.5 pt-1">
+      <div className="space-y-2 pt-1">
         {items.map((item, idx) => (
           <div
             key={idx}
-            className="flex items-start gap-2.5 p-3 rounded-2xl bg-muted/20 border border-border/60"
+            className={cn(
+              "flex items-start gap-2.5 p-2.5 rounded-xl border transition-colors",
+              item.isComplete
+                ? "bg-muted/15 border-border/60"
+                : "bg-muted/30 border-border/40 opacity-75"
+            )}
           >
             {item.isComplete ? (
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
             ) : (
-              <Circle className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-0.5 opacity-60" />
+              <Circle className="w-4 h-4 text-muted-foreground/60 flex-shrink-0 mt-0.5" />
             )}
             <div className="min-w-0">
               <span
                 className={cn(
-                  "block text-xs font-bold",
+                  "block text-xs font-semibold leading-tight",
                   item.isComplete ? "text-foreground" : "text-muted-foreground"
                 )}
               >
                 {item.label}
               </span>
-              <span className="block text-[11px] text-muted-foreground font-medium leading-tight">
+              <span className="block text-[11px] text-muted-foreground font-medium leading-normal mt-0.5">
                 {item.desc}
               </span>
             </div>

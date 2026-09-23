@@ -67,4 +67,5 @@ const nextConfig: NextConfig = {
   },
 };
 
+// Restart trigger: botanical clean reload
 export default nextConfig;

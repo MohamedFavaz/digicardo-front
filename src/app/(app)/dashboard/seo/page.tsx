@@ -177,6 +177,21 @@ export default function SeoDashboardPage() {
     }
   };
 
+  const handleDiscard = () => {
+    if (!initialFormState) return;
+    setSeoTitle(initialFormState.seoTitle);
+    setSeoDescription(initialFormState.seoDescription);
+    setKeywords(initialFormState.keywords);
+    setOgTitle(initialFormState.ogTitle);
+    setOgDescription(initialFormState.ogDescription);
+    setOgImageMediaId(initialFormState.ogImageMediaId);
+
+    const savedMedia = mediaList.find((m) => m.id === initialFormState.ogImageMediaId);
+    setOgImageUrl(savedMedia?.url || profile?.og_image_url || null);
+    setIndexable(initialFormState.indexable);
+    setSaveState("saved");
+  };
+
   if (isAuthLoading || isLoading) {
     return <SEOSkeleton />;
   }
@@ -191,6 +206,7 @@ export default function SeoDashboardPage() {
         hasUnsavedChanges={hasUnsavedChanges}
         isSaving={isSaving}
         errorMessage={errorMessage}
+        onDiscard={handleDiscard}
         onSave={handleSave}
       />
 
@@ -239,6 +255,9 @@ export default function SeoDashboardPage() {
               setOgImageUrl(null);
             }}
             onIndexableChange={setIndexable}
+            onMediaUploaded={(media: MediaItem) => {
+              setMediaList((prev) => [media, ...prev]);
+            }}
           />
         </div>
 
@@ -251,6 +270,7 @@ export default function SeoDashboardPage() {
             ogTitle={ogTitle}
             ogDescription={ogDescription}
             ogImageUrl={ogImageUrl}
+            indexable={indexable}
           />
 
           <SEOChecklistCard
@@ -258,6 +278,7 @@ export default function SeoDashboardPage() {
             seoDescription={seoDescription}
             ogImageUrl={ogImageUrl}
             indexable={indexable}
+            keywords={keywords}
           />
         </div>
 

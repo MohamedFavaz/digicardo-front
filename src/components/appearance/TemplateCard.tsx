@@ -17,9 +17,11 @@ export function TemplateCard({
   onSelect,
 }: TemplateCardProps) {
   const imageUrl =
-    template.id === "vcard"
+    template.id === "botanical"
+      ? "/botanical-preview.png"
+      : template.id === "vcard"
       ? "/vcard-preview.png"
-      : `/api/template-preview/${template.id}`;
+      : (template.preview || `/api/template-preview/${template.id}`);
 
   return (
     <button

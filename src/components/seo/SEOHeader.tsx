@@ -13,6 +13,7 @@ export interface SEOHeaderProps {
   hasUnsavedChanges: boolean;
   isSaving: boolean;
   errorMessage?: string | null;
+  onDiscard?: () => void;
   onSave: () => void;
 }
 
@@ -22,6 +23,7 @@ export function SEOHeader({
   hasUnsavedChanges,
   isSaving,
   errorMessage,
+  onDiscard,
   onSave,
 }: SEOHeaderProps) {
   const username = profile?.username || "demo";
@@ -47,6 +49,19 @@ export function SEOHeader({
 
       {/* Action Buttons */}
       <div className="flex items-center gap-2.5 flex-wrap flex-shrink-0">
+        {hasUnsavedChanges && onDiscard && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={onDiscard}
+            disabled={isSaving}
+            className="rounded-lg text-xs font-semibold h-9 px-3 text-muted-foreground hover:text-foreground"
+          >
+            Discard
+          </Button>
+        )}
+
         <Link href={`/${username}`} target="_blank" rel="noreferrer">
           <Button
             variant="outline"

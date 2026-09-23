@@ -21,7 +21,8 @@ import { EditorPreview } from "@/components/editor/EditorPreview";
 import { BlockDeleteDialog } from "@/components/editor/BlockDeleteDialog";
 import { EditorSkeleton } from "@/components/editor/EditorSkeleton";
 import type { SaveState } from "@/components/editor/SaveStatus";
-import { Layers, Smartphone } from "lucide-react";
+import Link from "next/link";
+import { Layers, Smartphone, LayoutTemplate, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function MyPageStudioPage() {
@@ -87,35 +88,53 @@ export default function MyPageStudioPage() {
     }
   }, [isAuthLoading, isAuthenticated, router, loadEditorData]);
 
-  // Handle Template Click / Selection: directly go to that template appearance section!
+  // Handle Template Click / Selection in My Page menu
   const handleSelectTemplate = async (templateId: string) => {
-    if (templateId !== selectedTemplateId && profile) {
-      setSelectedTemplateId(templateId);
+    // If clicking the currently active template, immediately navigate to its Appearance menu
+    if (templateId === selectedTemplateId) {
+      router.push(`/dashboard/appearance?template=${templateId}`);
+      return;
+    }
+
+    setSelectedTemplateId(templateId);
+
+    if (profile) {
       const tDef = getTemplate(templateId);
+      const mergedTokens = {
+        ...tDef.default_theme,
+        custom_options: {
+          ...(tDef.default_theme.custom_options || {}),
+          ...(profile.theme_tokens?.custom_options || {}),
+        },
+      };
+
       setProfile((prev) =>
         prev
           ? {
               ...prev,
               template_id: templateId,
-              theme_tokens: prev.theme_tokens
-                ? { ...tDef.default_theme, ...prev.theme_tokens }
-                : tDef.default_theme,
+              theme_tokens: mergedTokens,
             }
           : null
       );
+
       try {
-        await profileApi.updateAppearance({
+        setSaveState("saving");
+        const updated = await profileApi.updateAppearance({
           template_id: templateId,
           version: profile.version,
-          theme_tokens: profile.theme_tokens || tDef.default_theme,
+          theme_tokens: mergedTokens,
         });
-      } catch {
-        // continue
+        setProfile(updated);
+        setSaveState("saved");
+      } catch (err: unknown) {
+        setSaveState("error");
+        setErrorMessage("Failed to switch template.");
       }
     }
 
-    // Directly navigate to that template's appearance section!
-    router.push(`/dashboard/appearance?template=${templateId}#templates`);
+    // Direct transition to the Appearance menu for this template
+    router.push(`/dashboard/appearance?template=${templateId}`);
   };
 
   // Handle Save Block Config
@@ -245,33 +264,37 @@ export default function MyPageStudioPage() {
       />
 
       {/* ── Mobile View Toggle Segmented Control (Hidden on lg) ── */}
-      <div className="flex lg:hidden p-1.5 rounded-2xl bg-muted/60 border border-border/80 text-xs font-bold shadow-2xs">
+      <div className="flex lg:hidden p-1.5 rounded-2xl bg-muted/60 border border-border/80 text-xs font-bold shadow-2xs gap-1">
         <button
           type="button"
           onClick={() => setMobileView("content")}
           className={cn(
-            "flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all select-none",
+            "flex-1 py-2 sm:py-2.5 px-2 rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 transition-all select-none min-w-0",
             mobileView === "content"
               ? "bg-card text-brand-600 shadow-xs border border-brand-200 dark:border-brand-800"
               : "text-muted-foreground hover:text-foreground"
           )}
         >
-          <Layers className="w-3.5 h-3.5" />
-          <span>Page Content &amp; Blocks ({blocks.length})</span>
+          <Layers className="w-3.5 h-3.5 flex-shrink-0" />
+          <span className="truncate">
+            <span className="hidden xs:inline sm:inline">Page </span>Content ({blocks.length})
+          </span>
         </button>
 
         <button
           type="button"
           onClick={() => setMobileView("preview")}
           className={cn(
-            "flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all select-none",
+            "flex-1 py-2 sm:py-2.5 px-2 rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 transition-all select-none min-w-0",
             mobileView === "preview"
               ? "bg-card text-brand-600 shadow-xs border border-brand-200 dark:border-brand-800"
               : "text-muted-foreground hover:text-foreground"
           )}
         >
-          <Smartphone className="w-3.5 h-3.5" />
-          <span>Live Phone Preview</span>
+          <Smartphone className="w-3.5 h-3.5 flex-shrink-0" />
+          <span className="truncate">
+            <span className="hidden xs:inline sm:inline">Live </span>Phone Preview
+          </span>
         </button>
       </div>
 
@@ -281,7 +304,7 @@ export default function MyPageStudioPage() {
         {/* Left Column: Template Selection & Content Studio (7 cols) */}
         <div className={cn("lg:col-span-7 space-y-8", mobileView === "preview" && "hidden lg:block")}>
           
-          {/* ── Template Preview ── */}
+          {/* ── Choose Page Layout Template (Exclusive to My Page) ── */}
           <div className="space-y-3">
             <TemplatePicker
               templates={templates}

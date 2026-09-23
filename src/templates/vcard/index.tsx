@@ -1028,7 +1028,17 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
 
 
   // QR Code Image URL
-  const profileUrl = typeof window !== "undefined" ? window.location.href : `https://Digicardo.app/${profile.username}`;
+  const [mountedUrl, setMountedUrl] = useState<string>("");
+
+  useEffect(() => {
+    setMountedUrl(window.location.href);
+  }, []);
+
+  const defaultProfileUrl = profile?.primary_custom_domain
+    ? `https://${profile.primary_custom_domain}/`
+    : `https://digicardo.app/${profile.username}`;
+
+  const profileUrl = mountedUrl || defaultProfileUrl;
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(profileUrl)}&margin=10`;
   const upiQrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`upi://pay?pa=${upiId}&pn=${encodeURIComponent(displayName)}&cu=INR`)}&margin=10`;
 
@@ -1061,6 +1071,18 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
         .vcard-text-primary { color: var(--vcard-text) !important; }
         .vcard-text-sub { color: var(--vcard-text-sub) !important; }
         .vcard-copy-btn { background-color: var(--vcard-input-bg) !important; border-color: var(--vcard-input-border) !important; color: var(--vcard-text) !important; }
+
+        /* In-Phone Frame overrides for clean edge-to-edge mobile preview */
+        .in-phone-frame .min-h-screen {
+          min-height: auto !important;
+          padding: 0 !important;
+        }
+        .in-phone-frame .max-w-\[440px\] {
+          border-radius: 0 !important;
+          box-shadow: none !important;
+          border: none !important;
+          max-width: 100% !important;
+        }
       `}</style>
 
       {/* ── Main Phone Card Container (Strict 440px Max Width on Desktop, Responsive on Mobile) ── */}
@@ -2009,10 +2031,12 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                   width={180}
                   height={180}
                   className="w-full h-full object-contain"
+                  suppressHydrationWarning
+                  unoptimized
                 />
               </div>
               <p className="text-xs text-[#141d23] font-bold">{displayName}</p>
-              <p className="vcard-text-sub text-[11px] font-mono">{profileUrl}</p>
+              <p className="vcard-text-sub text-[11px] font-mono" suppressHydrationWarning>{profileUrl}</p>
             </div>
 
             <div className="flex gap-2">

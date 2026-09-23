@@ -13,20 +13,15 @@ import type {
   ThemeTokens,
   FontFamily,
   ButtonRadius,
-  ButtonStyle,
-  AnimationType,
 } from "@/types/profile";
 import type { ProfileBlock } from "@/types/blocks";
 import { useEntitlements } from "@/lib/hooks/use-entitlements";
 import { UpgradeDialog } from "@/components/billing/UpgradeDialog";
 import { AppearanceSkeleton } from "@/components/appearance/AppearanceSkeleton";
 import { AppearanceHeader } from "@/components/appearance/AppearanceHeader";
-import { TemplatePicker } from "@/components/appearance/TemplatePicker";
 import { ThemePicker } from "@/components/appearance/ThemePicker";
 import { TypographyPicker } from "@/components/appearance/TypographyPicker";
 import { ButtonStylePicker } from "@/components/appearance/ButtonStylePicker";
-import { VCardSettingsPicker } from "@/components/appearance/VCardSettingsPicker";
-
 import { AppearancePreview } from "@/components/appearance/AppearancePreview";
 import type { SaveState } from "@/components/editor/SaveStatus";
 import {
@@ -36,9 +31,7 @@ import {
   ExternalLink,
   Sparkles,
 } from "lucide-react";
-
 import { cn } from "@/lib/utils";
-
 
 export default function AppearanceEditorPage() {
   const router = useRouter();
@@ -115,9 +108,16 @@ export default function AppearanceEditorPage() {
       setSelectedTemplateId(activeTplId);
 
       const tDef = getTemplate(activeTplId);
-      const activeTokens: ThemeTokens = p.theme_tokens
-        ? { ...tDef.default_theme, ...p.theme_tokens }
-        : tDef.default_theme;
+      const isMatchingTemplate = p.template_id === activeTplId;
+
+      const activeTokens: ThemeTokens = {
+        ...tDef.default_theme,
+        ...(isMatchingTemplate && p.theme_tokens ? p.theme_tokens : {}),
+        custom_options: {
+          ...(tDef.default_theme.custom_options || {}),
+          ...(isMatchingTemplate && p.theme_tokens?.custom_options ? p.theme_tokens.custom_options : {}),
+        },
+      };
 
       setThemeTokens(activeTokens);
       setInitialState({
@@ -160,6 +160,14 @@ export default function AppearanceEditorPage() {
     }
   }, [hasUnsavedChanges, isLoading]);
 
+  // Discard unsaved changes and revert preview to last saved section
+  const handleDiscardChanges = () => {
+    if (!initialState) return;
+    setSelectedTemplateId(initialState.templateId);
+    setThemeTokens(initialState.tokens);
+    setSaveState("saved");
+  };
+
   // Reset to template defaults
   const handleResetToDefault = () => {
     const tDef = getTemplate(selectedTemplateId);
@@ -190,17 +198,10 @@ export default function AppearanceEditorPage() {
       });
 
       const tDef = getTemplate(selectedTemplateId);
-      // Build savedTokens from the server response.
-      // IMPORTANT: Always merge in custom_options from what we sent (parseResult.data)
-      // as a fallback — the server may not always echo the full custom_options blob
-      // (e.g. due to validation edge cases), which would silently drop banner images,
-      // products, social_urls, etc. The server IS the source of truth for scalar tokens
-      // but custom_options is a freeform bag that we preserve from the request.
       const serverTokens = updated.theme_tokens ?? parseResult.data;
       const savedTokens: ThemeTokens = {
         ...tDef.default_theme,
         ...serverTokens,
-        // Explicit merge: if server returned custom_options, use it; otherwise use what we sent.
         custom_options: serverTokens.custom_options ?? parseResult.data.custom_options,
       };
 
@@ -232,18 +233,19 @@ export default function AppearanceEditorPage() {
     return <AppearanceSkeleton />;
   }
 
-  const isVCard = selectedTemplateId === "vcard";
+  const activeTemplate = getTemplate(selectedTemplateId);
 
   return (
     <div className="space-y-8 animate-in fade-in-50 duration-300 pb-32">
-      
       {/* ── Studio Top Bar ── */}
       <AppearanceHeader
         profile={profile}
+        templateName={activeTemplate?.name}
         saveState={saveState}
         hasUnsavedChanges={hasUnsavedChanges}
         isSaving={isSaving}
         errorMessage={errorMessage}
+        onDiscard={handleDiscardChanges}
         onResetToDefault={handleResetToDefault}
         onSave={handleSaveAppearance}
       />
@@ -289,7 +291,6 @@ export default function AppearanceEditorPage() {
 
       {/* ── Main Studio Grid: Controls (Left) + Sticky Live Phone Preview (Right) ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
         {/* Left Column: Customization Controls (7 cols) */}
         <div
           className={cn(
@@ -297,64 +298,43 @@ export default function AppearanceEditorPage() {
             mobileView === "preview" && "hidden lg:block"
           )}
         >
-          {/* ── 0. Active Layout Template ── */}
-          <div id="templates" className="scroll-mt-24">
-            <TemplatePicker
-              templates={templates}
-              selectedTemplateId={selectedTemplateId}
-              canUseAdvancedTemplates={can("advanced_templates")}
-              onSelectTemplate={(newId) => {
-                if (newId === selectedTemplateId) return;
-                setSelectedTemplateId(newId);
-                const tDef = getTemplate(newId);
-                setThemeTokens((prev) => ({
-                  ...tDef.default_theme,
-                  ...prev,
-                }));
-              }}
-              onOpenUpgradeModal={() => {
-                setGatedFeature("advanced_templates");
-                setShowUpgradeModal(true);
-              }}
-            />
-          </div>
 
-          {/* ── 1. Color Palette & Themes ── */}
-          <ThemePicker
-            themeTokens={themeTokens}
-            stepNumber={1}
-            onChangeTheme={(updated) =>
-              setThemeTokens((prev) => ({ ...prev, ...updated }))
-            }
-          />
 
-          {/* ── 2. Typography & Fonts ── */}
-          <TypographyPicker
-            selectedFont={themeTokens.font_family}
-            stepNumber={2}
-            onSelectFont={(font: FontFamily) =>
-              setThemeTokens((prev) => ({ ...prev, font_family: font }))
-            }
-          />
-
-          {/* ── 3. Button Shapes & Roundness ── */}
-          <ButtonStylePicker
-            selectedRadius={themeTokens.button_radius}
-            stepNumber={3}
-            onChangeRadius={(radius: ButtonRadius) =>
-              setThemeTokens((prev) => ({ ...prev, button_radius: radius }))
-            }
-          />
-
-          {/* ── 4. Business Card Settings (VCard only) ── */}
-          {isVCard && (
-            <VCardSettingsPicker
+          {/* ── Dynamic Template Settings Engine ── */}
+          {activeTemplate?.SettingsComponent ? (
+            <activeTemplate.SettingsComponent
+              profile={profile}
               themeTokens={themeTokens}
-              stepNumber={4}
               onChangeTheme={(updated) =>
                 setThemeTokens((prev) => ({ ...prev, ...updated }))
               }
+              onSave={handleSaveAppearance}
+              isSaving={isSaving}
             />
+          ) : (
+            <div className="space-y-6">
+              <ThemePicker
+                themeTokens={themeTokens}
+                stepNumber={1}
+                onChangeTheme={(updated) =>
+                  setThemeTokens((prev) => ({ ...prev, ...updated }))
+                }
+              />
+              <TypographyPicker
+                selectedFont={themeTokens.font_family}
+                stepNumber={2}
+                onSelectFont={(font: FontFamily) =>
+                  setThemeTokens((prev) => ({ ...prev, font_family: font }))
+                }
+              />
+              <ButtonStylePicker
+                selectedRadius={themeTokens.button_radius}
+                stepNumber={3}
+                onChangeRadius={(radius: ButtonRadius) =>
+                  setThemeTokens((prev) => ({ ...prev, button_radius: radius }))
+                }
+              />
+            </div>
           )}
         </div>
 
@@ -384,7 +364,6 @@ export default function AppearanceEditorPage() {
             themeTokens={themeTokens}
           />
         </div>
-
       </div>
 
       {/* Pro Upgrade Dialog */}
@@ -406,7 +385,7 @@ export default function AppearanceEditorPage() {
               <div className="flex items-center gap-2 flex-shrink-0">
                 <button
                   type="button"
-                  onClick={handleResetToDefault}
+                  onClick={handleDiscardChanges}
                   className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-xs font-bold text-white/60 hover:text-white hover:bg-white/10 transition-colors"
                 >
                   Discard
@@ -434,7 +413,6 @@ export default function AppearanceEditorPage() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

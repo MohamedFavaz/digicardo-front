@@ -18,20 +18,24 @@ import { cn } from "@/lib/utils";
 
 export interface AppearanceHeaderProps {
   profile: Profile | null;
+  templateName?: string;
   saveState: SaveState;
   hasUnsavedChanges: boolean;
   isSaving: boolean;
   errorMessage?: string | null;
+  onDiscard?: () => void;
   onResetToDefault: () => void;
   onSave: () => void;
 }
 
 export function AppearanceHeader({
   profile,
+  templateName,
   saveState,
   hasUnsavedChanges,
   isSaving,
   errorMessage,
+  onDiscard,
   onResetToDefault,
   onSave,
 }: AppearanceHeaderProps) {
@@ -41,16 +45,25 @@ export function AppearanceHeader({
     <div className="pb-6 border-b border-border flex flex-col md:flex-row md:items-center justify-between gap-4">
       {/* Top Bar Left: Back Link + Studio Title & Save Indicator */}
       <div className="space-y-1">
-        <div className="flex items-center gap-3 flex-wrap text-xs text-muted-foreground font-medium">
+        <div className="flex items-center gap-2.5 flex-wrap text-xs text-muted-foreground font-medium">
           <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
+            href="/dashboard/page"
+            className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-700 font-bold transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Overview</span>
+            <span>My Page</span>
           </Link>
 
           <span>·</span>
+
+          {templateName && (
+            <>
+              <span className="font-semibold text-foreground/80">
+                {templateName}
+              </span>
+              <span>·</span>
+            </>
+          )}
 
           {/* Real-Time Save Status Badge */}
           <div
@@ -89,12 +102,19 @@ export function AppearanceHeader({
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Customize Appearance
-        </h1>
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+            Customize Appearance
+          </h1>
+          {templateName && (
+            <span className="px-2.5 py-0.5 rounded-full bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 font-extrabold text-xs border border-brand-200 dark:border-brand-800">
+              {templateName}
+            </span>
+          )}
+        </div>
 
         <p className="text-xs text-muted-foreground max-w-xl">
-          Visual theme studio with real-time mobile preview. Customize color tokens, typography, and button styling.
+          Visual theme studio with real-time mobile preview. Customize color tokens, background, typography, and button styling.
         </p>
 
         {errorMessage && (
@@ -107,6 +127,19 @@ export function AppearanceHeader({
 
       {/* Top Bar Right: Action Controls */}
       <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
+        {hasUnsavedChanges && onDiscard && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={onDiscard}
+            disabled={isSaving}
+            className="rounded-lg text-xs font-semibold h-9 px-3 text-muted-foreground hover:text-foreground"
+          >
+            Discard
+          </Button>
+        )}
+
         <Button
           type="button"
           variant="outline"

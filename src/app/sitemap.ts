@@ -6,6 +6,11 @@ const LARAVEL_INTERNAL_URL =
   process.env.LARAVEL_INTERNAL_API_URL ||
   "http://127.0.0.1:8000";
 
+const INTERNAL_SECRET =
+  process.env.INTERNAL_SERVICE_SECRET ||
+  process.env.NEXT_REVALIDATE_SECRET ||
+  "";
+
 interface SitemapProfileItem {
   username: string;
   primary_custom_domain?: string | null;
@@ -24,7 +29,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const res = await fetch(`${LARAVEL_INTERNAL_URL}/api/v1/internal/sitemap-profiles?limit=1000`, {
-      headers: { Accept: "application/json" },
+      headers: {
+        Accept: "application/json",
+        "X-Internal-Secret": INTERNAL_SECRET,
+      },
       next: { revalidate: 3600 }, // 1-hour cache
     });
 

@@ -26,14 +26,30 @@ export function ProfileRenderer({
   const mergedTokens: ThemeTokens = {
     ...templateDef.default_theme,
     ...(themeTokens ?? {}),
+    custom_options: {
+      ...(templateDef.default_theme.custom_options || {}),
+      ...(themeTokens?.custom_options ?? {}),
+    },
   };
 
   const cssVariables = getThemeVariables(mergedTokens, templateDef.default_theme);
   const TemplateComponent = templateDef.Component;
   const showBranding = profile.show_branding !== false;
 
+  const isBotanical = activeTemplateId === "botanical";
+
   return (
-    <div style={cssVariables} className="w-full min-h-screen flex flex-col justify-between">
+    <div
+      style={{
+        ...cssVariables,
+        backgroundColor: isBotanical
+          ? "transparent"
+          : ((cssVariables as any)["--lf-bg"] || "#f8fafc"),
+      }}
+      className={`w-full min-h-screen flex flex-col justify-between ${
+        isBotanical ? "p-0" : ""
+      }`}
+    >
       <div>
         {profile?.id && <ProfileViewTracker profileId={profile.id} />}
         <TemplateComponent
@@ -42,10 +58,12 @@ export function ProfileRenderer({
           theme={mergedTokens}
         />
       </div>
-      <div>
-        {showBranding && <DigicardoBadge />}
-        {profile?.username && <ReportProfileModal username={profile.username} />}
-      </div>
+      {!isBotanical && (
+        <div>
+          {showBranding && <DigicardoBadge />}
+          {profile?.username && <ReportProfileModal username={profile.username} />}
+        </div>
+      )}
     </div>
   );
 }

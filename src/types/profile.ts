@@ -159,6 +159,94 @@ export interface VCardCustomOptions {
   social_urls?: VCardSocialUrls;
 }
 
+export type SocialPosition = "top" | "center" | "below" | "everywhere";
+
+export interface SocialLink {
+  id: string;
+  platform: string;
+  name?: string;
+  url: string;
+  icon?: string;
+  enabled: boolean;
+  order: number;
+}
+
+export interface ContentLink {
+  id: string;
+  headline: string;
+  description?: string;
+  url: string;
+  icon?: string;
+  featured?: boolean;
+  enabled: boolean;
+  order: number;
+}
+
+export interface DocumentBlock {
+  id?: string;
+  title: string;
+  description?: string;
+  file_url: string;
+  file_name?: string;
+  file_size?: number;
+  enabled: boolean;
+  order?: number;
+}
+
+export interface DriveBlock {
+  id?: string;
+  title: string;
+  description?: string;
+  url: string;
+  enabled: boolean;
+  order?: number;
+}
+
+export interface QuickActionConfig {
+  phone?: { number: string; label?: string; enabled?: boolean };
+  whatsapp?: { number: string; message?: string; label?: string; enabled?: boolean };
+  email?: { address: string; label?: string; enabled?: boolean };
+  website?: { url: string; label?: string; enabled?: boolean };
+  enabled?: boolean;
+}
+
+export interface TemplateAppearanceOptions extends VCardCustomOptions {
+  // Generic appearance & styling
+  bg_style?: string;
+  color_palette?: string;
+  custom_colors?: {
+    primary?: string;
+    secondary?: string;
+    accent?: string;
+    background?: string;
+    text?: string;
+  };
+  company_name?: string;
+  company_logo_url?: string;
+  profile_image_url?: string;
+  executive_role?: string;
+  bio_override?: string;
+  verified_badge?: boolean;
+  trust_badges?: Array<{ id: string; text: string; icon?: string; enabled?: boolean }>;
+
+  // Generic Reusable content
+  social_position?: SocialPosition;
+  social_links?: SocialLink[];
+  content_links?: ContentLink[];
+  document_block?: DocumentBlock;
+  drive_block?: DriveBlock;
+  quick_actions?: QuickActionConfig;
+
+  // Feature toggles
+  save_contact_enabled?: boolean;
+  share_profile_enabled?: boolean;
+  qr_code_enabled?: boolean;
+  qr_title?: string;
+  qr_desc?: string;
+
+  [key: string]: unknown;
+}
+
 export interface ThemeTokens {
   color_background: string;
   color_surface: string;
@@ -169,7 +257,7 @@ export interface ThemeTokens {
   button_radius: ButtonRadius;
   button_style: ButtonStyle;
   animation: AnimationType;
-  custom_options?: VCardCustomOptions & Record<string, unknown>;
+  custom_options?: TemplateAppearanceOptions;
 }
 
 export interface Profile {
