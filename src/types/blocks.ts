@@ -201,6 +201,7 @@ export interface ProfileBlock<T = BlockConfig> {
   sort_order: number;
   config: T;
   is_visible: boolean;
+  is_active?: boolean;
   version: number;
   created_at?: string;
   updated_at?: string;
@@ -212,6 +213,8 @@ export interface PublicProfileBlock<T = BlockConfig> {
   type: BlockType;
   sort_order: number;
   config: T;
+  is_visible?: boolean;
+  is_active?: boolean;
 }
 
 export interface CreateBlockInput {

@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
+import NextImage from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Download,
@@ -67,7 +67,7 @@ export function QRPreview({
       fgColor,
       bgColor,
       dotStyle,
-      centerLogo: centerLogo === "avatar" ? "badge" : centerLogo,
+      centerLogo,
       avatarUrl: null,
     });
   }, [publicUrl, fgColor, bgColor, dotStyle, centerLogo]);
@@ -98,7 +98,7 @@ export function QRPreview({
   // Download high-resolution PNG (4x crisp print quality)
   const handleDownloadPng = () => {
     setIsDownloading(true);
-    const img = new Image();
+    const img = document.createElement("img");
     const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
     const url = URL.createObjectURL(svgBlob);
 
@@ -228,7 +228,7 @@ export function QRPreview({
               <div className="text-left space-y-2.5 flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-lg bg-white border border-white/20 p-0.5 flex items-center justify-center shadow-md">
-                    <Image src="/logo.png" alt="Digicardo" width={22} height={22} className="w-full h-full object-contain" />
+                    <NextImage src="/logo.png" alt="Digicardo" width={22} height={22} className="w-full h-full object-contain" />
                   </div>
                   <span className="text-[10px] font-mono font-black tracking-[0.25em] text-white/90">
                     DIGICARDO

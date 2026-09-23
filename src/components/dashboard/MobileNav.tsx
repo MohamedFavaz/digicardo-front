@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { profileApi } from "@/lib/api/profile";
+import type { Profile } from "@/types/profile";
 import { cn } from "@/lib/utils";
 import { DigicardoLogo } from "@/components/ui/DigicardoLogo";
 import {

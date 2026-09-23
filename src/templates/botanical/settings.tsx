@@ -550,12 +550,14 @@ export function BotanicalSettings({
     updateCustom({ social_links: [...socialLinks, newLink] });
   };
 
-  const handleUpdateSocial = (id: string, field: keyof SocialLink, val: any) => {
+  const handleUpdateSocial = (id: string | undefined, field: keyof SocialLink, val: any) => {
+    if (!id) return;
     const updated = socialLinks.map((s) => (s.id === id ? { ...s, [field]: val } : s));
     updateCustom({ social_links: updated });
   };
 
-  const handleDeleteSocial = (id: string) => {
+  const handleDeleteSocial = (id: string | undefined) => {
+    if (!id) return;
     updateCustom({ social_links: socialLinks.filter((s) => s.id !== id) });
   };
 
@@ -644,7 +646,8 @@ export function BotanicalSettings({
     updateCustom({ content_links: [...contentLinks, newLink] });
   };
 
-  const handleUpdateLink = (id: string, updates: Partial<ContentLink>) => {
+  const handleUpdateLink = (id: string | undefined, updates: Partial<ContentLink>) => {
+    if (!id) return;
     const updated = contentLinks.map((l) => {
       if (l.id !== id) return l;
       const merged = { ...l, ...updates };
@@ -658,7 +661,8 @@ export function BotanicalSettings({
     updateCustom({ content_links: updated });
   };
 
-  const handleDuplicateLink = (id: string) => {
+  const handleDuplicateLink = (id: string | undefined) => {
+    if (!id) return;
     const target = contentLinks.find((l) => l.id === id);
     if (!target) return;
     const duplicated = {
@@ -671,7 +675,8 @@ export function BotanicalSettings({
     updateCustom({ content_links: [...contentLinks, duplicated] });
   };
 
-  const handleDeleteLink = (id: string) => {
+  const handleDeleteLink = (id: string | undefined) => {
+    if (!id) return;
     updateCustom({ content_links: contentLinks.filter((l) => l.id !== id) });
   };
 

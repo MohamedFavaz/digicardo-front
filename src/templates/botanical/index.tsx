@@ -88,10 +88,10 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
   const showEmail = qa.show_email !== false && qa.email?.enabled !== false;
   const showWebsite = qa.show_website !== false && qa.website?.enabled !== false;
 
-  const phoneVal = qa.phone?.number || custom.phone || "+918593048536";
-  const whatsappVal = qa.whatsapp?.number || custom.whatsapp || "+918593048536";
-  const emailVal = qa.email?.address || custom.email || "contact@nexusglobal.com";
-  const websiteVal = qa.website?.url || custom.website || "https://example.com";
+  const phoneVal: string = String(qa.phone?.number || (typeof custom.phone === "string" ? custom.phone : "") || "+918593048536");
+  const whatsappVal: string = String(qa.whatsapp?.number || (typeof custom.whatsapp === "string" ? custom.whatsapp : "") || "+918593048536");
+  const emailVal: string = String(qa.email?.address || (typeof custom.email === "string" ? custom.email : "") || "contact@nexusglobal.com");
+  const websiteVal: string = String(qa.website?.url || (typeof custom.website === "string" ? custom.website : "") || "https://example.com");
 
   const phoneLabel = qa.phone?.label || "Call Office";
   const whatsappLabel = qa.whatsapp?.label || "WhatsApp";

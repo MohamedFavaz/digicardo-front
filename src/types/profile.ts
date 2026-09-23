@@ -162,52 +162,65 @@ export interface VCardCustomOptions {
 export type SocialPosition = "top" | "center" | "below" | "everywhere";
 
 export interface SocialLink {
-  id: string;
-  platform: string;
+  id?: string;
+  platform?: string;
   name?: string;
-  url: string;
+  title?: string;
+  url?: string;
   icon?: string;
-  enabled: boolean;
-  order: number;
+  enabled?: boolean;
+  is_active?: boolean;
+  order?: number;
+  [key: string]: any;
 }
 
 export interface ContentLink {
-  id: string;
-  headline: string;
+  id?: string;
+  headline?: string;
+  title?: string;
   description?: string;
-  url: string;
+  url?: string;
   icon?: string;
   featured?: boolean;
-  enabled: boolean;
-  order: number;
+  enabled?: boolean;
+  is_active?: boolean;
+  order?: number;
+  [key: string]: any;
 }
 
 export interface DocumentBlock {
   id?: string;
-  title: string;
+  title?: string;
   description?: string;
-  file_url: string;
+  file_url?: string;
   file_name?: string;
   file_size?: number;
-  enabled: boolean;
+  enabled?: boolean;
   order?: number;
+  [key: string]: any;
 }
 
 export interface DriveBlock {
   id?: string;
-  title: string;
+  title?: string;
   description?: string;
-  url: string;
-  enabled: boolean;
+  url?: string;
+  enabled?: boolean;
   order?: number;
+  [key: string]: any;
 }
 
 export interface QuickActionConfig {
-  phone?: { number: string; label?: string; enabled?: boolean };
-  whatsapp?: { number: string; message?: string; label?: string; enabled?: boolean };
-  email?: { address: string; label?: string; enabled?: boolean };
-  website?: { url: string; label?: string; enabled?: boolean };
+  phone?: { number?: string; label?: string; enabled?: boolean };
+  whatsapp?: { number?: string; message?: string; label?: string; enabled?: boolean };
+  email?: { address?: string; label?: string; enabled?: boolean };
+  website?: { url?: string; label?: string; enabled?: boolean };
   enabled?: boolean;
+  show_call?: boolean;
+  show_whatsapp?: boolean;
+  show_email?: boolean;
+  show_website?: boolean;
+  [key: string]: any;
 }
 
 export interface TemplateAppearanceOptions extends VCardCustomOptions {
@@ -243,8 +256,9 @@ export interface TemplateAppearanceOptions extends VCardCustomOptions {
   qr_code_enabled?: boolean;
   qr_title?: string;
   qr_desc?: string;
+  qr_target_url?: string;
 
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 export interface ThemeTokens {
@@ -273,6 +287,13 @@ export interface Profile {
   is_public: boolean;
   seo_title: string | null;
   seo_description: string | null;
+  seo_keywords?: string[] | null;
+  og_title?: string | null;
+  og_description?: string | null;
+  og_image_url?: string | null;
+  indexable?: boolean;
+  primary_custom_domain?: string | null;
+  show_branding?: boolean;
   version: number;
   created_at: string;
   updated_at: string;

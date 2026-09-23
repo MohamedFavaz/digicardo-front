@@ -26,6 +26,7 @@ export function AnalyticsChart({ timeseries }: AnalyticsChartProps) {
         </p>
       </div>
     );
+  }
 
   const maxVal = Math.max(
     ...timeseries.map((p) => {

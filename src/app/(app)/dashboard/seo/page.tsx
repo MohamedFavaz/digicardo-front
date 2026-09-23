@@ -46,6 +46,7 @@ export default function SeoDashboardPage() {
     ogTitle: string;
     ogDescription: string;
     ogImageMediaId: string | null;
+    ogImageUrl: string | null;
     indexable: boolean;
   } | null>(null);
 
@@ -58,6 +59,7 @@ export default function SeoDashboardPage() {
       initialFormState.ogTitle !== ogTitle ||
       initialFormState.ogDescription !== ogDescription ||
       initialFormState.ogImageMediaId !== ogImageMediaId ||
+      initialFormState.ogImageUrl !== ogImageUrl ||
       initialFormState.indexable !== indexable
     );
   }, [
@@ -68,6 +70,7 @@ export default function SeoDashboardPage() {
     ogTitle,
     ogDescription,
     ogImageMediaId,
+    ogImageUrl,
     indexable,
   ]);
 
@@ -109,6 +112,7 @@ export default function SeoDashboardPage() {
         ogTitle: oTitle,
         ogDescription: oDesc,
         ogImageMediaId: oMediaId,
+        ogImageUrl: oUrl,
         indexable: isIdx,
       });
 
@@ -163,6 +167,7 @@ export default function SeoDashboardPage() {
         ogTitle: updated.og_title || "",
         ogDescription: updated.og_description || "",
         ogImageMediaId: updated.og_image_media_id || null,
+        ogImageUrl: updated.og_image_url || null,
         indexable: updated.indexable ?? true,
       });
 
@@ -185,9 +190,7 @@ export default function SeoDashboardPage() {
     setOgTitle(initialFormState.ogTitle);
     setOgDescription(initialFormState.ogDescription);
     setOgImageMediaId(initialFormState.ogImageMediaId);
-
-    const savedMedia = mediaList.find((m) => m.id === initialFormState.ogImageMediaId);
-    setOgImageUrl(savedMedia?.url || profile?.og_image_url || null);
+    setOgImageUrl(initialFormState.ogImageUrl);
     setIndexable(initialFormState.indexable);
     setSaveState("saved");
   };

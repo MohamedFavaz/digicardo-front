@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { profileApi } from "@/lib/api/profile";
+import type { Profile } from "@/types/profile";
 import { cn } from "@/lib/utils";
 import { DigicardoLogo } from "@/components/ui/DigicardoLogo";
 import {
@@ -61,7 +62,7 @@ export function Sidebar({ className }: { className?: string }) {
       .catch(() => {});
   }, []);
 
-  const username = mounted ? (profile?.username || user?.username || null) : null;
+  const username = mounted ? (profile?.username || null) : null;
   const displayName = mounted ? (profile?.display_name || user?.name || null) : null;
   const publicUrl = username && typeof window !== "undefined"
     ? `${window.location.origin}/${username}`
