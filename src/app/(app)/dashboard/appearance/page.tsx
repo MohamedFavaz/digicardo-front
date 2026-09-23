@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { profileApi } from "@/lib/api/profile";
 import { blocksApi } from "@/lib/api/blocks";
@@ -17,6 +17,7 @@ import type {
 import type { ProfileBlock } from "@/types/blocks";
 import { useEntitlements } from "@/lib/hooks/use-entitlements";
 import { UpgradeDialog } from "@/components/billing/UpgradeDialog";
+import { TemplatePicker } from "@/components/appearance/TemplatePicker";
 import { AppearanceSkeleton } from "@/components/appearance/AppearanceSkeleton";
 import { AppearanceHeader } from "@/components/appearance/AppearanceHeader";
 import { ThemePicker } from "@/components/appearance/ThemePicker";
@@ -35,6 +36,9 @@ import { cn } from "@/lib/utils";
 
 export default function AppearanceEditorPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const paramTemplateId = searchParams.get("template");
+
   const { isLoading: isAuthLoading, isAuthenticated } = useAuth();
   const { can } = useEntitlements();
 
@@ -100,10 +104,6 @@ export default function AppearanceEditorPage() {
       setProfile(p);
       setBlocks(b);
 
-      // Check URL query param for explicit template selection
-      const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-      const paramTemplateId = urlParams?.get("template");
-
       const activeTplId = paramTemplateId || p.template_id || "vcard";
       setSelectedTemplateId(activeTplId);
 
@@ -143,7 +143,7 @@ export default function AppearanceEditorPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [router]);
+  }, [paramTemplateId, router]);
 
   React.useEffect(() => {
     if (!isAuthLoading && !isAuthenticated) {
@@ -177,6 +177,26 @@ export default function AppearanceEditorPage() {
   const handleUpdateProfile = React.useCallback((updated: Partial<Profile>) => {
     setProfile((prev) => (prev ? { ...prev, ...updated } : prev));
   }, []);
+
+  // Handle in-studio template selection
+  const handleSelectTemplate = (newId: string) => {
+    if (newId === selectedTemplateId) return;
+    setSelectedTemplateId(newId);
+    const tDef = getTemplate(newId);
+    const isMatching = profile?.template_id === newId;
+    const newTokens: ThemeTokens = {
+      ...tDef.default_theme,
+      ...(isMatching && profile?.theme_tokens ? profile.theme_tokens : {}),
+      custom_options: {
+        ...(tDef.default_theme.custom_options || {}),
+        ...(isMatching && profile?.theme_tokens?.custom_options
+          ? profile.theme_tokens.custom_options
+          : (themeTokens.custom_options || {})),
+      },
+    };
+    setThemeTokens(newTokens);
+    router.replace(`/dashboard/appearance?template=${newId}`, { scroll: false });
+  };
 
   // Save / Publish Appearance
   const handleSaveAppearance = async () => {
@@ -241,7 +261,7 @@ export default function AppearanceEditorPage() {
 
     try {
       try {
-        const updated = await performSave(profile.version);
+        const updated = await performSave(profile.version || 1);
         applySuccessfulSave(updated);
       } catch (saveErr: unknown) {
         if (saveErr instanceof ApiConflictError) {
@@ -252,10 +272,14 @@ export default function AppearanceEditorPage() {
             targetVersion = fresh.version;
           }
 
-          if (targetVersion && targetVersion !== profile.version) {
-            const updated = await performSave(targetVersion);
-            applySuccessfulSave(updated);
-            return;
+          if (targetVersion) {
+            try {
+              const updated = await performSave(targetVersion);
+              applySuccessfulSave(updated);
+              return;
+            } catch (retryErr) {
+              console.error("Appearance save retry failed:", retryErr);
+            }
           }
         }
         throw saveErr;
@@ -344,6 +368,20 @@ export default function AppearanceEditorPage() {
           )}
         >
 
+
+          {/* ── 0. Active Layout Template ── */}
+          <div id="templates" className="scroll-mt-24">
+            <TemplatePicker
+              templates={templates}
+              selectedTemplateId={selectedTemplateId}
+              canUseAdvancedTemplates={can("advanced_templates")}
+              onSelectTemplate={handleSelectTemplate}
+              onOpenUpgradeModal={() => {
+                setGatedFeature("advanced_templates");
+                setShowUpgradeModal(true);
+              }}
+            />
+          </div>
 
           {/* ── Dynamic Template Settings Engine ── */}
           {activeTemplate?.SettingsComponent ? (

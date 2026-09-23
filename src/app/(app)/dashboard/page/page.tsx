@@ -10,7 +10,7 @@ import type {
   ProfileBlock,
   BlockConfig,
 } from "@/types/blocks";
-import { ApiClientError, ApiNotFoundError } from "@/lib/api/errors";
+import { ApiClientError, ApiConflictError, ApiNotFoundError } from "@/lib/api/errors";
 import { getAllTemplates, getTemplate } from "@/templates/registry";
 import { useEntitlements } from "@/lib/hooks/use-entitlements";
 import { UpgradeDialog } from "@/components/billing/UpgradeDialog";
@@ -128,8 +128,23 @@ export default function MyPageStudioPage() {
         setProfile(updated);
         setSaveState("saved");
       } catch (err: unknown) {
-        setSaveState("error");
-        setErrorMessage("Failed to switch template.");
+        if (err instanceof ApiConflictError) {
+          try {
+            const fresh = await profileApi.getProfile();
+            const updated = await profileApi.updateAppearance({
+              template_id: templateId,
+              version: fresh.version,
+              theme_tokens: mergedTokens,
+            });
+            setProfile(updated);
+            setSaveState("saved");
+          } catch {
+            setSaveState("error");
+          }
+        } else {
+          setSaveState("error");
+          setErrorMessage("Failed to switch template.");
+        }
       }
     }
 
