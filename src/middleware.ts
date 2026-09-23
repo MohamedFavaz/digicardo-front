@@ -55,12 +55,12 @@ export const config = {
     /*
      * Match all request paths except:
      * - /api/* (API routes and BFF proxy)
-     * - /_next/static (static files)
-     * - /_next/image (image optimization files)
-     * - /favicon.ico (favicon file)
-     * - /dashboard/* (authenticated dashboard paths)
-     * - /login, /register (auth pages)
+     * - /_next/* (Next.js internals, static files, images)
+     * - /admin/* (Admin console routes)
+     * - /dashboard/* (Authenticated dashboard paths)
+     * - /login, /register, /forgot-password, /reset-password, /verify-email (Auth pages)
+     * - Static asset files (.png, .jpg, .svg, .webp, .ico, etc.)
      */
-    "/((?!api|_next/static|_next/image|favicon.ico|dashboard|login|register).*)",
+    "/((?!api|_next|admin|dashboard|login|register|forgot-password|reset-password|verify-email|.*\\.(?:ico|png|jpg|jpeg|svg|webp|gif|css|js|woff|woff2|ttf|eot)$).*)",
   ],
 };

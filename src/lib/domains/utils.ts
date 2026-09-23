@@ -3,10 +3,13 @@
  */
 
 const SYSTEM_DOMAINS = [
-  "Digicardo.app",
-  "www.Digicardo.app",
-  "app.Digicardo.app",
-  "api.Digicardo.app",
+  "digicardo.app",
+  "www.digicardo.app",
+  "app.digicardo.app",
+  "api.digicardo.app",
+  "digicardo.in",
+  "www.digicardo.in",
+  "vercel.app",
   "localhost",
   "127.0.0.1",
 ];
@@ -31,8 +34,25 @@ export function isSystemDomain(rawHost: string): boolean {
   const host = normalizeHost(rawHost);
   if (!host) return true;
 
+  // Always treat any Vercel deployment domain as system domain
+  if (host.endsWith(".vercel.app") || host === "vercel.app") {
+    return true;
+  }
+
+  // Treat configured NEXT_PUBLIC_APP_URL as system domain
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (appUrl) {
+    try {
+      const appHost = normalizeHost(new URL(appUrl).host);
+      if (host === appHost || host.endsWith(`.${appHost}`)) {
+        return true;
+      }
+    } catch {}
+  }
+
   for (const sysDomain of SYSTEM_DOMAINS) {
-    if (host === sysDomain || host.endsWith(`.${sysDomain}`)) {
+    const normSys = sysDomain.toLowerCase();
+    if (host === normSys || host.endsWith(`.${normSys}`)) {
       return true;
     }
   }
