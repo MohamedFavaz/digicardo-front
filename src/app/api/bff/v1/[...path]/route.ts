@@ -8,7 +8,7 @@ import {
 const LARAVEL_INTERNAL_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.LARAVEL_INTERNAL_API_URL ||
-  "http://127.0.0.1:8000";
+  "https://lightslategray-snake-169437.hostingersite.com";
 
 /**
  * Centralized BFF v1 Proxy Handler
@@ -60,7 +60,7 @@ async function handleProxy(
     forwardHeaders.set("accept", "application/json");
   }
 
-  const appOrigin = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const appOrigin = process.env.NEXT_PUBLIC_APP_URL || "https://digicardo-front-phi.vercel.app";
   if (!forwardHeaders.has("origin")) {
     forwardHeaders.set("origin", appOrigin);
   }
@@ -88,23 +88,34 @@ async function handleProxy(
     forwardHeaders.set("cookie", incomingCookies.join("; "));
   }
 
-  // Handle request body: stream raw body for multipart/form-data or standard JSON
+  // Handle request body: buffer raw body for Node serverless compatibility
   const method = request.method;
-  let body: ReadableStream<Uint8Array> | null = null;
+  let body: BodyInit | undefined = undefined;
 
   if (method !== "GET" && method !== "HEAD") {
-    body = request.body;
+    try {
+      const rawBuffer = await request.arrayBuffer();
+      if (rawBuffer.byteLength > 0) {
+        body = Buffer.from(rawBuffer);
+      }
+    } catch {
+      body = undefined;
+    }
   }
 
   try {
-    const upstreamResponse = await fetch(targetUrl, {
+    const fetchOptions: RequestInit = {
       method,
       headers: forwardHeaders,
       body,
-      // @ts-expect-error Node/Cloudflare Workers fetch duplex required for streaming body
-      duplex: "half",
       redirect: "manual",
-    });
+    };
+    if (body) {
+      // @ts-expect-error Node fetch duplex required for non-empty body
+      fetchOptions.duplex = "half";
+    }
+
+    const upstreamResponse = await fetch(targetUrl, fetchOptions);
 
     const responseStatus = upstreamResponse.status;
     const responseContentType = upstreamResponse.headers.get("content-type") || "";

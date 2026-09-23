@@ -14,7 +14,7 @@ interface PublicProfilePageProps {
 const LARAVEL_INTERNAL_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.LARAVEL_INTERNAL_API_URL ||
-  "http://127.0.0.1:8000";
+  "https://lightslategray-snake-169437.hostingersite.com";
 
 export const revalidate = 60;
 

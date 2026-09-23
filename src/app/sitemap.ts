@@ -4,7 +4,7 @@ const BASE_APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://Digicardo.app";
 const LARAVEL_INTERNAL_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.LARAVEL_INTERNAL_API_URL ||
-  "http://127.0.0.1:8000";
+  "https://lightslategray-snake-169437.hostingersite.com";
 
 const INTERNAL_SECRET =
   process.env.INTERNAL_SERVICE_SECRET ||
