@@ -23,28 +23,33 @@ export function sendEventBeacon(event: TrackEventInput): boolean {
   const jsonString = JSON.stringify(payload);
 
   try {
-    // Priority 1: navigator.sendBeacon
+    // Priority 1: fetch with keepalive & explicit JSON headers
+    if (typeof fetch === "function") {
+      fetch(ANALYTICS_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonString,
+        keepalive: true,
+      }).catch(() => {
+        // Fallback to sendBeacon if fetch errors
+        if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+          const blob = new Blob([jsonString], { type: "application/json" });
+          navigator.sendBeacon(ANALYTICS_ENDPOINT, blob);
+        }
+      });
+      return true;
+    }
+
+    // Priority 2: navigator.sendBeacon
     if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
       const blob = new Blob([jsonString], { type: "application/json" });
       const queued = navigator.sendBeacon(ANALYTICS_ENDPOINT, blob);
       if (queued) {
         return true;
       }
-    }
-
-    // Priority 2: fetch with keepalive
-    if (typeof fetch === "function") {
-      fetch(ANALYTICS_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonString,
-        keepalive: true,
-      }).catch(() => {
-        // Suppress analytics network errors to avoid breaking user interactions
-      });
-      return true;
     }
   } catch {
     // Non-blocking fire-and-forget fallback

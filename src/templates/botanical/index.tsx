@@ -5,6 +5,14 @@ import { QrCode, X, Copy, Check, Download, Share2, ExternalLink } from "lucide-r
 import type { TemplateProps } from "../types";
 import { BOTANICAL_PALETTES } from "./constants";
 import { resolveMediaUrl } from "@/lib/utils";
+import {
+  trackLinkClick,
+  trackPhoneClick,
+  trackWhatsAppClick,
+  trackEmailClick,
+  trackCtaClick,
+  trackSocialClick,
+} from "@/lib/analytics/events";
 
 export { BOTANICAL_PALETTES };
 
@@ -1050,6 +1058,11 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
               rel="noopener noreferrer"
               className="social-pill"
               title={s.title}
+              onClick={() => {
+                if (profile?.id) {
+                  trackSocialClick(profile.id, s.platform || "social", s.platform);
+                }
+              }}
               style={{
                 width: `${pillSize}px`,
                 height: `${pillSize}px`,
@@ -2851,7 +2864,13 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
             {(showCall || showWhatsapp || showEmail || showWebsite) && (
               <section className="action-grid">
                 {showCall && (
-                  <a href={`tel:${phoneVal}`} className="action-item">
+                  <a
+                    href={`tel:${phoneVal}`}
+                    className="action-item"
+                    onClick={() => {
+                      if (profile?.id) trackPhoneClick(profile.id, "qa_phone");
+                    }}
+                  >
                     <div className="action-btn green">
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
@@ -2867,6 +2886,9 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="action-item"
+                    onClick={() => {
+                      if (profile?.id) trackWhatsAppClick(profile.id, "qa_whatsapp");
+                    }}
                   >
                     <div className="action-btn mint">
                       <svg width="23" height="23" viewBox="0 0 24 24" fill="currentColor">
@@ -2878,7 +2900,13 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
                 )}
 
                 {showEmail && (
-                  <a href={`mailto:${emailVal}`} className="action-item">
+                  <a
+                    href={`mailto:${emailVal}`}
+                    className="action-item"
+                    onClick={() => {
+                      if (profile?.id) trackEmailClick(profile.id, "qa_email");
+                    }}
+                  >
                     <div className="action-btn coral">
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
@@ -2889,7 +2917,15 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
                 )}
 
                 {showWebsite && (
-                  <a href={websiteVal} target="_blank" rel="noopener noreferrer" className="action-item">
+                  <a
+                    href={websiteVal}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="action-item"
+                    onClick={() => {
+                      if (profile?.id) trackCtaClick(profile.id, "qa_website", websiteVal);
+                    }}
+                  >
                     <div className="action-btn blue">
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
@@ -2911,6 +2947,9 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
                   target={link.url.startsWith("http") ? "_blank" : "_self"}
                   rel={link.url.startsWith("http") ? "noopener noreferrer" : undefined}
                   className={`card-item ${link.featured ? "featured" : ""}`}
+                  onClick={() => {
+                    if (profile?.id) trackLinkClick(profile.id, link.id, link.url);
+                  }}
                 >
                   {renderCardIcon(link.icon, link.url)}
                   <div className="card-info">
@@ -2938,7 +2977,10 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
                   <button
                     type="button"
                     className="btn-save-contact"
-                    onClick={handleDownloadVCard}
+                    onClick={() => {
+                      handleDownloadVCard();
+                      if (profile?.id) trackCtaClick(profile.id, "vcard_download");
+                    }}
                   >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -2954,7 +2996,10 @@ export function BotanicalTemplate({ profile, blocks, theme }: TemplateProps) {
                   <button
                     type="button"
                     className="btn-share-profile"
-                    onClick={handleShareCard}
+                    onClick={() => {
+                      handleShareCard();
+                      if (profile?.id) trackCtaClick(profile.id, "share_card");
+                    }}
                   >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="18" cy="5" r="3"></circle>

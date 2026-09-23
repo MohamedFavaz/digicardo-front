@@ -164,15 +164,28 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
     let isMounted = true;
     const fetchLiveStats = async () => {
       try {
-        const res = await fetch(`/api/bff/v1/public/profiles/${targetUsername}/stats`, {
+        let res = await fetch(`/api/bff/v1/p/${encodeURIComponent(targetUsername)}/stats`, {
           headers: { Accept: "application/json" },
           cache: "no-store",
         });
+        if (!res.ok) {
+          res = await fetch(`/api/bff/v1/public/profiles/${encodeURIComponent(targetUsername)}/stats`, {
+            headers: { Accept: "application/json" },
+            cache: "no-store",
+          });
+        }
         if (res.ok) {
           const json = await res.json();
           const data = json?.data || json;
           if (isMounted && data && typeof data.views === "number") {
-            setLiveStats(data);
+            setLiveStats((prev) => ({
+              ...prev,
+              views: Math.max(prev.views, data.views),
+              clicks: Math.max(prev.clicks, data.clicks ?? 0),
+              actions: Math.max(prev.actions, data.actions ?? 0),
+              days_live: data.days_live ?? prev.days_live,
+              engage: Math.max(prev.engage, data.engage ?? 0),
+            }));
           }
         }
       } catch {
