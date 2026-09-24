@@ -304,10 +304,10 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       list.unshift(customOpts.banner_image_url);
     }
     if (list.length > 0) {
-      return list;
+      return list.map((url) => resolveMediaUrl(url));
     }
     if (profile.cover_url) {
-      return [profile.cover_url];
+      return [resolveMediaUrl(profile.cover_url)];
     }
     return [
       "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80",

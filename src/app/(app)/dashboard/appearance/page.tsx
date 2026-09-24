@@ -246,6 +246,11 @@ export default function AppearanceEditorPage() {
           submittedCustom.profile_image_url ||
           submittedCustom.custom_avatar_url ||
           profile.avatar_url,
+        cover_url:
+          updated.cover_url ||
+          submittedCustom.banner_image_url ||
+          (Array.isArray(submittedCustom.banner_images) && submittedCustom.banner_images[0]) ||
+          profile.cover_url,
       };
 
       setProfile(finalProfile);

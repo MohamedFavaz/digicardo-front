@@ -105,7 +105,7 @@ const DribbbleIcon = ({ className }: { className?: string }) => (
 import { Input } from "@/components/ui/input";
 import { mediaApi } from "@/lib/api/media";
 import type { Profile, ThemeTokens, VCardCustomOptions, VCardActionIconToggles, VCardProduct, VCardService } from "@/types/profile";
-import { cn } from "@/lib/utils";
+import { cn, resolveMediaUrl } from "@/lib/utils";
 
 export interface VCardSettingsPickerProps {
   profile?: Profile | null;
@@ -433,21 +433,17 @@ export function VCardSettingsPicker({
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
+    // Snapshot file list immediately while e.target.files is intact
+    const fileList = Array.from(files);
+    const total = fileList.length;
+
     // Prevent a second upload from starting if one is already in flight
     if (uploadInProgressRef.current) return;
     uploadInProgressRef.current = true;
 
-    // Clear previous error and reset file input immediately to prevent re-triggering
+    // Clear previous error and prepare upload state
     setUploadError(null);
     setBannerUploadProgress(null);
-    if (bannerFileInputRef.current) {
-      bannerFileInputRef.current.value = "";
-    }
-
-    // Snapshot file list before async operations (FileList is live)
-    const fileList = Array.from(files);
-    const total = fileList.length;
-
     setIsUploadingBanner(true);
 
     try {
@@ -459,22 +455,23 @@ export function VCardSettingsPicker({
 
         // Update progress indicator
         setBannerUploadProgress(
-          total > 1 ? `Uploading ${i + 1} of ${total}...` : "Uploading..."
+          total > 1 ? `Uploading ${i + 1} of ${total}...` : "Uploading photo..."
         );
 
-        if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)) {
-          errors.push(`"${file.name}" is not a supported image type.`);
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+          errors.push(`"${file.name}" is not supported. Please upload JPEG, PNG, or WebP.`);
           continue;
         }
-        if (file.size > 10 * 1024 * 1024) {
-          errors.push(`"${file.name}" exceeds 10 MB limit.`);
+        if (file.size > 8 * 1024 * 1024) {
+          errors.push(`"${file.name}" exceeds the 8 MB limit.`);
           continue;
         }
         try {
-          // Use uploadImage (generic media storage) — NOT uploadCover which only
-          // allows one image and overwrites the profile's cover_url each time.
+          // Use uploadImage (generic media storage) — saves to permanent media library
           const media = await mediaApi.uploadImage(file);
-          newUrls.push(media.url);
+          if (media && media.url) {
+            newUrls.push(media.url);
+          }
         } catch (err) {
           const msg =
             err instanceof Error
@@ -496,12 +493,22 @@ export function VCardSettingsPicker({
             ? [opts.banner_image_url]
             : [];
         const merged = Array.from(new Set([...existing, ...newUrls]));
+        const primaryBanner = merged[0] || "";
         updateCustomOptions({
           banner_images: merged,
-          banner_image_url: merged[0] || "",
+          banner_image_url: primaryBanner,
         });
+
+        if (onUpdateProfile && primaryBanner) {
+          onUpdateProfile({
+            cover_url: primaryBanner,
+          });
+        }
       }
     } finally {
+      if (bannerFileInputRef.current) {
+        bannerFileInputRef.current.value = "";
+      }
       uploadInProgressRef.current = false;
       setIsUploadingBanner(false);
       setBannerUploadProgress(null);
@@ -511,10 +518,16 @@ export function VCardSettingsPicker({
   // Remove specific banner image from list
   const handleRemoveBannerImage = (urlToRemove: string) => {
     const existing = currentBannerImages.filter((u) => u !== urlToRemove);
+    const primaryBanner = existing[0] || "";
     updateCustomOptions({
       banner_images: existing,
-      banner_image_url: existing[0] || "",
+      banner_image_url: primaryBanner,
     });
+    if (onUpdateProfile) {
+      onUpdateProfile({
+        cover_url: primaryBanner,
+      });
+    }
   };
 
   const [customBannerInputUrl, setCustomBannerInputUrl] = React.useState("");
@@ -528,10 +541,16 @@ export function VCardSettingsPicker({
     } else {
       updated = [...existing, presetUrl];
     }
+    const primaryBanner = updated[0] || "";
     updateCustomOptions({
       banner_images: updated,
-      banner_image_url: updated[0] || "",
+      banner_image_url: primaryBanner,
     });
+    if (onUpdateProfile) {
+      onUpdateProfile({
+        cover_url: primaryBanner,
+      });
+    }
   };
 
   // Add custom URL to banner slideshow
@@ -541,10 +560,16 @@ export function VCardSettingsPicker({
     const existing = currentBannerImages;
     if (!existing.includes(url)) {
       const updated = [...existing, url];
+      const primaryBanner = updated[0] || "";
       updateCustomOptions({
         banner_images: updated,
-        banner_image_url: updated[0] || "",
+        banner_image_url: primaryBanner,
       });
+      if (onUpdateProfile) {
+        onUpdateProfile({
+          cover_url: primaryBanner,
+        });
+      }
     }
     setCustomBannerInputUrl("");
   };
@@ -1067,6 +1092,21 @@ export function VCardSettingsPicker({
                 </div>
               </div>
 
+              {/* Upload Error Banner */}
+              {uploadError && (
+                <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-center justify-between gap-2">
+                  <span className="font-semibold">{uploadError}</span>
+                  <button
+                    type="button"
+                    onClick={() => setUploadError(null)}
+                    className="p-1 hover:bg-destructive/10 rounded-md transition-colors flex-shrink-0"
+                    title="Dismiss"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+
               {/* Active Banner Thumbnails Grid */}
               {currentBannerImages.length > 0 && (
                 <div className="space-y-2">
@@ -1081,7 +1121,7 @@ export function VCardSettingsPicker({
                       >
                         <div
                           className="w-full h-full bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
-                          style={{ backgroundImage: `url(${imgUrl})` }}
+                          style={{ backgroundImage: `url(${resolveMediaUrl(imgUrl)})` }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
                         <button
@@ -1107,13 +1147,13 @@ export function VCardSettingsPicker({
                 <div className="p-3.5 rounded-2xl bg-card border border-border/80 shadow-2xs flex items-center justify-between gap-2">
                   <div>
                     <span className="text-xs font-bold text-foreground block">Upload Banner Photos</span>
-                    <span className="text-[10px] text-muted-foreground">JPEG, PNG, WebP (Max 5MB)</span>
+                    <span className="text-[10px] text-muted-foreground">JPEG, PNG, WebP (Max 8MB)</span>
                   </div>
                   <input
                     ref={bannerFileInputRef}
                     type="file"
                     multiple
-                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    accept="image/jpeg,image/png,image/webp"
                     onChange={handleBannerUpload}
                     className="hidden"
                     id="vcard-banner-multi-input"
