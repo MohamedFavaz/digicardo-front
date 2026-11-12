@@ -33,10 +33,18 @@ export function ProfileRenderer({
   };
 
   const cssVariables = getThemeVariables(mergedTokens, templateDef.default_theme);
-  const TemplateComponent = templateDef.Component;
+  const TemplateComponent = templateDef?.Component;
   const showBranding = profile.show_branding !== false;
 
   const isBotanical = activeTemplateId === "botanical";
+
+  if (!TemplateComponent) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center p-8 bg-slate-50 text-slate-400 text-xs font-semibold">
+        Loading template preview...
+      </div>
+    );
+  }
 
   return (
     <div
@@ -46,9 +54,8 @@ export function ProfileRenderer({
           ? "transparent"
           : ((cssVariables as any)["--lf-bg"] || "#f8fafc"),
       }}
-      className={`w-full min-h-screen flex flex-col justify-between ${
-        isBotanical ? "p-0" : ""
-      }`}
+      className={`w-full min-h-screen flex flex-col justify-between ${isBotanical ? "p-0" : ""
+        }`}
     >
       <div>
         {profile?.id && <ProfileViewTracker profileId={profile.id} />}

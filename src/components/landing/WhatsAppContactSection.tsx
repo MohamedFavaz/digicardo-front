@@ -28,11 +28,11 @@ export function WhatsAppContactSection() {
   return (
     <section id="contact" className="py-16 sm:py-24 bg-slate-50/70 border-t border-slate-100 relative overflow-hidden">
       {/* Background soft ambient orbs */}
-      <div className="absolute top-1/2 left-10 -translate-y-1/2 w-96 h-96 bg-[#5B3FE4]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-10 -translate-y-1/2 w-96 h-96 bg-slate-900/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute top-1/2 right-10 -translate-y-1/2 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        
+
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto space-y-3 mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide" style={{ backgroundColor: "#eafaf1", color: "#16a34a" }}>
@@ -61,7 +61,7 @@ export function WhatsAppContactSection() {
                 <div className="flex items-center justify-between gap-2 mb-4">
                   <span
                     className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold"
-                    style={{ backgroundColor: idx === 0 ? "#eeebfc" : "#e6f4ea", color: idx === 0 ? "#5B3FE4" : "#137333" }}
+                    style={{ backgroundColor: idx === 0 ? "#f1f5f9" : "#e6f4ea", color: idx === 0 ? "#0f172a" : "#137333" }}
                   >
                     {contact.badge}
                   </span>
@@ -127,7 +127,7 @@ export function WhatsAppContactSection() {
             <span>Fast response within minutes</span>
           </div>
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-[#5B3FE4]" />
+            <ShieldCheck className="w-4 h-4 text-slate-900" />
             <span>Official Digicardo Contact</span>
           </div>
           <div className="flex items-center gap-2">

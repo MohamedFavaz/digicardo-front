@@ -14,9 +14,6 @@ import {
   Palette,
   BarChart3,
   MoreHorizontal,
-  Globe,
-  Search,
-  QrCode,
   Settings,
   ShieldCheck,
   LogOut,
@@ -40,7 +37,7 @@ export function MobileTopHeader() {
     profileApi
       .getProfile()
       .then((p) => setProfile(p))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const username = profile?.username;
@@ -58,14 +55,14 @@ export function MobileTopHeader() {
             href={`/${username}`}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1 text-[11px] font-bold text-brand-600 bg-brand-50 dark:bg-brand-950/60 px-2.5 py-1 rounded-full border border-brand-200 dark:border-brand-800 shadow-2xs"
+            className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-700 bg-white px-2.5 py-1 rounded-full border border-slate-200/90 shadow-2xs hover:bg-slate-50"
           >
             <span>View</span>
-            <ExternalLink className="w-3 h-3" />
+            <ExternalLink className="w-3 h-3 text-slate-400" />
           </Link>
         )}
 
-        <NotificationBell />
+        <NotificationBell align="right" />
       </div>
     </header>
   );
@@ -84,7 +81,7 @@ export function MobileBottomNav() {
     profileApi
       .getProfile()
       .then((p) => setProfile(p))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   // Close "More" drawer whenever route changes
@@ -161,30 +158,10 @@ export function MobileBottomNav() {
   // Secondary items shown in "More" Drawer
   const moreItems: MoreNavItem[] = [
     {
-      title: "QR & NFC Smart Card",
-      href: "/dashboard/qr",
-      icon: QrCode,
-      description: "Printable QR & contactless tap card",
-      badge: "NFC",
-      badgeType: "hot",
-    },
-    {
       title: "Notifications",
       href: "/dashboard/notifications",
       icon: Users,
       description: "Contact submissions & subscribers",
-    },
-    {
-      title: "Custom Domains",
-      href: "/dashboard/domains",
-      icon: Globe,
-      description: "Connect custom branded URL",
-    },
-    {
-      title: "SEO & Social Sharing",
-      href: "/dashboard/seo",
-      icon: Search,
-      description: "Search snippet & OpenGraph previews",
     },
     {
       title: "Account Settings",
@@ -208,10 +185,7 @@ export function MobileBottomNav() {
   const isMoreActive =
     !primaryTabs.some((t) => t.isActive) ||
     pathname.startsWith("/dashboard/settings") ||
-    pathname.startsWith("/dashboard/billing") ||
-    pathname.startsWith("/dashboard/seo") ||
-    pathname.startsWith("/dashboard/domains") ||
-    pathname.startsWith("/dashboard/qr");
+    pathname.startsWith("/dashboard/billing");
 
   return (
     <>

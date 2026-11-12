@@ -55,8 +55,18 @@ import {
   MousePointerClick,
   Zap,
   BarChart3,
+  Wrench,
 } from "lucide-react";
 import type { TemplateProps } from "../types";
+import type {
+  PhoneBlockConfig,
+  WhatsAppBlockConfig,
+  EmailBlockConfig,
+  MapBlockConfig,
+  SocialBlockConfig,
+  LinkBlockConfig,
+} from "@/types/blocks";
+import type { VCardCustomOptions, VCardProduct, VCardService } from "@/types/profile";
 
 // ── Inline SVG brand icons not in lucide-react ──
 const SnapchatIcon = ({ className }: { className?: string }) => (
@@ -89,15 +99,6 @@ const BehanceIcon = ({ className }: { className?: string }) => (
 const DribbbleIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M12 24C5.385 24 0 18.615 0 12S5.385 0 12 0s12 5.385 12 12-5.385 12-12 12zm10.12-10.358c-.35-.11-3.17-.953-6.384-.438 1.34 3.684 1.887 6.684 1.992 7.308 2.3-1.555 3.936-4.02 4.395-6.87zm-6.115 7.808c-.153-.9-.75-4.032-2.19-7.77l-.066.02c-5.79 2.015-7.86 6.025-8.048 6.39 1.73 1.358 3.92 2.166 6.298 2.166 1.42 0 2.77-.29 4.006-.806zm-9.88-2.65c.25-.47 3.22-5.79 8.5-7.503.18-.058.36-.108.54-.153a33.76 33.76 0 0 0-.422-1.034c-5.194 1.552-10.24 1.49-10.72 1.484a10.057 10.057 0 0 0-.006.5c0 2.68 1.01 5.127 2.665 6.957zm-2.428-8.61c.49.01 4.81.062 9.688-1.28-1.74-3.09-3.61-5.69-3.88-6.066-2.914 1.376-5.044 4.076-5.808 7.345zm7.56-8.05c.28.39 2.18 2.99 3.9 6.16 3.72-1.393 5.29-3.513 5.477-3.8-1.7-1.513-3.932-2.43-6.384-2.43-.35 0-.694.024-1.033.066zm9.133 4.7c-.22.307-1.95 2.55-5.818 4.1.245.5.47 1.016.68 1.53.07.18.143.36.21.542 3.41-.43 6.8.26 7.14.328-.024-2.42-.88-4.645-2.28-6.5z" /></svg>
 );
-import type {
-  PhoneBlockConfig,
-  WhatsAppBlockConfig,
-  EmailBlockConfig,
-  MapBlockConfig,
-  SocialBlockConfig,
-  LinkBlockConfig,
-} from "@/types/blocks";
-import type { VCardCustomOptions, VCardProduct, VCardService } from "@/types/profile";
 
 // ─── Modal Types ──────────────────────────────────────────────────────────────
 type ActiveModal =
@@ -222,7 +223,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
               event_type: eventType || (type === "action" ? "cta_click" : "link_click"),
             }),
             keepalive: true,
-          }).catch(() => {});
+          }).catch(() => { });
         } catch {
           // Ignore
         }
@@ -274,18 +275,46 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
         const u = customOpts.social_urls[platform];
         if (u && u.trim().length > 0) return u.trim();
       }
+      if (platform === "website" && customOpts.website_url && customOpts.website_url.trim().length > 0) {
+        return customOpts.website_url.trim();
+      }
       const blk = socialBlocks.find(
         (s) =>
           (s.config as SocialBlockConfig).platform === platform ||
-          (platform === "twitter" && (s.config as SocialBlockConfig).platform === "x")
+          (platform === "twitter" && (s.config as SocialBlockConfig).platform === "x") ||
+          (platform === "website" && ((s.config as SocialBlockConfig).platform === "website" || (s.config as { platform?: string }).platform === "web"))
       );
       if (blk) {
         const u = (blk.config as SocialBlockConfig).url;
         if (u && u.trim().length > 0) return u.trim();
       }
+      if (platform === "website" && linkBlocks.length > 0) {
+        const cfg = linkBlocks[0].config as LinkBlockConfig;
+        if (cfg.url && cfg.url.trim().length > 0) return cfg.url.trim();
+      }
       return undefined;
     },
-    [customOpts.social_urls, socialBlocks]
+    [customOpts.social_urls, customOpts.website_url, linkBlocks, socialBlocks]
+  );
+
+  const DEFAULT_ENABLED_ICON_IDS = useMemo(
+    () =>
+      new Set([
+        "call", "email", "website", "bank", "address",
+        "booking", "form", "review", "qr", "save_contact", "install",
+        "facebook", "instagram", "youtube", "twitter", "linkedin", "telegram", "github",
+      ]),
+    []
+  );
+
+  const isIconActive = useCallback(
+    (id: string): boolean => {
+      const stored = iconToggles[id as keyof typeof iconToggles];
+      if (stored === true) return true;
+      if (stored === false) return false;
+      return DEFAULT_ENABLED_ICON_IDS.has(id) || Boolean(getSocialUrl(id));
+    },
+    [iconToggles, DEFAULT_ENABLED_ICON_IDS, getSocialUrl]
   );
 
   // ── Extract Business Details with safe fallbacks ────────────────────────────
@@ -372,92 +401,107 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
   const dividerColor = isDark ? "rgba(255,255,255,0.10)" : "#e6eff8";
 
 
-  // Animated gradient styles (avoid shorthand background conflict with backgroundSize)
+  // ── Button Style & Hover Animation implementation ──
+  const buttonStyleType = theme.button_style || "solid";
+  const buttonAnimationType = theme.animation || "none";
+
+  const getCustomButtonStyle = useCallback(
+    (baseColor: string, isGradient: boolean, customGradientCss?: string): React.CSSProperties => {
+      // 1. Fill Style handling
+      let bg = baseColor;
+      let border = "none";
+      let textCol = "#ffffff";
+      let bgImg = "none";
+      let bgSize = "auto";
+      let anim = "none";
+
+      if (buttonStyleType === "outline") {
+        bg = "transparent";
+        border = `2px solid ${baseColor}`;
+        textCol = baseColor;
+      } else if (buttonStyleType === "soft") {
+        bg = `${baseColor}18`; // ~10% opacity tint
+        border = `1px solid ${baseColor}35`;
+        textCol = baseColor;
+      } else if (buttonStyleType === "ghost") {
+        bg = "transparent";
+        border = "none";
+        textCol = baseColor;
+      } else if (buttonStyleType === "glass") {
+        bg = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.05)";
+        border = `1px solid ${baseColor}50`;
+        textCol = isDark ? "#ffffff" : textPrimary;
+      } else {
+        // solid
+        if (isGradient && customGradientCss) {
+          bgImg = customGradientCss;
+          bgSize = "300% 300%";
+          anim = "vcard-gradient-flow 4s ease infinite";
+        }
+      }
+
+      return {
+        backgroundColor: bg,
+        backgroundImage: bgImg,
+        backgroundSize: bgSize,
+        animation: anim,
+        border,
+        color: textCol,
+        borderRadius: btnRadiusStyle,
+        transition: "all 0.2s ease-in-out",
+      };
+    },
+    [buttonStyleType, btnRadiusStyle, isDark, textPrimary]
+  );
+
+  // Animated gradient styles with buttonStyleType support
   const isGradientAnim = customOpts.button_gradient_animation !== false;
 
   const primaryGradientStyle: React.CSSProperties = useMemo(() => {
-    if (!isGradientAnim) {
-      return {
-        backgroundImage: "none",
-        backgroundColor: primaryBtnColor,
-        backgroundSize: "auto",
-        animation: "none",
-        color: "#ffffff",
-        borderRadius: btnRadiusStyle,
-      };
-    }
-    return {
-      backgroundImage: `linear-gradient(135deg, ${primaryBtnColor}, #00e676, #00b0ff, ${primaryBtnColor})`,
-      backgroundColor: primaryBtnColor,
-      backgroundSize: "300% 300%",
-      animation: "vcard-gradient-flow 4s ease infinite",
-      color: "#ffffff",
-      borderRadius: btnRadiusStyle,
-    };
-  }, [isGradientAnim, primaryBtnColor, btnRadiusStyle]);
+    return getCustomButtonStyle(
+      primaryBtnColor,
+      isGradientAnim,
+      `linear-gradient(135deg, ${primaryBtnColor}, #00e676, #00b0ff, ${primaryBtnColor})`
+    );
+  }, [getCustomButtonStyle, primaryBtnColor, isGradientAnim]);
 
   const payGradientStyle: React.CSSProperties = useMemo(() => {
-    if (!isGradientAnim) {
-      return {
-        backgroundImage: "none",
-        backgroundColor: payBtnColor,
-        backgroundSize: "auto",
-        animation: "none",
-        color: "#ffffff",
-        borderRadius: btnRadiusStyle,
-      };
-    }
-    return {
-      backgroundImage: `linear-gradient(135deg, ${payBtnColor}, #fbbf24, #f97316, ${payBtnColor})`,
-      backgroundColor: payBtnColor,
-      backgroundSize: "300% 300%",
-      animation: "vcard-gradient-flow 4s ease infinite",
-      color: "#ffffff",
-      borderRadius: btnRadiusStyle,
-    };
-  }, [isGradientAnim, payBtnColor, btnRadiusStyle]);
+    return getCustomButtonStyle(
+      payBtnColor,
+      isGradientAnim,
+      `linear-gradient(135deg, ${payBtnColor}, #fbbf24, #f97316, ${payBtnColor})`
+    );
+  }, [getCustomButtonStyle, payBtnColor, isGradientAnim]);
 
   const locationGradientStyle: React.CSSProperties = useMemo(() => {
-    if (!isGradientAnim) {
-      return {
-        backgroundImage: "none",
-        backgroundColor: locationBtnColor,
-        backgroundSize: "auto",
-        animation: "none",
-        color: "#ffffff",
-        borderRadius: btnRadiusStyle,
-      };
-    }
-    return {
-      backgroundImage: `linear-gradient(135deg, ${locationBtnColor}, #475569, #334155, ${locationBtnColor})`,
-      backgroundColor: locationBtnColor,
-      backgroundSize: "300% 300%",
-      animation: "vcard-gradient-flow 4s ease infinite",
-      color: "#ffffff",
-      borderRadius: btnRadiusStyle,
-    };
-  }, [isGradientAnim, locationBtnColor, btnRadiusStyle]);
+    return getCustomButtonStyle(
+      locationBtnColor,
+      isGradientAnim,
+      `linear-gradient(135deg, ${locationBtnColor}, #475569, #334155, ${locationBtnColor})`
+    );
+  }, [getCustomButtonStyle, locationBtnColor, isGradientAnim]);
 
   const productsGradientStyle: React.CSSProperties = useMemo(() => {
-    if (!isGradientAnim) {
-      return {
-        backgroundImage: "none",
-        backgroundColor: productsBtnColor,
-        backgroundSize: "auto",
-        animation: "none",
-        color: "#ffffff",
-        borderRadius: btnRadiusStyle,
-      };
+    return getCustomButtonStyle(
+      productsBtnColor,
+      isGradientAnim,
+      `linear-gradient(135deg, ${productsBtnColor}, #a855f7, #8b5cf6, ${productsBtnColor})`
+    );
+  }, [getCustomButtonStyle, productsBtnColor, isGradientAnim]);
+
+  // Button hover animation class
+  const btnAnimClass = useMemo(() => {
+    switch (buttonAnimationType) {
+      case "fade":
+        return "vcard-btn-anim-fade";
+      case "slide":
+        return "vcard-btn-anim-slide";
+      case "scale":
+        return "vcard-btn-anim-scale";
+      default:
+        return "";
     }
-    return {
-      backgroundImage: `linear-gradient(135deg, ${productsBtnColor}, #a855f7, #8b5cf6, ${productsBtnColor})`,
-      backgroundColor: productsBtnColor,
-      backgroundSize: "300% 300%",
-      animation: "vcard-gradient-flow 4s ease infinite",
-      color: "#ffffff",
-      borderRadius: btnRadiusStyle,
-    };
-  }, [isGradientAnim, productsBtnColor, btnRadiusStyle]);
+  }, [buttonAnimationType]);
 
   // Auto-cycle banner if enabled
   React.useEffect(() => {
@@ -510,12 +554,38 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
   }, [customOpts.address_text, mapBlocks]);
 
   const primaryWebsite = useMemo(() => {
+    const customSite = customOpts.social_urls?.website || customOpts.website_url;
+    if (customSite && customSite.trim().length > 0) {
+      const trimmed = customSite.trim();
+      return trimmed.startsWith("http://") || trimmed.startsWith("https://")
+        ? trimmed
+        : `https://${trimmed}`;
+    }
     if (linkBlocks.length > 0) {
       const cfg = linkBlocks[0].config as LinkBlockConfig;
-      return cfg.url || "https://Digicardo.app";
+      if (cfg.url && cfg.url.trim().length > 0) {
+        const trimmed = cfg.url.trim();
+        return trimmed.startsWith("http://") || trimmed.startsWith("https://")
+          ? trimmed
+          : `https://${trimmed}`;
+      }
+    }
+    const siteBlock = socialBlocks.find(
+      (s) =>
+        (s.config as SocialBlockConfig).platform === "website" ||
+        (s.config as { platform?: string }).platform === "web"
+    );
+    if (siteBlock) {
+      const u = (siteBlock.config as SocialBlockConfig).url;
+      if (u && u.trim().length > 0) {
+        const trimmed = u.trim();
+        return trimmed.startsWith("http://") || trimmed.startsWith("https://")
+          ? trimmed
+          : `https://${trimmed}`;
+      }
     }
     return "https://Digicardo.app";
-  }, [linkBlocks]);
+  }, [customOpts.social_urls, customOpts.website_url, linkBlocks, socialBlocks]);
 
   // UPI Payment Details
   const upiId = customOpts.upi_id || "janaseva@okaxis";
@@ -634,7 +704,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#e8f7f0",
       textColor: "#00875a",
       borderColor: "#d3efe1",
-      enabled: iconToggles.call !== false,
+      enabled: isIconActive("call"),
       action: () => {
         trackInteraction("action", "phone_click");
         if (phoneBlocks.length > 1) {
@@ -666,7 +736,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#fdeeed",
       textColor: "#e04f44",
       borderColor: "#fbdcd9",
-      enabled: iconToggles.email !== false,
+      enabled: isIconActive("email"),
       action: () => {
         trackInteraction("action", "email_click");
         window.location.href = `mailto:${primaryEmail}`;
@@ -679,7 +749,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#eaf4fb",
       textColor: "#2b7bb9",
       borderColor: "#d4e9f7",
-      enabled: iconToggles.website !== false,
+      enabled: isIconActive("website"),
       action: () => {
         trackInteraction("click", "link_click");
         window.open(primaryWebsite, "_blank");
@@ -692,7 +762,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#eef3f8",
       textColor: "#3b5998",
       borderColor: "#dbe6f0",
-      enabled: iconToggles.bank !== false,
+      enabled: isIconActive("bank"),
       action: () => {
         trackInteraction("action", "cta_click");
         setActiveModal("bank");
@@ -705,7 +775,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#f0f4f8",
       textColor: "#5a6b7c",
       borderColor: "#e0e8f0",
-      enabled: iconToggles.address !== false,
+      enabled: isIconActive("address"),
       action: () => {
         trackInteraction("action", "cta_click");
         setActiveModal("address");
@@ -718,7 +788,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#eff2fe",
       textColor: "#4f46e5",
       borderColor: "#dfe4fd",
-      enabled: iconToggles.booking !== false,
+      enabled: isIconActive("booking"),
       action: () => {
         trackInteraction("action", "booking_click");
         setActiveModal("booking");
@@ -731,7 +801,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#e6f9f0",
       textColor: "#059669",
       borderColor: "#cff3e1",
-      enabled: iconToggles.form !== false,
+      enabled: isIconActive("form"),
       action: () => {
         trackInteraction("action", "cta_click");
         setActiveModal("contact_form");
@@ -744,9 +814,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#ebf2fc",
       textColor: "#1877f2",
       borderColor: "#d6e4f9",
-      enabled:
-        iconToggles.facebook === true ||
-        (iconToggles.facebook !== false && Boolean(getSocialUrl("facebook"))),
+      enabled: isIconActive("facebook"),
       action: () => {
         const url = getSocialUrl("facebook") || ("https://facebook.com/" + profile.username);
         window.open(url, "_blank");
@@ -759,9 +827,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#fdf0f4",
       textColor: "#e1306c",
       borderColor: "#fbdde5",
-      enabled:
-        iconToggles.instagram === true ||
-        (iconToggles.instagram !== false && Boolean(getSocialUrl("instagram"))),
+      enabled: isIconActive("instagram"),
       action: () => {
         const url = getSocialUrl("instagram") || ("https://instagram.com/" + profile.username);
         window.open(url, "_blank");
@@ -774,9 +840,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#fee2e2",
       textColor: "#dc2626",
       borderColor: "#fecaca",
-      enabled:
-        iconToggles.youtube === true ||
-        (iconToggles.youtube !== false && Boolean(getSocialUrl("youtube"))),
+      enabled: isIconActive("youtube"),
       action: () => {
         const url = getSocialUrl("youtube") || ("https://youtube.com/@" + profile.username);
         window.open(url, "_blank");
@@ -789,9 +853,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#f1f5f9",
       textColor: "#0f172a",
       borderColor: "#e2e8f0",
-      enabled:
-        iconToggles.twitter === true ||
-        (iconToggles.twitter !== false && Boolean(getSocialUrl("twitter"))),
+      enabled: isIconActive("twitter"),
       action: () => {
         const url = getSocialUrl("twitter") || ("https://x.com/" + profile.username);
         window.open(url, "_blank");
@@ -804,9 +866,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#e0f2fe",
       textColor: "#0284c7",
       borderColor: "#bae6fd",
-      enabled:
-        iconToggles.linkedin === true ||
-        (iconToggles.linkedin !== false && Boolean(getSocialUrl("linkedin"))),
+      enabled: isIconActive("linkedin"),
       action: () => {
         const url = getSocialUrl("linkedin") || ("https://linkedin.com/in/" + profile.username);
         window.open(url, "_blank");
@@ -819,9 +879,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#e0f2fe",
       textColor: "#0369a1",
       borderColor: "#bae6fd",
-      enabled:
-        iconToggles.telegram === true ||
-        (iconToggles.telegram !== false && Boolean(getSocialUrl("telegram"))),
+      enabled: isIconActive("telegram"),
       action: () => {
         const url = getSocialUrl("telegram") || ("https://t.me/" + profile.username);
         window.open(url, "_blank");
@@ -834,7 +892,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#f1f5f9",
       textColor: "#1e293b",
       borderColor: "#cbd5e1",
-      enabled: iconToggles.github === true || (iconToggles.github !== false && Boolean(getSocialUrl("github"))),
+      enabled: isIconActive("github"),
       action: () => { window.open(getSocialUrl("github") || ("https://github.com/" + profile.username), "_blank"); },
     },
     {
@@ -844,7 +902,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#fffde7",
       textColor: "#f59f00",
       borderColor: "#fff3cd",
-      enabled: iconToggles.snapchat === true || (iconToggles.snapchat !== false && Boolean(getSocialUrl("snapchat"))),
+      enabled: isIconActive("snapchat"),
       action: () => { const url = getSocialUrl("snapchat"); if (url) window.open(url, "_blank"); },
     },
     {
@@ -854,7 +912,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#f1f5f9",
       textColor: "#010101",
       borderColor: "#e2e8f0",
-      enabled: iconToggles.tiktok === true || (iconToggles.tiktok !== false && Boolean(getSocialUrl("tiktok"))),
+      enabled: isIconActive("tiktok"),
       action: () => { const url = getSocialUrl("tiktok"); if (url) window.open(url, "_blank"); },
     },
     {
@@ -864,7 +922,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#fff0f0",
       textColor: "#E60023",
       borderColor: "#ffd6d6",
-      enabled: iconToggles.pinterest === true || (iconToggles.pinterest !== false && Boolean(getSocialUrl("pinterest"))),
+      enabled: isIconActive("pinterest"),
       action: () => { const url = getSocialUrl("pinterest"); if (url) window.open(url, "_blank"); },
     },
     {
@@ -874,7 +932,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#f1f5f9",
       textColor: "#000000",
       borderColor: "#e2e8f0",
-      enabled: iconToggles.threads === true || (iconToggles.threads !== false && Boolean(getSocialUrl("threads"))),
+      enabled: isIconActive("threads"),
       action: () => { const url = getSocialUrl("threads"); if (url) window.open(url, "_blank"); },
     },
     {
@@ -884,7 +942,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#eef0fe",
       textColor: "#5865F2",
       borderColor: "#dde0fd",
-      enabled: iconToggles.discord === true || (iconToggles.discord !== false && Boolean(getSocialUrl("discord"))),
+      enabled: isIconActive("discord"),
       action: () => { const url = getSocialUrl("discord"); if (url) window.open(url, "_blank"); },
     },
     {
@@ -894,7 +952,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#f3effe",
       textColor: "#9146FF",
       borderColor: "#e4d9fd",
-      enabled: iconToggles.twitch === true || (iconToggles.twitch !== false && Boolean(getSocialUrl("twitch"))),
+      enabled: isIconActive("twitch"),
       action: () => { const url = getSocialUrl("twitch"); if (url) window.open(url, "_blank"); },
     },
     {
@@ -904,7 +962,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#edfbf4",
       textColor: "#1DB954",
       borderColor: "#d4f7e5",
-      enabled: iconToggles.spotify === true || (iconToggles.spotify !== false && Boolean(getSocialUrl("spotify"))),
+      enabled: isIconActive("spotify"),
       action: () => { const url = getSocialUrl("spotify"); if (url) window.open(url, "_blank"); },
     },
     {
@@ -914,7 +972,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#e8faf2",
       textColor: "#25D366",
       borderColor: "#ccf5e4",
-      enabled: iconToggles.whatsapp_channel === true || (iconToggles.whatsapp_channel !== false && Boolean(getSocialUrl("whatsapp_channel"))),
+      enabled: isIconActive("whatsapp_channel"),
       action: () => { const url = getSocialUrl("whatsapp_channel"); if (url) window.open(url, "_blank"); },
     },
     {
@@ -924,7 +982,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#ebf3ff",
       textColor: "#1769FF",
       borderColor: "#d4e5ff",
-      enabled: iconToggles.behance === true || (iconToggles.behance !== false && Boolean(getSocialUrl("behance"))),
+      enabled: isIconActive("behance"),
       action: () => { const url = getSocialUrl("behance"); if (url) window.open(url, "_blank"); },
     },
     {
@@ -934,7 +992,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#fdf0f6",
       textColor: "#EA4C89",
       borderColor: "#fbdaed",
-      enabled: iconToggles.dribbble === true || (iconToggles.dribbble !== false && Boolean(getSocialUrl("dribbble"))),
+      enabled: isIconActive("dribbble"),
       action: () => { const url = getSocialUrl("dribbble"); if (url) window.open(url, "_blank"); },
     },
     {
@@ -944,7 +1002,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#fff8e6",
       textColor: "#d97706",
       borderColor: "#fef0c7",
-      enabled: iconToggles.review !== false,
+      enabled: isIconActive("review"),
       action: () => {
         if (reviewUrl) {
           window.open(reviewUrl, "_blank");
@@ -960,7 +1018,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#f1f4f8",
       textColor: "#475569",
       borderColor: "#e2e8f0",
-      enabled: iconToggles.save_contact !== false,
+      enabled: isIconActive("save_contact"),
       action: handleSaveContact,
     },
     {
@@ -970,7 +1028,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#f0f7fe",
       textColor: "#0284c7",
       borderColor: "#e0effe",
-      enabled: iconToggles.qr !== false,
+      enabled: isIconActive("qr"),
       action: () => setActiveModal("qr"),
     },
     {
@@ -980,7 +1038,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       bgColor: "#f1f5f9",
       textColor: "#334155",
       borderColor: "#e2e8f0",
-      enabled: iconToggles.install !== false,
+      enabled: isIconActive("install"),
       action: () => setActiveModal("install"),
     },
   ];
@@ -1000,6 +1058,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
     }> = [];
 
     const platforms = [
+      { id: "website", label: "Website", icon: Globe, bg: "#eaf4fb", text: "#2b7bb9", border: "#d4e9f7" },
       { id: "facebook", label: "Facebook", icon: Facebook, bg: "#ebf2fc", text: "#1877f2", border: "#d6e4f9" },
       { id: "instagram", label: "Instagram", icon: Instagram, bg: "#fdf0f4", text: "#e1306c", border: "#fbdde5" },
       { id: "youtube", label: "YouTube", icon: Youtube, bg: "#fee2e2", text: "#dc2626", border: "#fecaca" },
@@ -1020,25 +1079,37 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
     ];
 
     for (const p of platforms) {
-      const isExplicitOn = iconToggles[p.id as keyof typeof iconToggles] === true;
-      const isExplicitOff = iconToggles[p.id as keyof typeof iconToggles] === false;
+      if (!isIconActive(p.id)) continue;
       const url = getSocialUrl(p.id);
 
-      if (!isExplicitOff && (isExplicitOn || Boolean(url))) {
-        list.push({
-          platform: p.id,
-          label: p.label,
-          url: url || ("https://" + (p.id === "twitter" ? "x.com" : p.id + ".com") + "/" + profile.username),
-          icon: p.icon,
-          bgColor: p.bg,
-          textColor: p.text,
-          borderColor: p.border,
-        });
+      if (p.id === "website") {
+        if (url) {
+          list.push({
+            platform: p.id,
+            label: p.label,
+            url: url.startsWith("http") ? url : `https://${url}`,
+            icon: p.icon,
+            bgColor: p.bg,
+            textColor: p.text,
+            borderColor: p.border,
+          });
+        }
+        continue;
       }
+
+      list.push({
+        platform: p.id,
+        label: p.label,
+        url: url || ("https://" + (p.id === "twitter" ? "x.com" : p.id + ".com") + "/" + profile.username),
+        icon: p.icon,
+        bgColor: p.bg,
+        textColor: p.text,
+        borderColor: p.border,
+      });
     }
 
     return list;
-  }, [iconToggles, getSocialUrl, profile.username]);
+  }, [isIconActive, getSocialUrl, profile.username]);
 
 
   // QR Code Image URL
@@ -1085,6 +1156,8 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
         .vcard-text-primary { color: var(--vcard-text) !important; }
         .vcard-text-sub { color: var(--vcard-text-sub) !important; }
         .vcard-copy-btn { background-color: var(--vcard-input-bg) !important; border-color: var(--vcard-input-border) !important; color: var(--vcard-text) !important; }
+        .vcard-copy-btn span { color: inherit !important; }
+        .vcard-copy-btn svg { color: inherit !important; }
 
         /* In-Phone Frame overrides for clean edge-to-edge mobile preview */
         .in-phone-frame .min-h-screen {
@@ -1096,6 +1169,17 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
           box-shadow: none !important;
           border: none !important;
           max-width: 100% !important;
+        }
+
+        /* Interactive Button Animation Styles */
+        .vcard-btn-anim-fade:hover {
+          opacity: 0.85 !important;
+        }
+        .vcard-btn-anim-slide:hover {
+          transform: translateX(4px) !important;
+        }
+        .vcard-btn-anim-scale:hover {
+          transform: scale(1.03) !important;
         }
       `}</style>
 
@@ -1225,8 +1309,8 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
           {(viewServiceBtnEnabled || viewProductsBtnEnabled) && (
             <div
               className={`${viewServiceBtnEnabled && viewProductsBtnEnabled
-                  ? "grid grid-cols-2 gap-2.5"
-                  : "flex"
+                ? "grid grid-cols-2 gap-2.5"
+                : "flex"
                 }`}
             >
               {/* View Services Button */}
@@ -1238,7 +1322,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                     setCatalogTab("services");
                     setActiveModal("services");
                   }}
-                  className={`py-3.5 px-5 font-bold text-sm text-white flex items-center justify-between transition-all active:scale-[0.98] vcard-shimmer-overlay ${viewServiceBtnEnabled && viewProductsBtnEnabled ? "" : "w-full"
+                  className={`py-3.5 px-5 font-bold text-sm flex items-center justify-between transition-all active:scale-[0.98] ${buttonStyleType === "solid" ? "vcard-shimmer-overlay" : ""} ${btnAnimClass} ${viewServiceBtnEnabled && viewProductsBtnEnabled ? "" : "w-full"
                     }`}
                   style={primaryGradientStyle}
                 >
@@ -1263,7 +1347,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                       setActiveModal("services");
                     }
                   }}
-                  className={`py-3.5 px-5 font-bold text-sm text-white flex items-center justify-between transition-all active:scale-[0.98] ${viewServiceBtnEnabled && viewProductsBtnEnabled ? "" : "w-full"
+                  className={`py-3.5 px-5 font-bold text-sm flex items-center justify-between transition-all active:scale-[0.98] ${btnAnimClass} ${viewServiceBtnEnabled && viewProductsBtnEnabled ? "" : "w-full"
                     }`}
                   style={productsGradientStyle}
                 >
@@ -1291,7 +1375,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                     trackInteraction("action", "cta_click");
                     if (payNowEnabled) setActiveModal("pay");
                   }}
-                  className={`py-3 px-3 font-bold text-xs sm:text-sm text-white shadow-[0px_3px_10px_rgba(245,158,11,0.3)] flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] vcard-shimmer-overlay ${payNowBtnEnabled && locationBtnEnabled ? "" : "w-full"
+                  className={`py-3 px-3 font-bold text-xs sm:text-sm shadow-[0px_3px_10px_rgba(245,158,11,0.3)] flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] ${buttonStyleType === "solid" ? "vcard-shimmer-overlay" : ""} ${btnAnimClass} ${payNowBtnEnabled && locationBtnEnabled ? "" : "w-full"
                     }`}
                   style={payGradientStyle}
                 >
@@ -1306,7 +1390,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                     trackInteraction("action", "cta_click");
                     setActiveModal("address");
                   }}
-                  className={`py-3 px-3 font-bold text-xs sm:text-sm text-white shadow-[0px_3px_10px_rgba(107,123,112,0.25)] flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] ${payNowBtnEnabled && locationBtnEnabled ? "" : "w-full"
+                  className={`py-3 px-3 font-bold text-xs sm:text-sm shadow-[0px_3px_10px_rgba(107,123,112,0.25)] flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] ${btnAnimClass} ${payNowBtnEnabled && locationBtnEnabled ? "" : "w-full"
                     }`}
                   style={locationGradientStyle}
                 >
@@ -1408,7 +1492,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
 
         {/* ── 6. Live Metrics Footer Bar ── */}
         <div
-          className="mt-6 mx-4 p-4 rounded-2xl border text-center space-y-3"
+          className="mt-6 mx-4 p-4 rounded-2xl border text-center"
           style={{ backgroundColor: cardItemBg, borderColor: cardItemBorder }}
         >
           <div
@@ -1432,22 +1516,6 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                 <div className="text-[9px] uppercase font-bold" style={{ color: textSecondary }}>{label}</div>
               </div>
             ))}
-          </div>
-
-          <div className="pt-1">
-            <a
-              href="/"
-              target="_blank"
-              rel="noreferrer"
-              suppressHydrationWarning
-              className="inline-flex items-center gap-1.5 text-xs font-bold hover:underline"
-              style={{ color: primaryBtnColor }}
-            >
-              <div className="w-3.5 h-3.5 rounded-xs overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
-                <Image src="/logo.png" alt="Digicardo" width={14} height={14} className="w-full h-full object-contain" />
-              </div>
-              <span suppressHydrationWarning>Powered by Digicardo</span>
-            </a>
           </div>
         </div>
 
@@ -1496,7 +1564,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                     backgroundColor: "transparent",
                   }}
                 >
-                  {tab === "services" ? "🛠️ Services" : "📦 Products"}
+                  {tab === "services" ? "Services" : "Products"}
                 </button>
               ))}
             </div>
@@ -1580,7 +1648,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                 // Default placeholder
                 return (
                   <div className="py-10 text-center space-y-2">
-                    <div className="text-3xl">🛠️</div>
+                    <div className="flex justify-center text-slate-400"><Wrench className="w-8 h-8 stroke-1" /></div>
                     <p className="text-xs font-bold vcard-text-sub">No services added yet</p>
                     <p className="text-[11px] vcard-text-sub">Services will appear here once added in settings.</p>
                   </div>
@@ -1645,7 +1713,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                 }
                 return (
                   <div className="py-10 text-center space-y-2">
-                    <div className="text-3xl">📦</div>
+                    <div className="flex justify-center text-slate-400"><Package className="w-8 h-8 stroke-1" /></div>
                     <p className="text-xs font-bold vcard-text-sub">No products added yet</p>
                     <p className="text-[11px] vcard-text-sub">Products will appear here once added in settings.</p>
                   </div>
@@ -2049,18 +2117,29 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                   unoptimized
                 />
               </div>
-              <p className="text-xs text-[#141d23] font-bold">{displayName}</p>
-              <p className="vcard-text-sub text-[11px] font-mono" suppressHydrationWarning>{profileUrl}</p>
+              <p className="vcard-text-primary text-xs font-bold" style={{ color: modalText }}>{displayName}</p>
+              <p className="vcard-text-sub text-[11px] font-mono" suppressHydrationWarning style={{ color: modalTextSub }}>{profileUrl}</p>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2 pt-1">
               <button
                 type="button"
                 onClick={() => copyToClipboard(profileUrl, "profile_url")}
-                className="flex-1 py-3 rounded-xl border border-[#e0e9f2] bg-white text-xs font-bold hover:bg-[#f6faff] flex items-center justify-center gap-1.5"
+                className="vcard-copy-btn flex-1 py-3 px-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs active:scale-95 cursor-pointer min-w-0"
+                style={{
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.10)" : "#f1f5f9",
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.18)" : "#e2e8f0",
+                  color: isDark ? "#ffffff" : "#0f172a",
+                }}
               >
-                {copiedKey === "profile_url" ? <Check className="w-4 h-4 text-[#00c853]" /> : <Copy className="w-4 h-4" />}
-                <span>Copy Link</span>
+                {copiedKey === "profile_url" ? (
+                  <Check className="w-4 h-4 text-[#00c853] flex-shrink-0" />
+                ) : (
+                  <Copy className="w-4 h-4 flex-shrink-0" style={{ color: isDark ? "#ffffff" : "#0f172a" }} />
+                )}
+                <span style={{ color: isDark ? "#ffffff" : "#0f172a" }} className="truncate font-bold">
+                  {copiedKey === "profile_url" ? "Copied!" : "Copy Link"}
+                </span>
               </button>
 
               <a
@@ -2068,11 +2147,11 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                 download={`${displayName.replace(/\s+/g, "_")}_QR.png`}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 py-3 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm"
+                className="flex-1 py-3 px-3 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all min-w-0"
                 style={{ backgroundColor: "#00c853", color: "#ffffff" }}
               >
-                <Download className="w-4 h-4" />
-                <span>Download QR</span>
+                <Download className="w-4 h-4 flex-shrink-0" style={{ color: "#ffffff" }} />
+                <span style={{ color: "#ffffff" }} className="truncate font-bold">Download QR</span>
               </a>
             </div>
           </div>
@@ -2098,8 +2177,9 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
 
             <div className="space-y-3 text-left">
               <div className="p-3.5 vcard-card-item rounded-2xl border space-y-1">
-                <span className="vcard-text-primary text-xs font-bold block">
-                  📱 For iPhone (Safari):
+                <span className="vcard-text-primary text-xs font-bold flex items-center gap-1.5">
+                  <Smartphone className="w-3.5 h-3.5 text-slate-700" />
+                  <span>For iOS / iPhone (Safari):</span>
                 </span>
                 <p className="vcard-text-sub text-[11px] leading-relaxed">
                   Tap the <strong>Share</strong> icon in the bottom menu bar, then scroll down and select <strong>&quot;Add to Home Screen&quot;</strong>.
@@ -2107,8 +2187,9 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
               </div>
 
               <div className="p-3.5 vcard-card-item rounded-2xl border space-y-1">
-                <span className="vcard-text-primary text-xs font-bold block">
-                  🤖 For Android (Chrome):
+                <span className="vcard-text-primary text-xs font-bold flex items-center gap-1.5">
+                  <Smartphone className="w-3.5 h-3.5 text-slate-700" />
+                  <span>For Android (Chrome):</span>
                 </span>
                 <p className="vcard-text-sub text-[11px] leading-relaxed">
                   Tap the <strong>Three Dots (⋮)</strong> icon at the top right, then select <strong>&quot;Add to Home screen&quot;</strong> or <strong>&quot;Install app&quot;</strong>.
@@ -2199,3 +2280,5 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
     </div>
   );
 }
+
+export default VCardTemplate;

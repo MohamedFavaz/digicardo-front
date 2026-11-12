@@ -48,43 +48,37 @@ export function AppearancePreview({
   };
 
   return (
-    <div className="rounded-[36px] border border-border/80 bg-card p-6 shadow-card space-y-5 sticky top-20">
+    <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-2xs space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
           <div className="flex items-center gap-1.5">
-            <Smartphone className="w-4 h-4 text-brand-600" />
-            <h3 className="font-black text-base text-foreground">
+            <Smartphone className="w-4 h-4 text-slate-800" />
+            <h3 className="font-bold text-sm text-slate-900">
               Live Phone Preview
             </h3>
           </div>
-          <p className="text-xs text-muted-foreground font-medium">
+          <p className="text-xs text-slate-500 font-medium">
             Real-time synchronized rendering
           </p>
         </div>
 
         <div className="flex items-center gap-1.5">
-          <Button
+          <button
             type="button"
-            variant="outline"
-            size="sm"
             onClick={handleCopy}
-            className="rounded-full text-xs font-bold gap-1 bg-card hover:bg-muted"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all cursor-pointer"
             title="Copy profile link"
           >
-            {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+            {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3 text-slate-400" />}
             <span>{copied ? "Copied!" : "Copy"}</span>
-          </Button>
+          </button>
 
           <Link href={`/${username}`} target="_blank" rel="noreferrer">
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-full text-xs font-bold gap-1 bg-card hover:bg-muted"
-            >
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all cursor-pointer">
               <span>Open</span>
-              <ExternalLink className="w-3 h-3 text-muted-foreground" />
-            </Button>
+              <ExternalLink className="w-3 h-3 text-slate-400" />
+            </span>
           </Link>
         </div>
       </div>

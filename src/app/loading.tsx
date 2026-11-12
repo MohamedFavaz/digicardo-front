@@ -6,8 +6,7 @@ export default function Loading() {
     >
       {/* Logo mark */}
       <div
-        className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 shadow-lg"
-        style={{ background: "linear-gradient(135deg, #5B3FE4, #8b5cf6)" }}
+        className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 shadow-sm bg-slate-900 text-white border border-slate-800"
       >
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
           <rect x="4" y="4" width="8" height="8" rx="2" fill="white" opacity="0.9" />
@@ -18,14 +17,14 @@ export default function Loading() {
       </div>
 
       {/* Brand name */}
-      <p className="text-sm font-bold text-foreground mb-6 tracking-wide">Digicardo</p>
+      <p className="text-sm font-bold text-slate-900 mb-6 tracking-wide">Digicardo</p>
 
       {/* Animated progress bar */}
-      <div className="w-48 h-1 rounded-full bg-muted overflow-hidden">
+      <div className="w-48 h-1 rounded-full bg-slate-200 overflow-hidden">
         <div
           className="h-full rounded-full"
           style={{
-            background: "linear-gradient(90deg, #5B3FE4, #8b5cf6, #ec4899)",
+            background: "linear-gradient(90deg, #0f172a, #334155, #0f172a)",
             animation: "loading-bar 1.4s ease-in-out infinite",
           }}
         />

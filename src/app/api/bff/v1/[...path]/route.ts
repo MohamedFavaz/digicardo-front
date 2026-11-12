@@ -6,9 +6,9 @@ import {
 } from "@/lib/api/bff-utils";
 
 const LARAVEL_INTERNAL_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
   process.env.LARAVEL_INTERNAL_API_URL ||
-  "https://lightslategray-snake-169437.hostingersite.com";
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://127.0.0.1:8000";
 
 /**
  * Centralized BFF v1 Proxy Handler
@@ -18,6 +18,10 @@ async function handleProxy(
   request: NextRequest,
   context: { params: Promise<{ path?: string[] }> }
 ): Promise<NextResponse> {
+  if (request.signal?.aborted) {
+    return new NextResponse(null, { status: 499 });
+  }
+
   const { path: pathSegments } = await context.params;
 
   if (!pathSegments || !isPathAllowed(pathSegments)) {
@@ -71,18 +75,33 @@ async function handleProxy(
   // Map incoming first-party cookies to Laravel upstream cookies
   const incomingCookies: string[] = [];
 
-  const DigicardoSession = request.cookies.get("Digicardo_session")?.value;
+  const DigicardoSession =
+    request.cookies.get("Digicardo_session")?.value ||
+    request.cookies.get("laravel_session")?.value;
   if (DigicardoSession) {
     incomingCookies.push(`laravel_session=${DigicardoSession}`);
   }
 
-  const DigicardoXsrf = request.cookies.get("Digicardo_xsrf")?.value;
+  const DigicardoXsrf =
+    request.cookies.get("Digicardo_xsrf")?.value ||
+    request.cookies.get("XSRF-TOKEN")?.value;
   if (DigicardoXsrf) {
     incomingCookies.push(`XSRF-TOKEN=${DigicardoXsrf}`);
     if (!forwardHeaders.has("x-xsrf-token")) {
       forwardHeaders.set("x-xsrf-token", DigicardoXsrf);
     }
   }
+
+  // Forward all remember cookies and impersonation cookies
+  request.cookies.getAll().forEach((cookie) => {
+    if (
+      cookie.name.startsWith("remember_web_") ||
+      cookie.name.startsWith("remember_") ||
+      cookie.name === "digicardo_impersonating"
+    ) {
+      incomingCookies.push(`${cookie.name}=${cookie.value}`);
+    }
+  });
 
   if (incomingCookies.length > 0) {
     forwardHeaders.set("cookie", incomingCookies.join("; "));
@@ -109,6 +128,7 @@ async function handleProxy(
       headers: forwardHeaders,
       body,
       redirect: "manual",
+      signal: request.signal,
     };
     if (body) {
       // @ts-expect-error Node fetch duplex required for non-empty body
@@ -116,6 +136,10 @@ async function handleProxy(
     }
 
     const upstreamResponse = await fetch(targetUrl, fetchOptions);
+
+    if (request.signal?.aborted) {
+      return new NextResponse(null, { status: 499 });
+    }
 
     const responseStatus = upstreamResponse.status;
     const responseContentType = upstreamResponse.headers.get("content-type") || "";
@@ -152,15 +176,23 @@ async function handleProxy(
 
     // Pass non-JSON responses (e.g. binary/text)
     const responseBuffer = await upstreamResponse.arrayBuffer();
-    const response = new NextResponse(responseBuffer, {
+    const nodeBuf = Buffer.from(responseBuffer);
+    const response = new NextResponse(nodeBuf, {
       status: responseStatus,
-      headers: { "content-type": responseContentType },
+      headers: {
+        "content-type": responseContentType,
+        "content-length": String(nodeBuf.byteLength),
+      },
     });
     rawSetCookies.forEach((cookie) => {
       response.headers.append("set-cookie", rewriteUpstreamCookie(cookie));
     });
     return response;
   } catch (error: unknown) {
+    if (request.signal?.aborted || (error as Error)?.name === "AbortError") {
+      return new NextResponse(null, { status: 499 });
+    }
+
     const err = error as Error & { cause?: any };
     return NextResponse.json(
       {

@@ -25,11 +25,13 @@ export default function LoginPage() {
   const [serverError, setServerError] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  // Redirect if already authenticated — admins go to their own panel
+  // Redirect if already authenticated — admins and agents go to their own portals
   React.useEffect(() => {
     if (isAuthenticated && user) {
       if (user.role === "admin") {
         router.push("/admin/dashboard");
+      } else if (user.role === "agent") {
+        router.push("/agent/dashboard");
       } else {
         router.push(returnUrl);
       }
@@ -55,11 +57,13 @@ export default function LoginPage() {
     setIsSubmitting(true);
     try {
       const loggedInUser = await login(result.data);
-      // Admins always go to their own panel — ignore returnUrl
+      // Route users to their dedicated portal based on their role
       if (loggedInUser?.role === "admin") {
-        router.push("/admin/dashboard");
+        window.location.href = "/admin/dashboard";
+      } else if (loggedInUser?.role === "agent") {
+        window.location.href = "/agent/dashboard";
       } else {
-        router.push(returnUrl === "/dashboard" || !returnUrl ? "/dashboard" : returnUrl);
+        window.location.href = returnUrl === "/dashboard" || !returnUrl ? "/dashboard" : returnUrl;
       }
     } catch (err: unknown) {
       if (err instanceof ApiClientError) {
@@ -93,7 +97,7 @@ export default function LoginPage() {
       subtitle="Sign in to your Digicardo account"
     >
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-        
+
         {/* Server Error Alert Banner */}
         {serverError && (
           <div className="rounded-2xl border border-coral/30 bg-coral-50/20 p-3.5 text-xs text-coral font-bold flex items-start gap-2.5 animate-in fade-in-50">

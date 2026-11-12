@@ -99,11 +99,11 @@ export default function AdminValidityPlansPage() {
           prev.map((p) =>
             p.id === planId
               ? {
-                  ...p,
-                  price: parseFloat(price),
-                  currency_symbol: symbol,
-                  formatted_price: `${symbol}${parseFloat(price).toFixed(0)}`,
-                }
+                ...p,
+                price: parseFloat(price),
+                currency_symbol: symbol,
+                formatted_price: `${symbol}${parseFloat(price).toFixed(0)}`,
+              }
               : p
           )
         );
@@ -230,32 +230,32 @@ export default function AdminValidityPlansPage() {
 
   return (
     <div className="p-6 lg:p-8 max-w-[1200px] mx-auto space-y-6">
-      {/* ── Header Banner ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 p-6 rounded-3xl text-white shadow-md">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-black tracking-tight">Subscription Validity Plans</h1>
-            <span className="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Validity Plans</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60">
               Pricing & Durations
             </span>
           </div>
-          <p className="text-indigo-200 text-xs mt-1.5 max-w-xl leading-relaxed font-medium">
-            Configure subscription validity tiers, manage duration windows, adjust pricing currencies, and activate or deactivate plans across the platform.
+          <p className="text-slate-500 text-xs mt-1 leading-relaxed font-medium">
+            Manage subscription durations, pricing, and active status across the platform.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-4 h-10 rounded-2xl bg-indigo-500 hover:bg-indigo-400 text-white font-bold text-xs flex items-center gap-2 transition-all shadow-sm active:scale-95"
+            className="px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs flex items-center gap-2 transition-all shadow-xs active:scale-95 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Add New Plan</span>
+            <span>New Plan</span>
           </button>
           <button
             onClick={fetchPlans}
             disabled={loading}
-            className="w-10 h-10 rounded-2xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all disabled:opacity-50"
+            className="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-black hover:bg-slate-50 flex items-center justify-center transition-all disabled:opacity-50 cursor-pointer shadow-2xs active:scale-95"
             title="Refresh plans"
           >
             <RotateCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
@@ -265,66 +265,66 @@ export default function AdminValidityPlansPage() {
 
       {/* ── Summary Cards ── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-400">Total Configured Plans</span>
-            <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black">
+            <span className="text-xs font-semibold text-slate-500">Total Plans</span>
+            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
               <Layers className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-slate-900 mt-2">{plans.length}</div>
-          <p className="text-[11px] text-slate-400 font-medium mt-0.5">Custom validity durations</p>
+          <div className="text-2xl font-bold text-slate-900 mt-2">{plans.length}</div>
+          <p className="text-[11px] text-slate-400 font-medium mt-0.5">Configured tiers</p>
         </div>
 
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-400">Active Live Plans</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black">
+            <span className="text-xs font-semibold text-slate-500">Active Plans</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-slate-900 mt-2">{activePlansCount}</div>
-          <p className="text-[11px] text-slate-400 font-medium mt-0.5">Available for account provisioning</p>
+          <div className="text-2xl font-bold text-slate-900 mt-2">{activePlansCount}</div>
+          <p className="text-[11px] text-slate-400 font-medium mt-0.5">Ready for provisioning</p>
         </div>
 
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-400">Quick Links</span>
-            <div className="w-8 h-8 rounded-xl bg-slate-50 text-slate-600 flex items-center justify-center font-black">
+            <span className="text-xs font-semibold text-slate-500">Quick Links</span>
+            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
               <CreditCard className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-center gap-3 mt-3">
             <Link
               href="/admin/settings"
-              className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 hover:underline"
+              className="text-xs font-semibold text-slate-700 hover:text-black flex items-center gap-1 hover:underline"
             >
               Settings <ArrowRight className="w-3 h-3" />
             </Link>
             <span className="text-slate-300">·</span>
             <Link
               href="/admin/admin-panel"
-              className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 hover:underline"
+              className="text-xs font-semibold text-slate-700 hover:text-black flex items-center gap-1 hover:underline"
             >
-              Provision Users <ArrowRight className="w-3 h-3" />
+              Provision User <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
         </div>
       </div>
 
       {/* ── Plans Table & Editor ── */}
-      <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
+      <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
         <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center">
               <Sparkles className="w-4.5 h-4.5" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-900">Configured Plans & Tiers</h2>
-              <p className="text-[11px] text-slate-400">Manage plan duration, prices, and status</p>
+              <h2 className="text-sm font-bold text-slate-900">Plan Tiers</h2>
+              <p className="text-[11px] text-slate-400">Durations, prices, and status</p>
             </div>
           </div>
-          <span className="text-xs font-bold text-slate-400">{plans.length} total tiers</span>
+          <span className="text-xs font-bold text-slate-400">{plans.length} plans</span>
         </div>
 
         <div className="divide-y divide-slate-100">
@@ -344,15 +344,15 @@ export default function AdminValidityPlansPage() {
               <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
                 <Calendar className="w-6 h-6" />
               </div>
-              <p className="text-sm font-bold text-slate-700">No validity plans found</p>
+              <p className="text-sm font-bold text-slate-700">No plans found</p>
               <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                Click below to initialize default duration tiers or create a new custom plan.
+                Create a custom plan or restore platform defaults.
               </p>
               <button
                 onClick={fetchPlans}
-                className="px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 transition-all"
+                className="px-4 py-2 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs transition-all shadow-xs"
               >
-                Reload Default Plans
+                Reload Defaults
               </button>
             </div>
           ) : (
@@ -368,13 +368,12 @@ export default function AdminValidityPlansPage() {
               return (
                 <div
                   key={plan.id}
-                  className={`p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/70 transition-colors ${
-                    !plan.is_active ? "opacity-60 bg-slate-50/40" : ""
-                  }`}
+                  className={`p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/70 transition-colors ${!plan.is_active ? "opacity-60 bg-slate-50/40" : ""
+                    }`}
                 >
                   {/* Left: Badge & Plan Info */}
                   <div className="flex items-center gap-3.5">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100 border border-indigo-200/80 text-indigo-700 font-black text-sm flex items-center justify-center flex-shrink-0 shadow-2xs">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 font-bold text-sm flex items-center justify-center flex-shrink-0 shadow-2xs border border-slate-200/60">
                       {plan.months >= 12
                         ? `${plan.months / 12}Y`
                         : `${plan.months}M`}
@@ -384,11 +383,10 @@ export default function AdminValidityPlansPage() {
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-bold text-slate-900">{plan.name}</p>
                         <span
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold border ${
-                            plan.is_active
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                              : "bg-slate-100 text-slate-500 border-slate-200"
-                          }`}
+                          className={`px-3 py-1 rounded-full text-[11px] font-bold border ${plan.is_active
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200/60"
+                            : "bg-slate-100 text-slate-500 border-slate-200"
+                            }`}
                         >
                           {plan.is_active ? "Active" : "Disabled"}
                         </span>
@@ -396,8 +394,7 @@ export default function AdminValidityPlansPage() {
                       <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400 font-medium">
                         <Clock className="w-3.5 h-3.5" />
                         <span>
-                          {plan.months} Month{plan.months > 1 ? "s" : ""} Validity (
-                          {Math.round(plan.months * 30.5)} days)
+                          {plan.months} Month{plan.months > 1 ? "s" : ""} · {Math.round(plan.months * 30.5)} days
                         </span>
                       </div>
                     </div>
@@ -410,11 +407,10 @@ export default function AdminValidityPlansPage() {
                       type="button"
                       onClick={() => handleToggleActive(plan)}
                       disabled={isSaving}
-                      className={`h-9 px-3 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 ${
-                        plan.is_active
-                          ? "border-slate-200 bg-white hover:bg-slate-50 text-slate-700"
-                          : "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                      }`}
+                      className={`h-8 px-3.5 rounded-full border text-xs font-semibold transition-all shadow-2xs flex items-center gap-1.5 ${plan.is_active
+                        ? "border-slate-200 bg-white hover:bg-slate-50 text-slate-700"
+                        : "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                        }`}
                       title="Toggle active status"
                     >
                       {plan.is_active ? "Disable" : "Enable"}
@@ -429,7 +425,7 @@ export default function AdminValidityPlansPage() {
                           [plan.id]: { ...edit, symbol: e.target.value },
                         }))
                       }
-                      className="h-9 px-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-indigo-500"
+                      className="h-8 px-2.5 rounded-full border border-slate-200 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-slate-400"
                     >
                       {CURRENCY_OPTIONS.map((c) => (
                         <option key={c} value={c}>
@@ -450,7 +446,7 @@ export default function AdminValidityPlansPage() {
                             [plan.id]: { ...edit, price: e.target.value },
                           }))
                         }
-                        className="w-28 h-9 px-3 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 text-right focus:outline-none focus:border-indigo-500"
+                        className="w-28 h-8 px-3 rounded-full border border-slate-200 text-xs font-bold text-slate-800 text-right focus:outline-none focus:border-slate-400"
                         placeholder="Price"
                       />
                     </div>
@@ -459,7 +455,7 @@ export default function AdminValidityPlansPage() {
                     <button
                       onClick={() => handleSavePrice(plan.id)}
                       disabled={isSaving}
-                      className="h-9 px-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all disabled:opacity-50 flex items-center gap-1.5 shadow-xs"
+                      className="h-8 px-4 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all disabled:opacity-50 flex items-center gap-1.5 shadow-xs"
                     >
                       <Save className="w-3.5 h-3.5" />
                       <span>{isSaving ? "Saving…" : "Save"}</span>
@@ -469,7 +465,7 @@ export default function AdminValidityPlansPage() {
                     <button
                       onClick={() => handleDeletePlan(plan.id)}
                       disabled={isDeleting}
-                      className="w-9 h-9 rounded-xl border border-slate-200 hover:border-red-200 hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center transition-all disabled:opacity-50"
+                      className="w-8 h-8 rounded-full border border-slate-200 hover:border-red-200 hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center transition-all disabled:opacity-50 shadow-2xs"
                       title="Delete plan"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -478,9 +474,8 @@ export default function AdminValidityPlansPage() {
                     {/* Feedback label */}
                     {msg && (
                       <span
-                        className={`text-[11px] font-bold ml-1 ${
-                          msg.ok ? "text-emerald-600" : "text-red-500"
-                        }`}
+                        className={`text-[11px] font-bold ml-1 ${msg.ok ? "text-emerald-600" : "text-red-500"
+                          }`}
                       >
                         {msg.text}
                       </span>
@@ -503,8 +498,8 @@ export default function AdminValidityPlansPage() {
                   <Plus className="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">Add Validity Plan</h3>
-                  <p className="text-xs text-slate-400">Create a new subscription tier</p>
+                  <h3 className="text-base font-bold text-slate-900">Add Plan</h3>
+                  <p className="text-xs text-slate-400">Set duration and pricing</p>
                 </div>
               </div>
               <button
@@ -532,7 +527,7 @@ export default function AdminValidityPlansPage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Plan Display Name
+                  Plan Name
                 </label>
                 <input
                   type="text"
@@ -562,7 +557,7 @@ export default function AdminValidityPlansPage() {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                    Currency Symbol
+                    Currency
                   </label>
                   <select
                     value={newPlan.currency_symbol}
@@ -580,7 +575,7 @@ export default function AdminValidityPlansPage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Plan Price
+                  Price
                 </label>
                 <input
                   type="number"
@@ -598,14 +593,14 @@ export default function AdminValidityPlansPage() {
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 h-10 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition-all"
+                  className="px-5 h-10 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs hover:bg-slate-50 transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={createLoading}
-                  className="px-5 h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition-all disabled:opacity-50 flex items-center gap-2 shadow-xs"
+                  className="px-6 h-10 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs transition-all disabled:opacity-50 flex items-center gap-2 shadow-xs cursor-pointer active:scale-95"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>{createLoading ? "Creating…" : "Save Plan"}</span>

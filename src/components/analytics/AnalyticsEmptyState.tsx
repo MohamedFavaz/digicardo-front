@@ -7,7 +7,6 @@ import {
   Copy,
   Check,
   ExternalLink,
-  QrCode,
   TrendingUp,
 } from "lucide-react";
 export { AnalyticsSkeleton } from "./AnalyticsSkeleton";
@@ -85,17 +84,6 @@ export function AnalyticsEmptyState({ username = "demo" }: AnalyticsEmptyStatePr
           >
             <span>Preview Profile</span>
             <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
-          </Button>
-        </Link>
-
-        <Link href="/dashboard/domains">
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-full text-xs font-bold gap-1.5 bg-card hover:bg-muted shadow-xs h-10 px-4"
-          >
-            <QrCode className="w-3.5 h-3.5 text-muted-foreground" />
-            <span>Generate QR Code</span>
           </Button>
         </Link>
       </div>

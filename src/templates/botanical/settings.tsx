@@ -45,19 +45,32 @@ import {
   ZoomIn,
   ZoomOut,
   X,
+  Leaf,
+  Shapes,
+  Waves,
+  Minus,
+  Layers,
+  Cpu,
+  Box,
+  Spline,
+  LayoutGrid,
+  Landmark,
+  Calendar,
+  MapPin,
+  Briefcase,
 } from "lucide-react";
 
 const BACKGROUND_OPTIONS = [
-  { id: "botanical", name: "Botanical", icon: "🌿", desc: "Dual leaf branches & organic fluid shapes" },
-  { id: "geometric", name: "Geometric", icon: "📐", desc: "Architectural grid & corner bands" },
-  { id: "topo", name: "Contours", icon: "🌊", desc: "Executive topographic contour waves" },
-  { id: "aura", name: "Ambient", icon: "🌌", desc: "Soft ambient glowing mesh aura" },
-  { id: "minimal", name: "Minimal", icon: "💎", desc: "Clean executive gradient accent bar" },
-  { id: "marble", name: "Marble", icon: "🏛️", desc: "Luxury marble veining & veins" },
-  { id: "tech", name: "Tech", icon: "🌐", desc: "Constellation nodes & matrix lines" },
-  { id: "frosted", name: "Frosted", icon: "🪟", desc: "Glass prisms with backdrop blur" },
-  { id: "silk", name: "Silk Wave", icon: "🎗️", desc: "Smooth fluid gradient wave ribbons" },
-  { id: "bauhaus", name: "Bauhaus", icon: "🏛️", desc: "Modernist geometric composition" },
+  { id: "botanical", name: "Botanical", icon: Leaf, desc: "Dual leaf branches & organic fluid shapes" },
+  { id: "geometric", name: "Geometric", icon: Shapes, desc: "Architectural grid & corner bands" },
+  { id: "topo", name: "Contours", icon: Waves, desc: "Executive topographic contour waves" },
+  { id: "aura", name: "Ambient", icon: Sparkles, desc: "Soft ambient glowing mesh aura" },
+  { id: "minimal", name: "Minimal", icon: Minus, desc: "Clean executive gradient accent bar" },
+  { id: "marble", name: "Marble", icon: Layers, desc: "Luxury marble veining & veins" },
+  { id: "tech", name: "Tech", icon: Cpu, desc: "Constellation nodes & matrix lines" },
+  { id: "frosted", name: "Frosted", icon: Box, desc: "Glass prisms with backdrop blur" },
+  { id: "silk", name: "Silk Wave", icon: Spline, desc: "Smooth fluid gradient wave ribbons" },
+  { id: "bauhaus", name: "Bauhaus", icon: LayoutGrid, desc: "Modernist geometric composition" },
 ];
 
 const SOCIAL_PLATFORMS = [
@@ -154,7 +167,7 @@ const renderLinkIconPreview = (icon?: string) => {
     case "tg":
       return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#229ED9">
-          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.536-.194 1.006.131.832.942z"/>
+          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.536-.194 1.006.131.832.942z" />
         </svg>
       );
     case "threads":
@@ -166,19 +179,19 @@ const renderLinkIconPreview = (icon?: string) => {
     case "snapchat":
       return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#FFFC00" stroke="#000000" strokeWidth="1.2">
-          <path d="M12.002 2.5c-3.666 0-5.999 2.531-5.999 5.86 0 1.096.34 2.45.698 3.197.14.292.054.437-.183.585-.689.43-1.636.853-2.062 1.488-.344.512-.132 1.05.517 1.156.914.15 1.83.18 2.378.694.343.323.332.748.243 1.258-.09.516-.27 1.549.49 1.954.58.309 1.41-.09 2.228-.621.503-.327.971-.242 1.69-.242s1.187-.085 1.69.242c.818.531 1.648.93 2.228.621.76-.405.58-1.438.49-1.954-.089-.51-.1-.935.243-1.258.548-.514 1.464-.544 2.378-.694.649-.106.861-.644.517-1.156-.426-.635-1.373-1.058-2.062-1.488-.237-.148-.323-.293-.183-.585.358-.747.698-2.101.698-3.197 0-3.329-2.333-5.86-5.999-5.86z"/>
+          <path d="M12.002 2.5c-3.666 0-5.999 2.531-5.999 5.86 0 1.096.34 2.45.698 3.197.14.292.054.437-.183.585-.689.43-1.636.853-2.062 1.488-.344.512-.132 1.05.517 1.156.914.15 1.83.18 2.378.694.343.323.332.748.243 1.258-.09.516-.27 1.549.49 1.954.58.309 1.41-.09 2.228-.621.503-.327.971-.242 1.69-.242s1.187-.085 1.69.242c.818.531 1.648.93 2.228.621.76-.405.58-1.438.49-1.954-.089-.51-.1-.935.243-1.258.548-.514 1.464-.544 2.378-.694.649-.106.861-.644.517-1.156-.426-.635-1.373-1.058-2.062-1.488-.237-.148-.323-.293-.183-.585.358-.747.698-2.101.698-3.197 0-3.329-2.333-5.86-5.999-5.86z" />
         </svg>
       );
     case "pinterest":
       return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#E60023">
-          <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.668.967-2.911 2.171-2.911 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345-.09.375-.291 1.199-.332 1.357-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146 1.124.347 2.317.535 3.554.535 6.627 0 12-5.373 12-12 0-6.62-5.373-11.987-11.983-11.987z"/>
+          <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.668.967-2.911 2.171-2.911 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345-.09.375-.291 1.199-.332 1.357-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146 1.124.347 2.317.535 3.554.535 6.627 0 12-5.373 12-12 0-6.62-5.373-11.987-11.983-11.987z" />
         </svg>
       );
     case "spotify":
       return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#1ED760">
-          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.494 17.306c-.215.352-.676.463-1.028.248-2.857-1.745-6.452-2.14-10.686-1.173-.404.092-.807-.16-.899-.564-.092-.403.16-.807.564-.899 4.636-1.06 8.608-.616 11.799 1.332.354.215.465.676.25 1.056zm1.464-3.256c-.27.44-.848.577-1.288.307-3.27-2.01-8.254-2.593-12.122-1.418-.496.15-1.022-.136-1.173-.632-.15-.496.136-1.022.632-1.173 4.417-1.341 9.907-.692 13.644 1.604.44.27.577.848.307 1.312zm.126-3.393c-3.921-2.328-10.38-2.543-14.127-1.405-.6.182-1.237-.164-1.42-.764-.182-.6.164-1.237.764-1.42 4.305-1.307 11.432-1.056 15.938 1.619.539.32.716 1.02.396 1.559-.32.539-1.02.716-1.551.411z"/>
+          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.494 17.306c-.215.352-.676.463-1.028.248-2.857-1.745-6.452-2.14-10.686-1.173-.404.092-.807-.16-.899-.564-.092-.403.16-.807.564-.899 4.636-1.06 8.608-.616 11.799 1.332.354.215.465.676.25 1.056zm1.464-3.256c-.27.44-.848.577-1.288.307-3.27-2.01-8.254-2.593-12.122-1.418-.496.15-1.022-.136-1.173-.632-.15-.496.136-1.022.632-1.173 4.417-1.341 9.907-.692 13.644 1.604.44.27.577.848.307 1.312zm.126-3.393c-3.921-2.328-10.38-2.543-14.127-1.405-.6.182-1.237-.164-1.42-.764-.182-.6.164-1.237.764-1.42 4.305-1.307 11.432-1.056 15.938 1.619.539.32.716 1.02.396 1.559-.32.539-1.02.716-1.551.411z" />
         </svg>
       );
     case "apple_music":
@@ -186,7 +199,7 @@ const renderLinkIconPreview = (icon?: string) => {
     case "itunes":
       return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#FA243C">
-          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 1.01-2.87-.96.04-2.12.64-2.79 1.43-.58.68-1.1 1.74-1.03 2.8 1.07.08 2.18-.55 2.81-1.36z"/>
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 1.01-2.87-.96.04-2.12.64-2.79 1.43-.58.68-1.1 1.74-1.03 2.8 1.07.08 2.18-.55 2.81-1.36z" />
         </svg>
       );
     case "github":
@@ -198,43 +211,43 @@ const renderLinkIconPreview = (icon?: string) => {
     case "discord":
       return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#5865F2">
-          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
         </svg>
       );
     case "reddit":
       return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF4500">
-          <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.688-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/>
+          <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.688-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z" />
         </svg>
       );
     case "twitch":
       return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#9146FF">
-          <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
+          <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z" />
         </svg>
       );
     case "behance":
       return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#1769FF">
-          <path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-4.971 3-3.401 0-5.755-2.168-5.755-5.999 0-3.964 2.48-6.001 5.677-6.001 3.52 0 5.324 2.378 4.976 6.329h-7.618c.084 1.776 1.348 2.651 2.822 2.651 1.277 0 2.108-.609 2.502-1.393l2.367 1.413zm-7.666-4.999h4.743c-.11-1.428-.908-2.033-2.315-2.033-1.429 0-2.281.696-2.428 2.033zm-9.06-8.001h-7v16h7.027c3.961 0 6.007-1.97 6.007-5.008 0-1.895-.97-3.42-2.585-4.048 1.264-.593 1.954-1.849 1.954-3.321 0-2.585-1.921-3.623-5.403-3.623zm-4 3h3.044c1.464 0 2.456.49 2.456 1.748 0 1.27-.992 1.752-2.456 1.752h-3.044v-3.5zm0 6h3.407c1.699 0 2.836.568 2.836 2.052 0 1.545-1.137 2.048-2.836 2.048h-3.407v-4.1z"/>
+          <path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-4.971 3-3.401 0-5.755-2.168-5.755-5.999 0-3.964 2.48-6.001 5.677-6.001 3.52 0 5.324 2.378 4.976 6.329h-7.618c.084 1.776 1.348 2.651 2.822 2.651 1.277 0 2.108-.609 2.502-1.393l2.367 1.413zm-7.666-4.999h4.743c-.11-1.428-.908-2.033-2.315-2.033-1.429 0-2.281.696-2.428 2.033zm-9.06-8.001h-7v16h7.027c3.961 0 6.007-1.97 6.007-5.008 0-1.895-.97-3.42-2.585-4.048 1.264-.593 1.954-1.849 1.954-3.321 0-2.585-1.921-3.623-5.403-3.623zm-4 3h3.044c1.464 0 2.456.49 2.456 1.748 0 1.27-.992 1.752-2.456 1.752h-3.044v-3.5zm0 6h3.407c1.699 0 2.836.568 2.836 2.052 0 1.545-1.137 2.048-2.836 2.048h-3.407v-4.1z" />
         </svg>
       );
     case "dribbble":
       return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#EA4C89">
-          <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm10.18 10.428c-.244-.047-2.373-.448-4.739-.089.444-1.229.805-2.483 1.077-3.738 2.072 1.036 3.398 2.377 3.662 3.827zm-5.751-4.764c-.266 1.205-.618 2.413-1.047 3.593-2.613-.865-5.592-1.332-8.818-1.397.949-1.748 2.417-3.155 4.22-3.992 2.052.413 4.025 1.032 5.645 1.796zm-11.874 3.731c3.15.064 6.06.52 8.625 1.368-.45 1.229-.982 2.42-1.597 3.551-3.619-1.157-7.238-.854-10.74.871.299-2.227 1.681-4.168 3.712-5.79zm-.654 7.747c3.4-.1.749 6.84-.969 10.435.152.492.894.945 1.802 1.344 2.632-1.686 4.385-4.52 4.49-7.781-5.323-.105-10.518 1.488-14.737 4.542.42 1.353 1.272 2.493 2.414 3.253zm9.645 5.097c-1.872.934-4.004 1.461-6.262 1.461-.418 0-.832-.018-1.242-.054 3.876-2.825 8.697-4.296 13.626-4.202-.676 1.246-1.596 2.336-2.697 3.208-1.078.683-2.26 1.189-3.425-1.587zm2.441-2.909c-4.593-.086-9.102 1.289-12.74 3.914-.522-.962-.871-2.029-.993-3.161 3.238-1.611 6.579-1.895 9.923-.812.569-1.05 1.063-2.155 1.482-3.292 2.193-.332 4.168.04 4.394.086.014.152.021.306.021.462 0 1.037-.193 2.028-.548 2.936-.462-.059-.979-.115-1.539-.133z"/>
+          <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm10.18 10.428c-.244-.047-2.373-.448-4.739-.089.444-1.229.805-2.483 1.077-3.738 2.072 1.036 3.398 2.377 3.662 3.827zm-5.751-4.764c-.266 1.205-.618 2.413-1.047 3.593-2.613-.865-5.592-1.332-8.818-1.397.949-1.748 2.417-3.155 4.22-3.992 2.052.413 4.025 1.032 5.645 1.796zm-11.874 3.731c3.15.064 6.06.52 8.625 1.368-.45 1.229-.982 2.42-1.597 3.551-3.619-1.157-7.238-.854-10.74.871.299-2.227 1.681-4.168 3.712-5.79zm-.654 7.747c3.4-.1.749 6.84-.969 10.435.152.492.894.945 1.802 1.344 2.632-1.686 4.385-4.52 4.49-7.781-5.323-.105-10.518 1.488-14.737 4.542.42 1.353 1.272 2.493 2.414 3.253zm9.645 5.097c-1.872.934-4.004 1.461-6.262 1.461-.418 0-.832-.018-1.242-.054 3.876-2.825 8.697-4.296 13.626-4.202-.676 1.246-1.596 2.336-2.697 3.208-1.078.683-2.26 1.189-3.425-1.587zm2.441-2.909c-4.593-.086-9.102 1.289-12.74 3.914-.522-.962-.871-2.029-.993-3.161 3.238-1.611 6.579-1.895 9.923-.812.569-1.05 1.063-2.155 1.482-3.292 2.193-.332 4.168.04 4.394.086.014.152.021.306.021.462 0 1.037-.193 2.028-.548 2.936-.462-.059-.979-.115-1.539-.133z" />
         </svg>
       );
     case "medium":
       return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#000000">
-          <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/>
+          <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
         </svg>
       );
     case "quora":
       return (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#B92B27">
-          <path d="M12.015 0C5.378 0 0 5.378 0 12.015c0 5.093 3.176 9.445 7.668 11.192.176-.569.362-1.395.409-1.921-2.915-1.466-4.838-4.502-4.838-8.04 0-5.074 3.93-9.191 8.776-9.191 4.846 0 8.776 4.117 8.776 9.191 0 4.636-3.284 8.487-7.618 9.102l1.603 2.825c.196.347.534.568.932.568.049 0 .099-.004.148-.011C18.995 24.375 24 18.784 24 12.015 24 5.378 18.622 0 12.015 0z"/>
+          <path d="M12.015 0C5.378 0 0 5.378 0 12.015c0 5.093 3.176 9.445 7.668 11.192.176-.569.362-1.395.409-1.921-2.915-1.466-4.838-4.502-4.838-8.04 0-5.074 3.93-9.191 8.776-9.191 4.846 0 8.776 4.117 8.776 9.191 0 4.636-3.284 8.487-7.618 9.102l1.603 2.825c.196.347.534.568.932.568.049 0 .099-.004.148-.011C18.995 24.375 24 18.784 24 12.015 24 5.378 18.622 0 12.015 0z" />
         </svg>
       );
     case "google_business":
@@ -252,55 +265,55 @@ const renderLinkIconPreview = (icon?: string) => {
     case "maps":
       return (
         <svg width="20" height="20" viewBox="0 0 24 24">
-          <path fill="#EA4335" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/>
+          <path fill="#EA4335" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
         </svg>
       );
     case "bank":
     case "payment":
     case "finance":
     case "upi":
-      return <span className="text-base leading-none">🏦</span>;
+      return <Landmark className="w-4 h-4 text-slate-700" />;
     case "meeting":
     case "calendar":
     case "booking":
     case "consultation":
     case "schedule":
-      return <span className="text-base leading-none">📅</span>;
+      return <Calendar className="w-4 h-4 text-slate-700" />;
     case "location":
     case "map":
     case "office":
     case "headquarters":
     case "address":
-      return <span className="text-base leading-none">📍</span>;
+      return <MapPin className="w-4 h-4 text-slate-700" />;
     case "brochure":
     case "file":
     case "pdf":
     case "download":
     case "document":
     case "doc":
-      return <span className="text-base leading-none">📄</span>;
+      return <FileText className="w-4 h-4 text-slate-700" />;
     case "drive":
     case "vault":
     case "cloud":
-      return <span className="text-base leading-none">☁️</span>;
+      return <HardDrive className="w-4 h-4 text-slate-700" />;
     case "globe":
     case "website":
     case "portal":
     case "web":
-      return <span className="text-base leading-none">🌐</span>;
+      return <Globe className="w-4 h-4 text-slate-700" />;
     case "email":
     case "mail":
-      return <span className="text-base leading-none">✉️</span>;
+      return <Mail className="w-4 h-4 text-slate-700" />;
     case "phone":
     case "tel":
     case "call":
-      return <span className="text-base leading-none">📞</span>;
+      return <Phone className="w-4 h-4 text-slate-700" />;
     case "services":
     case "briefcase":
     case "portfolio":
     case "corporate":
     default:
-      return <span className="text-base leading-none">💼</span>;
+      return <Briefcase className="w-4 h-4 text-slate-700" />;
   }
 };
 
@@ -312,7 +325,12 @@ export function BotanicalSettings({
   isSaving,
   onUpdateProfile,
 }: TemplateSettingsProps) {
-  const custom: TemplateAppearanceOptions = themeTokens.custom_options || {};
+  // Sanitize custom_options: replace any null values with empty strings
+  // so React inputs never receive value={null} (which triggers controlled/uncontrolled warnings)
+  const rawCustom = themeTokens.custom_options || {};
+  const custom: TemplateAppearanceOptions = Object.fromEntries(
+    Object.entries(rawCustom).map(([k, v]) => [k, v === null ? "" : v])
+  ) as TemplateAppearanceOptions;
 
   // Active sub-tab
   const [activeTab, setActiveTab] = useState<
@@ -430,7 +448,9 @@ export function BotanicalSettings({
     if (!cropImageSrc) return;
 
     const img = new window.Image();
-    img.crossOrigin = "anonymous";
+    if (!cropImageSrc.startsWith("data:") && !cropImageSrc.startsWith("blob:")) {
+      img.crossOrigin = "anonymous";
+    }
     img.src = cropImageSrc;
     img.onload = () => {
       cropImageRef.current = img;
@@ -477,6 +497,7 @@ export function BotanicalSettings({
           updateCustom({
             profile_image_url: remoteUrl,
             custom_avatar_url: remoteUrl,
+            remove_avatar: false,
           });
           onUpdateProfile?.({
             avatar_url: remoteUrl,
@@ -762,17 +783,19 @@ export function BotanicalSettings({
   };
 
   return (
-    <div className="rounded-[32px] border border-border/80 bg-card p-6 shadow-card space-y-6">
+    <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-2xs space-y-6">
       {/* Header with Save Button */}
-      <div className="flex items-center justify-between border-b border-border/60 pb-4">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
         <div className="space-y-0.5">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🌿</span>
-            <h2 className="text-lg font-black text-foreground tracking-tight">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-xs">
+              <Leaf className="w-4 h-4" />
+            </div>
+            <h2 className="text-base font-bold text-slate-900 tracking-tight">
               Botanical Corporate Studio
             </h2>
           </div>
-          <p className="text-xs text-muted-foreground font-medium">
+          <p className="text-xs text-slate-500 font-medium">
             Customize backgrounds, branding, social placements, documents, and cards
           </p>
         </div>
@@ -783,7 +806,7 @@ export function BotanicalSettings({
             size="sm"
             onClick={onSave}
             disabled={isSaving}
-            className="rounded-full font-bold px-4 gap-1.5 shadow-sm bg-brand-600 hover:bg-brand-700 text-white cursor-pointer"
+            className="rounded-full font-bold px-5 py-2 gap-1.5 shadow-xs bg-slate-900 hover:bg-black text-white text-xs cursor-pointer"
           >
             {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
             <span>{isSaving ? "Saving..." : "Save Changes"}</span>
@@ -792,7 +815,7 @@ export function BotanicalSettings({
       </div>
 
       {/* Navigation Sub-Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-border/60 no-scrollbar">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-slate-100 no-scrollbar">
         {[
           { id: "theme", label: "Style & Colors", icon: Palette },
           { id: "profile", label: "Branding & Bio", icon: User },
@@ -810,11 +833,10 @@ export function BotanicalSettings({
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex-shrink-0 cursor-pointer ${
-                isActive
-                  ? "bg-brand-50 text-brand-700 border border-brand-200/90 shadow-2xs dark:bg-brand-950/50 dark:text-brand-300"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              }`}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex-shrink-0 cursor-pointer whitespace-nowrap ${isActive
+                ? "bg-slate-900 text-white shadow-2xs font-bold"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70"
+                }`}
             >
               <Icon className="w-3.5 h-3.5" />
               <span>{tab.label}</span>
@@ -830,30 +852,33 @@ export function BotanicalSettings({
         <div className="space-y-6 animate-in fade-in-50">
           {/* Background Style Picker */}
           <div className="space-y-2.5">
-            <label className="text-xs font-black uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+            <label className="text-xs font-black uppercase tracking-wider text-slate-500 flex items-center justify-between">
               <span>1. Background Style (10 Layer Designs)</span>
-              <span className="text-brand-600 font-bold normal-case text-xs">
+              <span className="text-slate-900 font-bold normal-case text-xs">
                 Active: {((custom.bg_style as string) || "botanical").replace(/^bg-/, "")}
               </span>
             </label>
 
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
               {BACKGROUND_OPTIONS.map((bg) => {
                 const currentBg = ((custom.bg_style as string) || "botanical").replace(/^bg-/, "");
                 const isActive = currentBg === bg.id;
+                const IconComponent = bg.icon;
                 return (
                   <button
                     key={bg.id}
                     type="button"
                     onClick={() => updateCustom({ bg_style: bg.id })}
-                    className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl border text-center transition-all cursor-pointer ${
-                      isActive
-                        ? "border-brand-500 bg-brand-50/50 shadow-xs ring-2 ring-brand-400/20"
-                        : "border-border bg-card hover:bg-muted/50 hover:-translate-y-0.5"
-                    }`}
+                    className={`group relative flex flex-col items-center justify-center gap-2 p-3.5 rounded-xl border text-center transition-all cursor-pointer ${isActive
+                      ? "border-2 border-slate-900 bg-slate-50/70 shadow-xs"
+                      : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
+                      }`}
                   >
-                    <span className="text-xl">{bg.icon}</span>
-                    <span className="text-xs font-bold text-foreground leading-tight">{bg.name}</span>
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isActive ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-700 group-hover:bg-slate-200/70"
+                      }`}>
+                      <IconComponent className="w-4 h-4" />
+                    </div>
+                    <span className="text-[11px] font-bold text-slate-900 leading-tight tracking-tight">{bg.name}</span>
                   </button>
                 );
               })}
@@ -862,7 +887,7 @@ export function BotanicalSettings({
 
           {/* Color Palette Switcher */}
           <div className="space-y-2.5">
-            <label className="text-xs font-black uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-black uppercase tracking-wider text-slate-500">
               2. Corporate Color Palette
             </label>
 
@@ -885,17 +910,16 @@ export function BotanicalSettings({
                     key={pal.id}
                     type="button"
                     onClick={() => updateCustom({ color_palette: pal.id, custom_colors: {} })}
-                    className={`flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all cursor-pointer ${
-                      isActive
-                        ? "border-brand-500 bg-brand-50/50 shadow-xs ring-2 ring-brand-400/20"
-                        : "border-border bg-card hover:bg-muted/50 hover:-translate-y-0.5"
-                    }`}
+                    className={`flex flex-col items-center gap-2 p-3.5 rounded-xl border transition-all cursor-pointer ${isActive
+                      ? "border-2 border-slate-900 bg-slate-50/70 shadow-xs"
+                      : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
+                      }`}
                   >
                     <div className="flex items-center gap-1.5">
                       <span className="w-5 h-5 rounded-full border border-black/10 shadow-xs" style={{ background: pal.primary }} />
                       <span className="w-5 h-5 rounded-full border border-black/10 shadow-xs" style={{ background: pal.secondary }} />
                     </div>
-                    <span className="text-xs font-bold text-foreground">{pal.name}</span>
+                    <span className="text-xs font-bold text-slate-900">{pal.name}</span>
                   </button>
                 );
               })}
@@ -903,16 +927,16 @@ export function BotanicalSettings({
           </div>
 
           {/* Custom Color Overrides */}
-          <div className="space-y-3 pt-2 border-t border-border/60">
+          <div className="space-y-3 pt-2 border-t border-slate-200/60">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-black uppercase tracking-wider text-muted-foreground">
+              <label className="text-xs font-black uppercase tracking-wider text-slate-500">
                 3. Custom Color Overrides (Optional)
               </label>
               {(custom.custom_colors?.primary || custom.custom_colors?.secondary || custom.custom_colors?.background) && (
                 <button
                   type="button"
                   onClick={() => updateCustom({ custom_colors: {} })}
-                  className="text-[11px] font-bold text-brand-600 hover:text-brand-700 underline cursor-pointer"
+                  className="text-[11px] font-bold text-slate-900 hover:text-black underline cursor-pointer"
                 >
                   Reset to Palette Defaults
                 </button>
@@ -920,7 +944,7 @@ export function BotanicalSettings({
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="text-[11px] font-bold text-muted-foreground mb-1 block">
+                <label className="text-[11px] font-bold text-slate-500 mb-1 block">
                   Primary Theme Color
                 </label>
                 <div className="flex items-center gap-2">
@@ -932,7 +956,7 @@ export function BotanicalSettings({
                         custom_colors: { ...custom.custom_colors, primary: e.target.value },
                       })
                     }
-                    className="w-9 h-9 rounded-xl border border-border cursor-pointer p-0.5"
+                    className="w-9 h-9 rounded-xl border border-slate-200 cursor-pointer p-0.5"
                   />
                   <Input
                     value={custom.custom_colors?.primary || ""}
@@ -948,7 +972,7 @@ export function BotanicalSettings({
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-muted-foreground mb-1 block">
+                <label className="text-[11px] font-bold text-slate-500 mb-1 block">
                   Secondary / Shape Color
                 </label>
                 <div className="flex items-center gap-2">
@@ -960,7 +984,7 @@ export function BotanicalSettings({
                         custom_colors: { ...custom.custom_colors, secondary: e.target.value },
                       })
                     }
-                    className="w-9 h-9 rounded-xl border border-border cursor-pointer p-0.5"
+                    className="w-9 h-9 rounded-xl border border-slate-200 cursor-pointer p-0.5"
                   />
                   <Input
                     value={custom.custom_colors?.secondary || ""}
@@ -976,7 +1000,7 @@ export function BotanicalSettings({
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-muted-foreground mb-1 block">
+                <label className="text-[11px] font-bold text-slate-500 mb-1 block">
                   Canvas Background
                 </label>
                 <div className="flex items-center gap-2">
@@ -988,7 +1012,7 @@ export function BotanicalSettings({
                         custom_colors: { ...custom.custom_colors, background: e.target.value },
                       })
                     }
-                    className="w-9 h-9 rounded-xl border border-border cursor-pointer p-0.5"
+                    className="w-9 h-9 rounded-xl border border-slate-200 cursor-pointer p-0.5"
                   />
                   <Input
                     value={custom.custom_colors?.background || ""}
@@ -1015,11 +1039,11 @@ export function BotanicalSettings({
           {/* Distinct Assets: Profile Photo vs Company Logo */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* 1. Profile Photo */}
-            <div className="p-4 rounded-2xl border border-border/80 bg-muted/30 space-y-3">
+            <div className="p-4 rounded-2xl border border-slate-200/80 bg-slate-50 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <User className="w-4 h-4 text-brand-600" />
-                  <span className="text-xs font-bold text-foreground">Profile Photo / Avatar</span>
+                  <span className="text-xs font-bold text-slate-900">Profile Photo / Avatar</span>
                 </div>
                 {(custom.profile_image_url || profile?.avatar_url) && (
                   <button
@@ -1095,12 +1119,17 @@ export function BotanicalSettings({
                       </Button>
                     )}
                   </div>
-                  {custom.profile_image_url && (
+                  {(custom.profile_image_url || custom.custom_avatar_url || profile?.avatar_url) && (
                     <button
                       type="button"
-                      onClick={() => {
-                        updateCustom({ profile_image_url: undefined, custom_avatar_url: undefined });
-                        onUpdateProfile?.({ avatar_url: undefined });
+                      onClick={async () => {
+                        updateCustom({ profile_image_url: "", custom_avatar_url: "", remove_avatar: true });
+                        onUpdateProfile?.({ avatar_url: "" });
+                        try {
+                          await mediaApi.deleteAvatar();
+                        } catch {
+                          // ignore
+                        }
                       }}
                       className="text-[11px] text-red-600 hover:underline text-left cursor-pointer font-medium"
                     >
@@ -1112,10 +1141,10 @@ export function BotanicalSettings({
             </div>
 
             {/* 2. Company Logo */}
-            <div className="p-4 rounded-2xl border border-border/80 bg-muted/30 space-y-3">
+            <div className="p-4 rounded-2xl border border-slate-200/80 bg-slate-50 space-y-3">
               <div className="flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-brand-600" />
-                <span className="text-xs font-bold text-foreground">Company Logo</span>
+                <span className="text-xs font-bold text-slate-900">Company Logo</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-14 h-14 rounded-xl overflow-hidden bg-white border border-slate-200 shadow-xs flex items-center justify-center p-1 flex-shrink-0">
@@ -1165,11 +1194,11 @@ export function BotanicalSettings({
           {/* Profile Text Fields */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-bold text-foreground block mb-1">
+              <label className="text-xs font-bold text-slate-900 block mb-1">
                 Full Name / Display Name
               </label>
               <Input
-                value={custom.display_name_override !== undefined ? custom.display_name_override : (profile?.display_name || "")}
+                value={String(custom.display_name_override || profile?.display_name || "")}
                 placeholder={profile?.display_name || "e.g. Alex Morgan"}
                 onChange={(e) => updateCustom({ display_name_override: e.target.value })}
                 className="text-xs"
@@ -1178,19 +1207,18 @@ export function BotanicalSettings({
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                  <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
+                <label className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                  <Building2 className="w-3.5 h-3.5 text-slate-500" />
                   <span>Company Name</span>
                 </label>
-                <div className="inline-flex items-center rounded-lg bg-muted/80 p-0.5 border border-border select-none">
+                <div className="inline-flex items-center rounded-lg bg-slate-100 p-0.5 border border-slate-200 select-none">
                   <button
                     type="button"
                     onClick={() => updateCustom({ show_company_name: true })}
-                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-                      custom.show_company_name !== false && custom.show_company_name !== "false"
-                        ? "bg-card text-emerald-600 dark:text-emerald-400 shadow-2xs"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${custom.show_company_name !== false && custom.show_company_name !== "false"
+                      ? "bg-white text-emerald-600 dark:text-emerald-400 shadow-2xs"
+                      : "text-slate-500 hover:text-slate-900"
+                      }`}
                   >
                     <Eye className="w-3 h-3" />
                     <span>Show</span>
@@ -1198,11 +1226,10 @@ export function BotanicalSettings({
                   <button
                     type="button"
                     onClick={() => updateCustom({ show_company_name: false })}
-                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-                      custom.show_company_name === false || custom.show_company_name === "false"
-                        ? "bg-red-600 text-white shadow-2xs"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${custom.show_company_name === false || custom.show_company_name === "false"
+                      ? "bg-red-600 text-white shadow-2xs"
+                      : "text-slate-500 hover:text-slate-900"
+                      }`}
                   >
                     <EyeOff className="w-3 h-3" />
                     <span>Hide</span>
@@ -1210,26 +1237,33 @@ export function BotanicalSettings({
                 </div>
               </div>
               <Input
-                value={custom.company_name !== undefined ? custom.company_name : ""}
+                value={String(custom.company_name || "")}
                 placeholder={custom.show_company_name === false || custom.show_company_name === "false" ? "[Hidden from card] e.g. Nexus Global Solutions Ltd." : "e.g. Nexus Global Solutions Ltd."}
                 onChange={(e) => updateCustom({ company_name: e.target.value })}
                 disabled={custom.show_company_name === false || custom.show_company_name === "false"}
-                className={`text-xs transition-all ${
-                  custom.show_company_name === false || custom.show_company_name === "false"
-                    ? "opacity-50 bg-muted/40 cursor-not-allowed line-through"
-                    : ""
-                }`}
+                className={`text-xs transition-all ${custom.show_company_name === false || custom.show_company_name === "false"
+                  ? "opacity-50 bg-slate-50 cursor-not-allowed line-through"
+                  : ""
+                  }`}
               />
               <div className="flex items-center justify-between text-[11px] mt-1.5">
-                <span className={custom.show_company_name === false || custom.show_company_name === "false" ? "text-red-600 dark:text-red-400 font-bold" : "text-muted-foreground"}>
-                  {custom.show_company_name === false || custom.show_company_name === "false"
-                    ? "🚫 Hidden from digital card & live preview"
-                    : "✓ Visible on digital card (under profile name)"}
+                <span className={custom.show_company_name === false || custom.show_company_name === "false" ? "text-rose-600 font-semibold flex items-center gap-1" : "text-slate-500 font-medium flex items-center gap-1"}>
+                  {custom.show_company_name === false || custom.show_company_name === "false" ? (
+                    <>
+                      <EyeOff className="w-3 h-3" />
+                      <span>Hidden from digital card</span>
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="w-3 h-3 text-emerald-600" />
+                      <span>Visible on digital card (under profile name)</span>
+                    </>
+                  )}
                 </span>
                 <button
                   type="button"
                   onClick={() => updateCustom({ show_company_name: custom.show_company_name === false || custom.show_company_name === "false" ? true : false })}
-                  className="text-brand-600 hover:underline cursor-pointer font-bold select-none text-[11px]"
+                  className="text-slate-900 hover:underline cursor-pointer font-bold select-none text-[11px]"
                 >
                   {custom.show_company_name === false || custom.show_company_name === "false" ? "Switch to Show" : "Switch to Hide"}
                 </button>
@@ -1240,19 +1274,18 @@ export function BotanicalSettings({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-muted-foreground" />
+                <label className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5 text-slate-500" />
                   <span>Executive Role / Designation</span>
                 </label>
-                <div className="inline-flex items-center rounded-lg bg-muted/80 p-0.5 border border-border select-none">
+                <div className="inline-flex items-center rounded-lg bg-slate-100 p-0.5 border border-slate-200 select-none">
                   <button
                     type="button"
                     onClick={() => updateCustom({ show_executive_role: true })}
-                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-                      custom.show_executive_role !== false && custom.show_executive_role !== "false"
-                        ? "bg-card text-emerald-600 dark:text-emerald-400 shadow-2xs"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${custom.show_executive_role !== false && custom.show_executive_role !== "false"
+                      ? "bg-white text-emerald-600 dark:text-emerald-400 shadow-2xs"
+                      : "text-slate-500 hover:text-slate-900"
+                      }`}
                   >
                     <Eye className="w-3 h-3" />
                     <span>Show</span>
@@ -1260,11 +1293,10 @@ export function BotanicalSettings({
                   <button
                     type="button"
                     onClick={() => updateCustom({ show_executive_role: false })}
-                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-                      custom.show_executive_role === false || custom.show_executive_role === "false"
-                        ? "bg-red-600 text-white shadow-2xs"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${custom.show_executive_role === false || custom.show_executive_role === "false"
+                      ? "bg-red-600 text-white shadow-2xs"
+                      : "text-slate-500 hover:text-slate-900"
+                      }`}
                   >
                     <EyeOff className="w-3 h-3" />
                     <span>Hide</span>
@@ -1272,26 +1304,33 @@ export function BotanicalSettings({
                 </div>
               </div>
               <Input
-                value={custom.executive_role !== undefined ? custom.executive_role : ""}
+                value={String(custom.executive_role || "")}
                 placeholder={custom.show_executive_role === false || custom.show_executive_role === "false" ? "[Hidden from card] e.g. Managing Director · Founder" : "e.g. Managing Director · Founder"}
                 onChange={(e) => updateCustom({ executive_role: e.target.value })}
                 disabled={custom.show_executive_role === false || custom.show_executive_role === "false"}
-                className={`text-xs transition-all ${
-                  custom.show_executive_role === false || custom.show_executive_role === "false"
-                    ? "opacity-50 bg-muted/40 cursor-not-allowed line-through"
-                    : ""
-                }`}
+                className={`text-xs transition-all ${custom.show_executive_role === false || custom.show_executive_role === "false"
+                  ? "opacity-50 bg-slate-50 cursor-not-allowed line-through"
+                  : ""
+                  }`}
               />
               <div className="flex items-center justify-between text-[11px] mt-1.5">
-                <span className={custom.show_executive_role === false || custom.show_executive_role === "false" ? "text-red-600 dark:text-red-400 font-bold" : "text-muted-foreground"}>
-                  {custom.show_executive_role === false || custom.show_executive_role === "false"
-                    ? "🚫 Hidden from digital card & live preview"
-                    : "✓ Visible as elegant title divider"}
+                <span className={custom.show_executive_role === false || custom.show_executive_role === "false" ? "text-rose-600 font-semibold flex items-center gap-1" : "text-slate-500 font-medium flex items-center gap-1"}>
+                  {custom.show_executive_role === false || custom.show_executive_role === "false" ? (
+                    <>
+                      <EyeOff className="w-3 h-3" />
+                      <span>Hidden from digital card</span>
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="w-3 h-3 text-emerald-600" />
+                      <span>Visible as elegant title divider</span>
+                    </>
+                  )}
                 </span>
                 <button
                   type="button"
                   onClick={() => updateCustom({ show_executive_role: custom.show_executive_role === false || custom.show_executive_role === "false" ? true : false })}
-                  className="text-brand-600 hover:underline cursor-pointer font-bold select-none text-[11px]"
+                  className="text-slate-900 hover:underline cursor-pointer font-bold select-none text-[11px]"
                 >
                   {custom.show_executive_role === false || custom.show_executive_role === "false" ? "Switch to Show" : "Switch to Hide"}
                 </button>
@@ -1306,7 +1345,7 @@ export function BotanicalSettings({
                   onChange={(e) => updateCustom({ verified_badge: e.target.checked })}
                   className="w-4 h-4 rounded text-brand-600 focus:ring-brand-500 cursor-pointer"
                 />
-                <span className="text-xs font-bold text-foreground flex items-center gap-1">
+                <span className="text-xs font-bold text-slate-900 flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
                   Show Verified Badge
                 </span>
@@ -1316,18 +1355,17 @@ export function BotanicalSettings({
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="text-xs font-bold text-foreground">
+              <label className="text-xs font-bold text-slate-900">
                 Professional Bio / Tagline
               </label>
-              <div className="inline-flex items-center rounded-lg bg-muted/80 p-0.5 border border-border select-none">
+              <div className="inline-flex items-center rounded-lg bg-slate-100 p-0.5 border border-slate-200 select-none">
                 <button
                   type="button"
                   onClick={() => updateCustom({ show_bio: true })}
-                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-                    custom.show_bio !== false && custom.show_bio !== "false"
-                      ? "bg-card text-emerald-600 dark:text-emerald-400 shadow-2xs"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
+                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${custom.show_bio !== false && custom.show_bio !== "false"
+                    ? "bg-white text-emerald-600 dark:text-emerald-400 shadow-2xs"
+                    : "text-slate-500 hover:text-slate-900"
+                    }`}
                 >
                   <Eye className="w-3 h-3" />
                   <span>Show</span>
@@ -1335,11 +1373,10 @@ export function BotanicalSettings({
                 <button
                   type="button"
                   onClick={() => updateCustom({ show_bio: false })}
-                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-                    custom.show_bio === false || custom.show_bio === "false"
-                      ? "bg-red-600 text-white shadow-2xs"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
+                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${custom.show_bio === false || custom.show_bio === "false"
+                    ? "bg-red-600 text-white shadow-2xs"
+                    : "text-slate-500 hover:text-slate-900"
+                    }`}
                 >
                   <EyeOff className="w-3 h-3" />
                   <span>Hide</span>
@@ -1348,22 +1385,31 @@ export function BotanicalSettings({
             </div>
             <textarea
               rows={2}
-              value={custom.bio_override !== undefined ? custom.bio_override : (profile?.bio || "")}
+              value={String(custom.bio_override || profile?.bio || "")}
               placeholder={custom.show_bio === false || custom.show_bio === "false" ? "[Hidden from card]" : (profile?.bio || "e.g. Enterprise digital solutions & strategic consulting.")}
               onChange={(e) => updateCustom({ bio_override: e.target.value })}
               disabled={custom.show_bio === false || custom.show_bio === "false"}
-              className={`w-full rounded-xl border border-input bg-transparent px-3 py-2 text-xs shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-all ${
-                custom.show_bio === false || custom.show_bio === "false" ? "opacity-50 bg-muted/40 cursor-not-allowed line-through" : ""
-              }`}
+              className={`w-full rounded-xl border border-input bg-transparent px-3 py-2 text-xs shadow-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-all ${custom.show_bio === false || custom.show_bio === "false" ? "opacity-50 bg-slate-50 cursor-not-allowed line-through" : ""
+                }`}
             />
             <div className="flex items-center justify-between text-[11px] mt-1">
-              <span className={custom.show_bio === false || custom.show_bio === "false" ? "text-red-600 dark:text-red-400 font-bold" : "text-muted-foreground"}>
-                {custom.show_bio === false || custom.show_bio === "false" ? "🚫 Hidden from digital card & live preview" : "✓ Visible professional bio"}
+              <span className={custom.show_bio === false || custom.show_bio === "false" ? "text-rose-600 font-semibold flex items-center gap-1" : "text-slate-500 font-medium flex items-center gap-1"}>
+                {custom.show_bio === false || custom.show_bio === "false" ? (
+                  <>
+                    <EyeOff className="w-3 h-3" />
+                    <span>Hidden from digital card</span>
+                  </>
+                ) : (
+                  <>
+                    <Eye className="w-3 h-3 text-emerald-600" />
+                    <span>Visible professional bio</span>
+                  </>
+                )}
               </span>
               <button
                 type="button"
                 onClick={() => updateCustom({ show_bio: custom.show_bio === false || custom.show_bio === "false" ? true : false })}
-                className="text-brand-600 hover:underline cursor-pointer font-bold select-none text-[11px]"
+                className="text-slate-900 hover:underline cursor-pointer font-bold select-none text-[11px]"
               >
                 {custom.show_bio === false || custom.show_bio === "false" ? "Switch to Show" : "Switch to Hide"}
               </button>
@@ -1380,7 +1426,7 @@ export function BotanicalSettings({
           {/* Social Links List */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-black uppercase tracking-wider text-muted-foreground">
+              <label className="text-xs font-black uppercase tracking-wider text-slate-500">
                 Configured Platforms ({socialLinks.length})
               </label>
 
@@ -1393,7 +1439,7 @@ export function BotanicalSettings({
                       e.target.value = "";
                     }
                   }}
-                  className="rounded-xl border border-input bg-card px-2.5 py-1 text-xs font-bold text-foreground cursor-pointer"
+                  className="rounded-xl border border-input bg-white px-2.5 py-1 text-xs font-bold text-slate-900 cursor-pointer"
                 >
                   <option value="">+ Add Platform...</option>
                   {SOCIAL_PLATFORMS.map((p) => (
@@ -1406,16 +1452,16 @@ export function BotanicalSettings({
             </div>
 
             {socialLinks.length === 0 ? (
-              <div className="p-8 rounded-2xl border border-dashed border-border/80 text-center space-y-2 bg-muted/10">
-                <p className="text-xs font-bold text-muted-foreground">No social media platforms configured.</p>
-                <p className="text-[11px] text-muted-foreground">Select a platform from the dropdown above to add your links.</p>
+              <div className="p-8 rounded-2xl border border-dashed border-slate-200/80 text-center space-y-2 bg-slate-100/10">
+                <p className="text-xs font-bold text-slate-500">No social media platforms configured.</p>
+                <p className="text-[11px] text-slate-500">Select a platform from the dropdown above to add your links.</p>
               </div>
             ) : (
               <div className="space-y-2">
                 {socialLinks.map((s) => (
                   <div
                     key={s.id}
-                    className="flex items-center gap-2 p-3 rounded-2xl border border-border bg-card shadow-xs"
+                    className="flex items-center gap-2 p-3 rounded-2xl border border-slate-200 bg-white shadow-xs"
                   >
                     <input
                       type="checkbox"
@@ -1424,17 +1470,17 @@ export function BotanicalSettings({
                       className="w-4 h-4 rounded text-brand-600 cursor-pointer"
                       title="Enable / Disable"
                     />
-                    <div className="w-24 text-xs font-extrabold uppercase text-foreground truncate">
+                    <div className="w-24 text-xs font-extrabold uppercase text-slate-900 truncate">
                       {s.name || s.platform}
                     </div>
                     <Input
-                      value={s.url}
+                      value={String(s.url || "")}
                       placeholder={
                         s.platform === "email" ? "mailto:name@domain.com" :
-                        s.platform === "phone" ? "tel:+1234567890" :
-                        s.platform === "whatsapp" ? "https://wa.me/..." :
-                        s.platform === "custom" ? "https://..." :
-                        `https://${s.platform}.com/...`
+                          s.platform === "phone" ? "tel:+1234567890" :
+                            s.platform === "whatsapp" ? "https://wa.me/..." :
+                              s.platform === "custom" ? "https://..." :
+                                `https://${s.platform}.com/...`
                       }
                       onChange={(e) => handleUpdateSocial(s.id, "url", e.target.value)}
                       className="text-xs flex-1"
@@ -1442,7 +1488,7 @@ export function BotanicalSettings({
                     <button
                       type="button"
                       onClick={() => handleDeleteSocial(s.id)}
-                      className="text-muted-foreground hover:text-red-600 p-1.5 rounded-lg transition-colors cursor-pointer"
+                      className="text-slate-500 hover:text-red-600 p-1.5 rounded-lg transition-colors cursor-pointer"
                       title="Delete Platform"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -1461,10 +1507,10 @@ export function BotanicalSettings({
       {activeTab === "quickActions" && (
         <div className="space-y-4 animate-in fade-in-50">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-black uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-black uppercase tracking-wider text-slate-500">
               4 Circular Quick Action Buttons
             </label>
-            <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-foreground">
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-900">
               <input
                 type="checkbox"
                 checked={custom.quick_actions?.enabled !== false}
@@ -1481,8 +1527,8 @@ export function BotanicalSettings({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Phone */}
-            <div className="p-3.5 rounded-2xl border border-border bg-card space-y-2">
-              <div className="flex items-center gap-1.5 font-bold text-xs text-foreground">
+            <div className="p-3.5 rounded-2xl border border-slate-200 bg-white space-y-2">
+              <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900">
                 <Phone className="w-3.5 h-3.5 text-emerald-600" />
                 <span>1. Office Phone</span>
               </div>
@@ -1502,8 +1548,8 @@ export function BotanicalSettings({
             </div>
 
             {/* WhatsApp */}
-            <div className="p-3.5 rounded-2xl border border-border bg-card space-y-2">
-              <div className="flex items-center gap-1.5 font-bold text-xs text-foreground">
+            <div className="p-3.5 rounded-2xl border border-slate-200 bg-white space-y-2">
+              <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900">
                 <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
                 <span>2. WhatsApp Number & Greeting</span>
               </div>
@@ -1536,8 +1582,8 @@ export function BotanicalSettings({
             </div>
 
             {/* Email */}
-            <div className="p-3.5 rounded-2xl border border-border bg-card space-y-2">
-              <div className="flex items-center gap-1.5 font-bold text-xs text-foreground">
+            <div className="p-3.5 rounded-2xl border border-slate-200 bg-white space-y-2">
+              <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900">
                 <Mail className="w-3.5 h-3.5 text-red-500" />
                 <span>3. Email Address</span>
               </div>
@@ -1557,8 +1603,8 @@ export function BotanicalSettings({
             </div>
 
             {/* Website */}
-            <div className="p-3.5 rounded-2xl border border-border bg-card space-y-2">
-              <div className="flex items-center gap-1.5 font-bold text-xs text-foreground">
+            <div className="p-3.5 rounded-2xl border border-slate-200 bg-white space-y-2">
+              <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900">
                 <Globe className="w-3.5 h-3.5 text-blue-500" />
                 <span>4. Website URL</span>
               </div>
@@ -1586,7 +1632,7 @@ export function BotanicalSettings({
       {activeTab === "links" && (
         <div className="space-y-4 animate-in fade-in-50">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-black uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-black uppercase tracking-wider text-slate-500">
               Content Link Cards ({contentLinks.length})
             </label>
             <Button
@@ -1601,182 +1647,185 @@ export function BotanicalSettings({
           </div>
 
           {contentLinks.length === 0 ? (
-            <div className="p-8 rounded-2xl border border-dashed border-border/80 text-center space-y-2 bg-muted/10">
-              <p className="text-xs font-bold text-muted-foreground">No content link cards added.</p>
-              <p className="text-[11px] text-muted-foreground">Click &ldquo;+ Add Link&rdquo; above to add your custom links and services.</p>
+            <div className="p-8 rounded-2xl border border-dashed border-slate-200/80 text-center space-y-2 bg-slate-100/10">
+              <p className="text-xs font-bold text-slate-500">No content link cards added.</p>
+              <p className="text-[11px] text-slate-500">Click &ldquo;+ Add Link&rdquo; above to add your custom links and services.</p>
             </div>
           ) : (
             <div className="space-y-3">
-            {contentLinks.map((link, idx) => (
-              <div
-                key={link.id}
-                className="p-4 rounded-2xl border border-border bg-card shadow-xs space-y-3"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-black text-muted-foreground">#{idx + 1}</span>
-                    <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-foreground">
-                      <input
-                        type="checkbox"
-                        checked={link.featured || false}
-                        onChange={(e) => handleUpdateLink(link.id, { featured: e.target.checked })}
-                        className="w-3.5 h-3.5 rounded text-brand-600"
-                      />
-                      <span className="text-brand-600 font-bold">★ Featured / Highlighted Card</span>
-                    </label>
-                  </div>
-
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => handleMoveLink(idx, "up")}
-                      disabled={idx === 0}
-                      className="p-1 text-muted-foreground hover:text-foreground disabled:opacity-30 cursor-pointer"
-                      title="Move Up"
-                    >
-                      <ChevronUp className="w-4 h-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleMoveLink(idx, "down")}
-                      disabled={idx === contentLinks.length - 1}
-                      className="p-1 text-muted-foreground hover:text-foreground disabled:opacity-30 cursor-pointer"
-                      title="Move Down"
-                    >
-                      <ChevronDown className="w-4 h-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDuplicateLink(link.id)}
-                      className="p-1 text-muted-foreground hover:text-foreground cursor-pointer"
-                      title="Duplicate"
-                    >
-                      <Copy className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteLink(link.id)}
-                      className="p-1 text-muted-foreground hover:text-red-600 cursor-pointer"
-                      title="Delete"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-[11px] font-bold text-muted-foreground block mb-1">
-                      Headline / Title
-                    </label>
-                    <Input
-                      value={link.headline}
-                      placeholder="e.g. Corporate Services & Solutions"
-                      onChange={(e) => handleUpdateLink(link.id, { headline: e.target.value })}
-                      className="text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] font-bold text-muted-foreground block mb-1">
-                      Description / Subtitle
-                    </label>
-                    <Input
-                      value={link.description || ""}
-                      placeholder="e.g. Explore enterprise offerings & portfolio"
-                      onChange={(e) => handleUpdateLink(link.id, { description: e.target.value })}
-                      className="text-xs"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="sm:col-span-2">
-                    <label className="text-[11px] font-bold text-muted-foreground block mb-1">
-                      Target URL
-                    </label>
-                    <Input
-                      value={link.url}
-                      placeholder="https://example.com"
-                      onChange={(e) => handleUpdateLink(link.id, { url: e.target.value })}
-                      className="text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] font-bold text-muted-foreground block mb-1">
-                      Icon Style
-                    </label>
+              {contentLinks.map((link, idx) => (
+                <div
+                  key={link.id}
+                  className="p-4 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-3"
+                >
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="w-9 h-9 rounded-xl border border-input bg-muted/40 flex items-center justify-center shrink-0 shadow-xs" title="Icon Preview">
-                        {renderLinkIconPreview(link.icon)}
-                      </div>
-                      <select
-                        value={
-                          link.icon === "meeting" ? "calendar" :
-                          (link.icon === "briefcase" || link.icon === "corporate" || link.icon === "portfolio") ? "services" :
-                          (link.icon === "file" || link.icon === "pdf" || link.icon === "doc" || link.icon === "download") ? "brochure" :
-                          (link.icon === "map" || link.icon === "office" || link.icon === "headquarters" || link.icon === "address") ? "location" :
-                          (link.icon === "vault" || link.icon === "cloud") ? "drive" :
-                          (link.icon === "website" || link.icon === "portal" || link.icon === "web") ? "globe" :
-                          (link.icon === "mail") ? "email" :
-                          (link.icon === "tel" || link.icon === "call") ? "phone" :
-                          (link.icon === "twitter") ? "x" :
-                          (link.icon === "insta" || link.icon === "ig") ? "instagram" :
-                          (link.icon === "yt") ? "youtube" :
-                          (link.icon === "fb") ? "facebook" :
-                          (link.icon === "tg") ? "telegram" :
-                          (link.icon === "apple" || link.icon === "itunes") ? "apple_music" :
-                          (link.icon === "maps") ? "google_maps" :
-                          (link.icon === "google" || link.icon === "google_reviews") ? "google_business" :
-                          (link.icon || "services")
-                        }
-                        onChange={(e) => handleUpdateLink(link.id, { icon: e.target.value })}
-                        className="w-full rounded-xl border border-input bg-card px-3 py-2 text-xs font-bold text-foreground cursor-pointer"
+                      <span className="text-xs font-black text-slate-500">#{idx + 1}</span>
+                      <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-slate-900">
+                        <input
+                          type="checkbox"
+                          checked={link.featured || false}
+                          onChange={(e) => handleUpdateLink(link.id, { featured: e.target.checked })}
+                          className="w-3.5 h-3.5 rounded text-brand-600"
+                        />
+                        <span className="text-slate-900 font-bold flex items-center gap-1">
+                          <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                          <span>Featured / Highlighted Card</span>
+                        </span>
+                      </label>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleMoveLink(idx, "up")}
+                        disabled={idx === 0}
+                        className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30 cursor-pointer"
+                        title="Move Up"
                       >
-                        <optgroup label="🏢 Business & Professional">
-                          <option value="services">💼 Briefcase / Services</option>
-                          <option value="bank">🏦 Bank / Payment</option>
-                          <option value="calendar">📅 Calendar / Consultation</option>
-                          <option value="location">📍 Map / Headquarters</option>
-                          <option value="brochure">📄 Document / Brochure</option>
-                          <option value="drive">☁️ Cloud / Google Drive</option>
-                          <option value="globe">🌐 Globe / Website</option>
-                          <option value="email">✉️ Email / Contact</option>
-                          <option value="phone">📞 Phone / Call</option>
-                        </optgroup>
-                        <optgroup label="🌐 Social Media & Platforms">
-                          <option value="whatsapp">🟢 WhatsApp</option>
-                          <option value="instagram">📸 Instagram</option>
-                          <option value="linkedin">💼 LinkedIn</option>
-                          <option value="x">𝕏 X (Twitter)</option>
-                          <option value="youtube">▶️ YouTube</option>
-                          <option value="facebook">👥 Facebook</option>
-                          <option value="tiktok">🎵 TikTok</option>
-                          <option value="telegram">✈️ Telegram</option>
-                          <option value="threads">🧵 Threads</option>
-                          <option value="snapchat">👻 Snapchat</option>
-                          <option value="pinterest">📌 Pinterest</option>
-                          <option value="spotify">🎧 Spotify</option>
-                          <option value="apple_music">🍎 Apple Music</option>
-                          <option value="github">🐙 GitHub</option>
-                          <option value="discord">💬 Discord</option>
-                          <option value="reddit">🤖 Reddit</option>
-                          <option value="twitch">🎮 Twitch</option>
-                          <option value="behance">🎨 Behance</option>
-                          <option value="dribbble">🏀 Dribbble</option>
-                          <option value="medium">✍️ Medium</option>
-                          <option value="quora">❓ Quora</option>
-                          <option value="google_business">⭐ Google Reviews</option>
-                          <option value="google_maps">🗺️ Google Maps</option>
-                        </optgroup>
-                      </select>
+                        <ChevronUp className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleMoveLink(idx, "down")}
+                        disabled={idx === contentLinks.length - 1}
+                        className="p-1 text-slate-500 hover:text-slate-900 disabled:opacity-30 cursor-pointer"
+                        title="Move Down"
+                      >
+                        <ChevronDown className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDuplicateLink(link.id)}
+                        className="p-1 text-slate-500 hover:text-slate-900 cursor-pointer"
+                        title="Duplicate"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteLink(link.id)}
+                        className="p-1 text-slate-500 hover:text-red-600 cursor-pointer"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[11px] font-bold text-slate-500 block mb-1">
+                        Headline / Title
+                      </label>
+                      <Input
+                        value={String(link.headline || "")}
+                        placeholder="e.g. Corporate Services & Solutions"
+                        onChange={(e) => handleUpdateLink(link.id, { headline: e.target.value })}
+                        className="text-xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-bold text-slate-500 block mb-1">
+                        Description / Subtitle
+                      </label>
+                      <Input
+                        value={String(link.description || "")}
+                        placeholder="e.g. Explore enterprise offerings & portfolio"
+                        onChange={(e) => handleUpdateLink(link.id, { description: e.target.value })}
+                        className="text-xs"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="sm:col-span-2">
+                      <label className="text-[11px] font-bold text-slate-500 block mb-1">
+                        Target URL
+                      </label>
+                      <Input
+                        value={String(link.url || "")}
+                        placeholder="https://example.com"
+                        onChange={(e) => handleUpdateLink(link.id, { url: e.target.value })}
+                        className="text-xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-bold text-slate-500 block mb-1">
+                        Icon Style
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <div className="w-9 h-9 rounded-xl border border-input bg-slate-50 flex items-center justify-center shrink-0 shadow-xs" title="Icon Preview">
+                          {renderLinkIconPreview(link.icon)}
+                        </div>
+                        <select
+                          value={
+                            link.icon === "meeting" ? "calendar" :
+                              (link.icon === "briefcase" || link.icon === "corporate" || link.icon === "portfolio") ? "services" :
+                                (link.icon === "file" || link.icon === "pdf" || link.icon === "doc" || link.icon === "download") ? "brochure" :
+                                  (link.icon === "map" || link.icon === "office" || link.icon === "headquarters" || link.icon === "address") ? "location" :
+                                    (link.icon === "vault" || link.icon === "cloud") ? "drive" :
+                                      (link.icon === "website" || link.icon === "portal" || link.icon === "web") ? "globe" :
+                                        (link.icon === "mail") ? "email" :
+                                          (link.icon === "tel" || link.icon === "call") ? "phone" :
+                                            (link.icon === "twitter") ? "x" :
+                                              (link.icon === "insta" || link.icon === "ig") ? "instagram" :
+                                                (link.icon === "yt") ? "youtube" :
+                                                  (link.icon === "fb") ? "facebook" :
+                                                    (link.icon === "tg") ? "telegram" :
+                                                      (link.icon === "apple" || link.icon === "itunes") ? "apple_music" :
+                                                        (link.icon === "maps") ? "google_maps" :
+                                                          (link.icon === "google" || link.icon === "google_reviews") ? "google_business" :
+                                                            (link.icon || "services")
+                          }
+                          onChange={(e) => handleUpdateLink(link.id, { icon: e.target.value })}
+                          className="w-full rounded-xl border border-input bg-white px-3 py-2 text-xs font-bold text-slate-900 cursor-pointer"
+                        >
+                          <optgroup label="Business & Professional">
+                            <option value="services">Briefcase / Services</option>
+                            <option value="bank">Bank / Payment</option>
+                            <option value="calendar">Calendar / Consultation</option>
+                            <option value="location">Map / Headquarters</option>
+                            <option value="brochure">Document / Brochure</option>
+                            <option value="drive">Cloud / Google Drive</option>
+                            <option value="globe">Globe / Website</option>
+                            <option value="email">Email / Contact</option>
+                            <option value="phone">Phone / Call</option>
+                          </optgroup>
+                          <optgroup label="Social Media & Platforms">
+                            <option value="whatsapp">WhatsApp</option>
+                            <option value="instagram">Instagram</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="x">X (Twitter)</option>
+                            <option value="youtube">YouTube</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="tiktok">TikTok</option>
+                            <option value="telegram">Telegram</option>
+                            <option value="threads">Threads</option>
+                            <option value="snapchat">Snapchat</option>
+                            <option value="pinterest">Pinterest</option>
+                            <option value="spotify">Spotify</option>
+                            <option value="apple_music">Apple Music</option>
+                            <option value="github">GitHub</option>
+                            <option value="discord">Discord</option>
+                            <option value="reddit">Reddit</option>
+                            <option value="twitch">Twitch</option>
+                            <option value="behance">Behance</option>
+                            <option value="dribbble">Dribbble</option>
+                            <option value="medium">Medium</option>
+                            <option value="quora">Quora</option>
+                            <option value="google_business">Google Reviews</option>
+                            <option value="google_maps">Google Maps</option>
+                          </optgroup>
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
           )}
         </div>
       )}
@@ -1787,10 +1836,10 @@ export function BotanicalSettings({
       {activeTab === "document" && (
         <div className="space-y-4 animate-in fade-in-50">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-black uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-black uppercase tracking-wider text-slate-500">
               Corporate Brochure / PDF Document
             </label>
-            <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-foreground">
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-900">
               <input
                 type="checkbox"
                 checked={custom.document_block?.enabled !== false}
@@ -1810,10 +1859,10 @@ export function BotanicalSettings({
             </label>
           </div>
 
-          <div className="p-4 rounded-2xl border border-border bg-card space-y-4">
+          <div className="p-4 rounded-2xl border border-slate-200 bg-white space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] font-bold text-muted-foreground block mb-1">
+                <label className="text-[11px] font-bold text-slate-500 block mb-1">
                   Document Title
                 </label>
                 <Input
@@ -1834,7 +1883,7 @@ export function BotanicalSettings({
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-muted-foreground block mb-1">
+                <label className="text-[11px] font-bold text-slate-500 block mb-1">
                   Description / Subtitle
                 </label>
                 <Input
@@ -1856,9 +1905,9 @@ export function BotanicalSettings({
             </div>
 
             {/* PDF File Upload or URL */}
-            <div className="p-3.5 rounded-xl border border-border bg-muted/30 space-y-2">
+            <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-foreground">Upload PDF File (Max 20 MB)</span>
+                <span className="text-xs font-bold text-slate-900">Upload PDF File (Max 20 MB)</span>
                 {custom.document_block?.file_url && (
                   <span className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
                     <Check className="w-3.5 h-3.5" /> PDF Attached
@@ -1903,7 +1952,7 @@ export function BotanicalSettings({
               {pdfError && <div className="text-xs text-red-600 font-semibold">{pdfError}</div>}
 
               <div>
-                <label className="text-[11px] font-bold text-muted-foreground block mt-2 mb-1">
+                <label className="text-[11px] font-bold text-slate-500 block mt-2 mb-1">
                   Or Direct PDF URL
                 </label>
                 <Input
@@ -1933,10 +1982,10 @@ export function BotanicalSettings({
       {activeTab === "drive" && (
         <div className="space-y-4 animate-in fade-in-50">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-black uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-black uppercase tracking-wider text-slate-500">
               Google Drive Resource Block
             </label>
-            <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-foreground">
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-900">
               <input
                 type="checkbox"
                 checked={custom.drive_block?.enabled !== false}
@@ -1956,10 +2005,10 @@ export function BotanicalSettings({
             </label>
           </div>
 
-          <div className="p-4 rounded-2xl border border-border bg-card space-y-3">
+          <div className="p-4 rounded-2xl border border-slate-200 bg-white space-y-3">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] font-bold text-muted-foreground block mb-1">
+                <label className="text-[11px] font-bold text-slate-500 block mb-1">
                   Title
                 </label>
                 <Input
@@ -1980,7 +2029,7 @@ export function BotanicalSettings({
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-muted-foreground block mb-1">
+                <label className="text-[11px] font-bold text-slate-500 block mb-1">
                   Description
                 </label>
                 <Input
@@ -2002,7 +2051,7 @@ export function BotanicalSettings({
             </div>
 
             <div>
-              <label className="text-[11px] font-bold text-muted-foreground block mb-1">
+              <label className="text-[11px] font-bold text-slate-500 block mb-1">
                 Shareable Google Drive Link
               </label>
               <Input
@@ -2030,13 +2079,13 @@ export function BotanicalSettings({
          ═══════════════════════════════════════════════════════════════ */}
       {activeTab === "utilities" && (
         <div className="space-y-4 animate-in fade-in-50">
-          <label className="text-xs font-black uppercase tracking-wider text-muted-foreground block">
+          <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
             Actions, Save Contact &amp; QR Code
           </label>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-4 rounded-2xl border border-border bg-card space-y-2">
-              <label className="flex items-center gap-2 cursor-pointer font-bold text-xs text-foreground">
+            <div className="p-4 rounded-2xl border border-slate-200 bg-white space-y-2">
+              <label className="flex items-center gap-2 cursor-pointer font-bold text-xs text-slate-900">
                 <input
                   type="checkbox"
                   checked={custom.save_contact_enabled !== false}
@@ -2045,13 +2094,13 @@ export function BotanicalSettings({
                 />
                 <span>Enable &quot;Save Business Card&quot; (vCard)</span>
               </label>
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-[11px] text-slate-500">
                 Generates and downloads an instant .vcf contact card on user devices.
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl border border-border bg-card space-y-2">
-              <label className="flex items-center gap-2 cursor-pointer font-bold text-xs text-foreground">
+            <div className="p-4 rounded-2xl border border-slate-200 bg-white space-y-2">
+              <label className="flex items-center gap-2 cursor-pointer font-bold text-xs text-slate-900">
                 <input
                   type="checkbox"
                   checked={custom.share_profile_enabled !== false}
@@ -2060,15 +2109,15 @@ export function BotanicalSettings({
                 />
                 <span>Enable &quot;Share Profile&quot; Button</span>
               </label>
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-[11px] text-slate-500">
                 Invokes native mobile share or copies the profile link to the clipboard.
               </p>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl border border-border bg-card space-y-4">
+          <div className="p-4 rounded-2xl border border-slate-200 bg-white space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+              <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
                 <QrCode className="w-4 h-4 text-brand-600" />
                 <span>Live Scannable QR Code</span>
               </span>
@@ -2082,7 +2131,7 @@ export function BotanicalSettings({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] font-bold text-muted-foreground block mb-1">
+                <label className="text-[11px] font-bold text-slate-500 block mb-1">
                   QR Title
                 </label>
                 <Input
@@ -2093,7 +2142,7 @@ export function BotanicalSettings({
               </div>
 
               <div>
-                <label className="text-[11px] font-bold text-muted-foreground block mb-1">
+                <label className="text-[11px] font-bold text-slate-500 block mb-1">
                   QR Subtitle
                 </label>
                 <Input
@@ -2105,7 +2154,7 @@ export function BotanicalSettings({
             </div>
 
             <div>
-              <label className="text-[11px] font-bold text-muted-foreground block mb-1">
+              <label className="text-[11px] font-bold text-slate-500 block mb-1">
                 Target URL (Optional · Defaults to your live profile)
               </label>
               <Input
@@ -2116,8 +2165,8 @@ export function BotanicalSettings({
               />
             </div>
 
-            <div className="pt-2 border-t border-border flex items-center gap-4">
-              <div className="w-16 h-16 rounded-xl border border-border bg-white p-1.5 shadow-2xs flex-shrink-0 flex items-center justify-center">
+            <div className="pt-2 border-t border-slate-200 flex items-center gap-4">
+              <div className="w-16 h-16 rounded-xl border border-slate-200 bg-white p-1.5 shadow-2xs flex-shrink-0 flex items-center justify-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(custom.qr_target_url || "https://digicardo.app")}&margin=2`}
@@ -2127,11 +2176,11 @@ export function BotanicalSettings({
                 />
               </div>
               <div className="space-y-1 text-xs">
-                <div className="font-bold text-foreground flex items-center gap-1.5">
+                <div className="font-bold text-slate-900 flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Real Scannable QR Code Active</span>
                 </div>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-[11px] text-slate-500">
                   Smartphone cameras can directly scan this code to load your profile, or click the card to expand and download.
                 </p>
               </div>
@@ -2142,22 +2191,22 @@ export function BotanicalSettings({
       {/* ── INTERACTIVE CIRCULAR AVATAR CROP MODAL ── */}
       {cropImageSrc && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in select-none">
-          <div className="w-full max-w-md max-h-[92vh] overflow-y-auto bg-card rounded-[28px] sm:rounded-[32px] border border-border p-4 sm:p-6 shadow-2xl space-y-4 text-center">
-            <div className="flex items-center justify-between pb-2 border-b border-border/60">
+          <div className="w-full max-w-md max-h-[92vh] overflow-y-auto bg-white rounded-[28px] sm:rounded-[32px] border border-slate-200 p-4 sm:p-6 shadow-2xl space-y-4 text-center">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200/60">
               <div className="flex items-center gap-2">
                 <Crop className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                <h3 className="text-sm font-extrabold text-foreground">Crop &amp; Position Avatar</h3>
+                <h3 className="text-sm font-extrabold text-slate-900">Crop &amp; Position Avatar</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setCropImageSrc(null)}
-                className="p-1.5 rounded-xl hover:bg-muted text-muted-foreground transition-colors cursor-pointer"
+                className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-500 transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="text-xs text-muted-foreground font-medium">
+            <p className="text-xs text-slate-500 font-medium">
               Drag photo to reposition inside the circle. Adjust slider to zoom.
             </p>
 
@@ -2191,7 +2240,7 @@ export function BotanicalSettings({
 
             {/* Zoom Slider Controls */}
             <div className="space-y-1.5 px-4 pt-2">
-              <div className="flex items-center justify-between text-xs font-bold text-muted-foreground">
+              <div className="flex items-center justify-between text-xs font-bold text-slate-500">
                 <span className="flex items-center gap-1.5">
                   <ZoomOut className="w-3.5 h-3.5" />
                   <span>Zoom</span>
@@ -2208,7 +2257,7 @@ export function BotanicalSettings({
                 step="0.05"
                 value={cropZoom}
                 onChange={(e) => setCropZoom(parseFloat(e.target.value))}
-                className="w-full accent-emerald-600 cursor-pointer h-2 bg-muted rounded-lg"
+                className="w-full accent-emerald-600 cursor-pointer h-2 bg-slate-100 rounded-lg"
               />
             </div>
 
@@ -2217,7 +2266,7 @@ export function BotanicalSettings({
               <button
                 type="button"
                 onClick={() => setCropImageSrc(null)}
-                className="flex-1 py-2.5 rounded-xl border border-border text-xs font-bold hover:bg-muted transition-colors cursor-pointer"
+                className="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-bold hover:bg-slate-100 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -2242,3 +2291,7 @@ export function BotanicalSettings({
     </div>
   );
 }
+
+export default BotanicalSettings;
+
+

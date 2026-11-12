@@ -239,13 +239,16 @@ export default function AppearanceEditorPage() {
         },
       };
 
+      const isAvatarCleared = Boolean(submittedCustom.remove_avatar);
+
       const finalProfile: Profile = {
         ...updated,
-        avatar_url:
-          updated.avatar_url ||
-          submittedCustom.profile_image_url ||
-          submittedCustom.custom_avatar_url ||
-          profile.avatar_url,
+        avatar_url: isAvatarCleared
+          ? ""
+          : (updated.avatar_url ||
+            submittedCustom.profile_image_url ||
+            submittedCustom.custom_avatar_url ||
+            profile.avatar_url),
         cover_url:
           updated.cover_url ||
           submittedCustom.banner_image_url ||
@@ -260,7 +263,7 @@ export default function AppearanceEditorPage() {
         tokens: savedTokens,
       });
       setSaveState("saved");
-      setSuccessToast("Customization saved and published live! 🎉");
+      setSuccessToast("Customization saved and published live.");
       setTimeout(() => setSuccessToast(null), 4000);
     };
 
@@ -333,15 +336,15 @@ export default function AppearanceEditorPage() {
       )}
 
       {/* ── Mobile View Toggle Segmented Control (Hidden on lg) ── */}
-      <div className="flex lg:hidden p-1.5 rounded-2xl bg-muted/60 border border-border/80 text-xs font-bold">
+      <div className="flex lg:hidden p-1.5 rounded-2xl bg-slate-100 border border-slate-200/80 text-xs font-bold">
         <button
           type="button"
           onClick={() => setMobileView("edit")}
           className={cn(
-            "flex-1 py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all select-none",
+            "flex-1 py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all select-none cursor-pointer",
             mobileView === "edit"
-              ? "bg-card text-brand-700 shadow-xs border border-brand-200"
-              : "text-muted-foreground hover:text-foreground"
+              ? "bg-white text-slate-900 shadow-2xs border border-slate-200"
+              : "text-slate-500 hover:text-slate-900"
           )}
         >
           <Palette className="w-3.5 h-3.5" />
@@ -352,10 +355,10 @@ export default function AppearanceEditorPage() {
           type="button"
           onClick={() => setMobileView("preview")}
           className={cn(
-            "flex-1 py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all select-none",
+            "flex-1 py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all select-none cursor-pointer",
             mobileView === "preview"
-              ? "bg-card text-brand-700 shadow-xs border border-brand-200"
-              : "text-muted-foreground hover:text-foreground"
+              ? "bg-white text-slate-900 shadow-2xs border border-slate-200"
+              : "text-slate-500 hover:text-slate-900"
           )}
         >
           <Smartphone className="w-3.5 h-3.5" />
@@ -418,9 +421,17 @@ export default function AppearanceEditorPage() {
               />
               <ButtonStylePicker
                 selectedRadius={themeTokens.button_radius}
+                selectedStyle={themeTokens.button_style}
+                selectedAnimation={themeTokens.animation}
                 stepNumber={3}
                 onChangeRadius={(radius: ButtonRadius) =>
                   setThemeTokens((prev) => ({ ...prev, button_radius: radius }))
+                }
+                onChangeStyle={(style) =>
+                  setThemeTokens((prev) => ({ ...prev, button_style: style }))
+                }
+                onChangeAnimation={(anim) =>
+                  setThemeTokens((prev) => ({ ...prev, animation: anim }))
                 }
               />
             </div>
@@ -430,22 +441,10 @@ export default function AppearanceEditorPage() {
         {/* Right Column: Sticky Live Preview (5 cols) */}
         <div
           className={cn(
-            "lg:col-span-5 lg:sticky lg:top-20 self-start",
+            "lg:col-span-5 lg:sticky lg:top-24 self-start",
             mobileView === "edit" && "hidden lg:block"
           )}
         >
-          {/* View Live Page link */}
-          {profile?.username && (
-            <a
-              href={`/${profile.username}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mb-3 flex items-center justify-end gap-1.5 text-xs font-bold text-brand-600 hover:text-brand-700 hover:underline transition-colors"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              <span>View Live Page</span>
-            </a>
-          )}
           <AppearancePreview
             profile={profile}
             blocks={blocks}
@@ -475,7 +474,7 @@ export default function AppearanceEditorPage() {
                 <button
                   type="button"
                   onClick={handleDiscardChanges}
-                  className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-xs font-bold text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+                  className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-xs font-bold text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                 >
                   Discard
                 </button>
@@ -483,16 +482,16 @@ export default function AppearanceEditorPage() {
                   type="button"
                   onClick={handleSaveAppearance}
                   disabled={isSaving}
-                  className="flex items-center gap-1.5 px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs sm:text-sm font-extrabold shadow-cta transition-all active:scale-95 disabled:opacity-60"
+                  className="flex items-center gap-1.5 px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-900 text-xs sm:text-sm font-extrabold shadow-sm transition-all active:scale-95 disabled:opacity-60 cursor-pointer"
                 >
                   {isSaving ? (
                     <>
-                      <div className="w-3.5 h-3.5 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                      <div className="w-3.5 h-3.5 rounded-full border-2 border-slate-900/40 border-t-slate-900 animate-spin" />
                       <span>Saving...</span>
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-3.5 h-3.5" />
+                      <Sparkles className="w-3.5 h-3.5 text-slate-900" />
                       <span>Save &amp; Publish</span>
                     </>
                   )}
@@ -505,3 +504,4 @@ export default function AppearanceEditorPage() {
     </div>
   );
 }
+

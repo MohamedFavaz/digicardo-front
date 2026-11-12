@@ -9,7 +9,7 @@ function getBaseUrl(): string {
     const internalUrl =
       process.env.NEXT_PUBLIC_API_URL ||
       process.env.LARAVEL_INTERNAL_API_URL ||
-      "https://lightslategray-snake-169437.hostingersite.com";
+      "http://127.0.0.1:8000";
     return `${internalUrl}/api/v1`;
   }
   // In the browser, strictly route through the same-origin Next.js BFF v1 proxy
@@ -119,3 +119,4 @@ export const apiClient = {
   delete: <T>(endpoint: string, options?: RequestOptions) =>
     request<T>(endpoint, "DELETE", options),
 };
+

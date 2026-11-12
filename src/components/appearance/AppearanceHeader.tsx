@@ -42,37 +42,26 @@ export function AppearanceHeader({
   const username = profile?.username || "demo";
 
   return (
-    <div className="pb-6 border-b border-border flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="pb-6 border-b border-slate-200/70 flex flex-col md:flex-row md:items-center justify-between gap-4">
       {/* Top Bar Left: Back Link + Studio Title & Save Indicator */}
       <div className="space-y-1">
-        <div className="flex items-center gap-2.5 flex-wrap text-xs text-muted-foreground font-medium">
+        <div className="flex items-center gap-2.5 flex-wrap text-xs font-medium mb-1">
           <Link
             href="/dashboard/page"
-            className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-700 font-bold transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 text-xs font-semibold shadow-2xs transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>My Page</span>
           </Link>
 
-          <span>·</span>
-
-          {templateName && (
-            <>
-              <span className="font-semibold text-foreground/80">
-                {templateName}
-              </span>
-              <span>·</span>
-            </>
-          )}
-
           {/* Real-Time Save Status Badge */}
           <div
             className={cn(
-              "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium transition-all",
-              saveState === "saving" && "bg-amber-50 text-amber-800 border border-amber-200",
-              saveState === "saved" && "bg-emerald-50 text-emerald-800 border border-emerald-200",
-              saveState === "unsaved" && "bg-primary/10 text-primary border border-primary/20",
-              saveState === "error" && "bg-rose-50 text-rose-700 border border-rose-200"
+              "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold transition-all border",
+              saveState === "saving" && "bg-amber-50 text-amber-800 border-amber-200",
+              saveState === "saved" && "bg-emerald-50 text-emerald-800 border-emerald-200/80",
+              saveState === "unsaved" && "bg-amber-50 text-amber-800 border-amber-200/80",
+              saveState === "error" && "bg-rose-50 text-rose-700 border-rose-200"
             )}
           >
             {saveState === "saving" && (
@@ -89,7 +78,7 @@ export function AppearanceHeader({
             )}
             {saveState === "unsaved" && (
               <>
-                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
                 <span>Unsaved changes</span>
               </>
             )}
@@ -102,23 +91,23 @@ export function AppearanceHeader({
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+        <div className="flex items-center gap-2.5 flex-wrap pt-0.5">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
             Customize Appearance
           </h1>
           {templateName && (
-            <span className="px-2.5 py-0.5 rounded-full bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 font-extrabold text-xs border border-brand-200 dark:border-brand-800">
+            <span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-200/60">
               {templateName}
             </span>
           )}
         </div>
 
-        <p className="text-xs text-muted-foreground max-w-xl">
+        <p className="text-slate-500 font-medium text-xs max-w-xl mt-1 leading-relaxed">
           Visual theme studio with real-time mobile preview. Customize color tokens, background, typography, and button styling.
         </p>
 
         {errorMessage && (
-          <div className="rounded-lg border border-rose-200 bg-rose-50/50 p-2.5 text-xs text-rose-700 font-medium flex items-center gap-2 mt-2">
+          <div className="rounded-xl border border-rose-200 bg-rose-50 p-2.5 text-xs text-rose-700 font-medium flex items-center gap-2 mt-2">
             <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
             <span>{errorMessage}</span>
           </div>
@@ -128,46 +117,37 @@ export function AppearanceHeader({
       {/* Top Bar Right: Action Controls */}
       <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
         {hasUnsavedChanges && onDiscard && (
-          <Button
+          <button
             type="button"
-            variant="ghost"
-            size="sm"
             onClick={onDiscard}
             disabled={isSaving}
-            className="rounded-lg text-xs font-semibold h-9 px-3 text-muted-foreground hover:text-foreground"
+            className="px-4 py-2 rounded-full border border-slate-200/80 bg-white text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all shadow-2xs cursor-pointer"
           >
             Discard
-          </Button>
+          </button>
         )}
 
-        <Button
+        <button
           type="button"
-          variant="outline"
-          size="sm"
           onClick={onResetToDefault}
-          className="rounded-lg text-xs font-medium gap-1.5 h-9 px-3 border-border"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all cursor-pointer"
           title="Reset current styling to template defaults"
         >
-          <RotateCcw className="w-3.5 h-3.5 text-muted-foreground" />
+          <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
           <span>Reset Defaults</span>
-        </Button>
+        </button>
 
         <Link href={`/${username}`} target="_blank" rel="noreferrer">
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-lg text-xs font-medium gap-1.5 h-9 px-3 border-border"
-          >
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all cursor-pointer">
             <span>Preview Live</span>
-            <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
-          </Button>
+            <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+          </span>
         </Link>
 
-        <Button
+        <button
           onClick={onSave}
           disabled={isSaving}
-          size="sm"
-          className="gap-2 bg-primary hover:bg-primary/90 text-white font-medium text-xs rounded-lg h-9 px-4"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all shadow-xs active:scale-95 disabled:opacity-50 cursor-pointer"
         >
           {isSaving ? (
             <>
@@ -180,7 +160,7 @@ export function AppearanceHeader({
               <span>{hasUnsavedChanges ? "Save Changes" : "Saved"}</span>
             </>
           )}
-        </Button>
+        </button>
       </div>
     </div>
   );

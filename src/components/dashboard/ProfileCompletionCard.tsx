@@ -35,7 +35,7 @@ export function ProfileCompletionCard({ profile, blocks }: ProfileCompletionCard
     },
     {
       id: "links",
-      title: isTemplateChosen ? "Template Choosed" : "Links & Content",
+      title: isTemplateChosen ? "Template" : "Links & Content",
       completed: isTemplateChosen || blocks.length > 0,
       href: "/dashboard/page",
       icon: isTemplateChosen ? Layers : Link2,
@@ -64,12 +64,12 @@ export function ProfileCompletionCard({ profile, blocks }: ProfileCompletionCard
           </div>
           <div>
             <h3 className="text-base font-black text-foreground">
-              Profile Setup Checklist
+              Profile Setup
             </h3>
             <p className="text-xs text-muted-foreground font-medium">
               {percentage === 100
-                ? "Your Digicardo profile is fully configured and live!"
-                : `Complete ${steps.length - completedCount} more step${steps.length - completedCount === 1 ? "" : "s"} to unlock full profile conversion potential.`}
+                ? "Profile is fully configured and live!"
+                : `${steps.length - completedCount} step${steps.length - completedCount === 1 ? "" : "s"} left to complete setup.`}
             </p>
           </div>
         </div>

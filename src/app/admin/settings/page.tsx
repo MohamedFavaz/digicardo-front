@@ -1,16 +1,16 @@
 "use client";
 import { useEffect, useState, FormEvent } from "react";
 import Link from "next/link";
-import { 
-  Settings, 
-  Key, 
-  CreditCard, 
-  CheckCircle2, 
-  AlertCircle, 
-  Eye, 
-  EyeOff, 
-  Save, 
-  ShieldCheck, 
+import {
+  Settings,
+  Key,
+  CreditCard,
+  CheckCircle2,
+  AlertCircle,
+  Eye,
+  EyeOff,
+  Save,
+  ShieldCheck,
   Calendar,
   Lock,
   Sparkles
@@ -120,39 +120,48 @@ export default function AdminSettingsPage() {
 
   return (
     <div suppressHydrationWarning className="p-6 lg:p-8 max-w-[1200px] mx-auto space-y-6">
-      {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 p-6 rounded-2xl text-white shadow-md">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight">System Settings & Security</h1>
-            <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
-              Admin Configuration
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Settings</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60">
+              Configuration
             </span>
           </div>
-          <p className="text-indigo-200 text-xs mt-1.5 max-w-xl leading-relaxed">
-            Configure validity subscription pricing tiers, currency settings, and maintain the master administrator password and credentials.
+          <p className="text-slate-500 text-xs mt-1 leading-relaxed font-medium">
+            Manage validity pricing, currencies, and admin credentials.
           </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/admin/plans"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
+          >
+            <CreditCard className="w-4 h-4" />
+            <span>Validity Plans</span>
+          </Link>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Validity Plan Pricing (7 cols) */}
-        <div className="lg:col-span-7 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+        <div className="lg:col-span-7 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
           <div className="p-5 border-b border-slate-100 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
                 <CreditCard className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="text-sm font-bold text-slate-900">Validity Plan Pricing</h2>
-                <p className="text-[11px] text-slate-400">Configure prices for each duration tier</p>
+                <h2 className="text-sm font-bold text-slate-900">Plan Pricing</h2>
+                <p className="text-[11px] text-slate-400">Pricing per duration tier</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-xs font-semibold text-slate-400">{plans.length} Plans</span>
               <Link
                 href="/admin/plans"
-                className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 hover:underline"
+                className="text-xs font-semibold text-slate-700 hover:text-black flex items-center gap-1 hover:underline"
               >
                 Manage Plans &rarr;
               </Link>
@@ -180,7 +189,7 @@ export default function AdminSettingsPage() {
                 return (
                   <div key={plan.id} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/50 transition-colors">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-50 to-indigo-100 border border-indigo-200 text-indigo-700 font-extrabold text-xs flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/60 text-slate-800 font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-2xs">
                         {plan.months >= 12 ? `${plan.months / 12}Y` : `${plan.months}M`}
                       </div>
                       <div>
@@ -199,7 +208,7 @@ export default function AdminSettingsPage() {
                             [plan.id]: { ...edit, symbol: e.target.value },
                           }))
                         }
-                        className="h-8 px-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-indigo-500"
+                        className="h-8 px-2.5 rounded-full border border-slate-200 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-slate-400"
                       >
                         {CURRENCY_OPTIONS.map(c => (
                           <option key={c} value={c}>
@@ -219,14 +228,14 @@ export default function AdminSettingsPage() {
                             [plan.id]: { ...edit, price: e.target.value },
                           }))
                         }
-                        className="w-24 h-8 px-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 text-right focus:outline-none focus:border-indigo-500"
+                        className="w-24 h-8 px-3 rounded-full border border-slate-200 text-xs font-bold text-slate-800 text-right focus:outline-none focus:border-slate-400"
                       />
 
                       {/* Save button */}
                       <button
                         onClick={() => savePlanPrice(plan.id)}
                         disabled={isSaving}
-                        className="h-8 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all disabled:opacity-50 flex items-center gap-1 shadow-sm"
+                        className="h-8 px-4 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all disabled:opacity-50 flex items-center gap-1 shadow-xs"
                       >
                         <Save className="w-3 h-3" />
                         <span>{isSaving ? "…" : "Save"}</span>
@@ -234,9 +243,8 @@ export default function AdminSettingsPage() {
 
                       {msg && (
                         <span
-                          className={`text-[11px] font-bold ${
-                            msg.ok ? "text-emerald-600" : "text-red-500"
-                          }`}
+                          className={`text-[11px] font-bold ${msg.ok ? "text-emerald-600" : "text-red-500"
+                            }`}
                         >
                           {msg.text}
                         </span>
@@ -250,9 +258,9 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* Security & Password (5 cols) */}
-        <div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+        <div className="lg:col-span-5 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
           <div className="p-5 border-b border-slate-100 flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
               <Lock className="w-4 h-4" />
             </div>
             <div>
@@ -264,11 +272,10 @@ export default function AdminSettingsPage() {
           <form onSubmit={handleChangePassword} className="p-5 space-y-4">
             {pwMsg && (
               <div
-                className={`p-3 rounded-xl text-xs font-semibold flex items-center gap-2 ${
-                  pwMsg.ok
-                    ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
-                    : "bg-red-50 text-red-700 border border-red-200"
-                }`}
+                className={`p-3 rounded-xl text-xs font-semibold flex items-center gap-2 ${pwMsg.ok
+                  ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                  : "bg-red-50 text-red-700 border border-red-200"
+                  }`}
               >
                 {pwMsg.ok ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
                 <span>{pwMsg.text}</span>
@@ -287,7 +294,7 @@ export default function AdminSettingsPage() {
                   onChange={e => setPwForm(p => ({ ...p, current_password: e.target.value }))}
                   required
                   placeholder="••••••••"
-                  className="w-full h-9 px-3 pr-10 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all"
+                  className="w-full h-9 px-3 pr-10 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all"
                 />
                 <button
                   type="button"
@@ -311,7 +318,7 @@ export default function AdminSettingsPage() {
                 required
                 minLength={8}
                 placeholder="At least 8 characters"
-                className="w-full h-9 px-3 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all"
+                className="w-full h-9 px-3 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all"
               />
             </div>
 
@@ -326,7 +333,7 @@ export default function AdminSettingsPage() {
                 onChange={e => setPwForm(p => ({ ...p, password_confirmation: e.target.value }))}
                 required
                 placeholder="Repeat new password"
-                className="w-full h-9 px-3 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all"
+                className="w-full h-9 px-3 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all"
               />
             </div>
 
@@ -334,7 +341,7 @@ export default function AdminSettingsPage() {
               <button
                 type="submit"
                 disabled={pwSaving}
-                className="w-full h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all disabled:opacity-50 shadow-sm flex items-center justify-center gap-1.5"
+                className="w-full h-10 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all disabled:opacity-50 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
               >
                 <Key className="w-4 h-4" />
                 <span>{pwSaving ? "Updating Password…" : "Update Admin Password"}</span>

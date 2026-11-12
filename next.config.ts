@@ -37,8 +37,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Ensure headers for security and edge caching
+  // Ensure headers for security and edge caching (production only for static immutable cache)
   async headers() {
+    if (process.env.NODE_ENV !== "production") {
+      return [];
+    }
     return [
       {
         source: "/_next/static/:path*",

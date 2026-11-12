@@ -7,7 +7,6 @@ import {
   Copy,
   Check,
   Sparkles,
-  QrCode,
   Palette,
   Share2,
   Zap,
@@ -107,17 +106,6 @@ export function DashboardWelcome({ user, profile }: DashboardWelcomeProps) {
           >
             <span>View Live</span>
             <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
-          </Button>
-        </Link>
-
-        <Link href="/dashboard/qr">
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-10 px-4 rounded-xl text-xs font-bold gap-1.5 border-border/80 bg-card hover:bg-muted/80 shadow-2xs active:scale-95"
-          >
-            <QrCode className="w-3.5 h-3.5 text-brand-600" />
-            <span>QR &amp; NFC</span>
           </Button>
         </Link>
 

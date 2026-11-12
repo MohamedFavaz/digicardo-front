@@ -18,6 +18,7 @@ export const ALLOWED_PATH_PREFIXES = [
   "notifications",
   "account",
   "admin",
+  "agent",
 ];
 
 export function isPathAllowed(pathSegments: string[]): boolean {

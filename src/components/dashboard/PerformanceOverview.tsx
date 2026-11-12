@@ -105,9 +105,9 @@ export function PerformanceOverview({ timeseries }: PerformanceOverviewProps) {
               Share your page link or scan your QR code to start tracking live visitors.
             </p>
           </div>
-          <Link href="/dashboard/qr">
+          <Link href="/dashboard/page">
             <Button size="sm" className="h-9 px-4 rounded-xl text-xs font-extrabold bg-brand-600 text-white hover:bg-brand-700 shadow-cta">
-              Share QR &amp; NFC
+              Edit My Page
             </Button>
           </Link>
         </div>

@@ -24,25 +24,25 @@ export const DigicardoLogo: React.FC<DigicardoLogoProps> = ({
   variant = "default",
 }) => {
   const sizeMap = {
-    xs: { box: "w-6 h-6 rounded-lg", img: 24, text: "text-sm", badge: "text-[8px]" },
-    sm: { box: "w-7 h-7 rounded-xl", img: 28, text: "text-base", badge: "text-[9px]" },
-    md: { box: "w-9 h-9 rounded-xl", img: 36, text: "text-lg", badge: "text-[9px]" },
-    lg: { box: "w-11 h-11 rounded-2xl", img: 44, text: "text-xl", badge: "text-[10px]" },
-    xl: { box: "w-14 h-14 rounded-2xl", img: 56, text: "text-2xl", badge: "text-xs" },
+    xs: { box: "w-6 h-6 rounded-lg p-1", img: 18, text: "text-sm", badge: "text-[8px] px-1.5" },
+    sm: { box: "w-8 h-8 rounded-xl p-1.5", img: 24, text: "text-[15px]", badge: "text-[9px] px-1.5" },
+    md: { box: "w-10 h-10 rounded-xl p-2", img: 26, text: "text-[17px]", badge: "text-[10px] px-2" },
+    lg: { box: "w-11 h-11 rounded-xl p-2.5", img: 30, text: "text-lg", badge: "text-[10px] px-2" },
+    xl: { box: "w-14 h-14 rounded-2xl p-3", img: 40, text: "text-2xl", badge: "text-xs px-2.5" },
   };
 
   const currentSize = sizeMap[size];
 
   return (
-    <div className={cn("inline-flex items-center gap-2.5 select-none", className)}>
+    <div className={cn("inline-flex items-center gap-3 select-none", className)}>
       {/* ── Logo Mark ── */}
       <div
         className={cn(
           currentSize.box,
           "relative flex items-center justify-center overflow-hidden flex-shrink-0 transition-transform duration-200 group-hover:scale-105",
           variant === "badge"
-            ? "bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-sm p-1"
-            : "bg-white text-black border border-zinc-200/90 dark:border-zinc-700 shadow-sm p-0.5",
+            ? "bg-white dark:bg-zinc-900 border border-[#E3DFD9] dark:border-zinc-800 shadow-2xs"
+            : "bg-white text-slate-900 border border-[#E3DFD9] dark:border-zinc-700 shadow-2xs",
           iconClassName
         )}
       >
@@ -59,21 +59,21 @@ export const DigicardoLogo: React.FC<DigicardoLogoProps> = ({
       {/* ── Wordmark ── */}
       {showWordmark && (
         <div className="flex flex-col">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <span
               className={cn(
-                "font-black tracking-tight leading-none text-foreground",
+                "font-bold tracking-tight leading-none text-slate-900 dark:text-white",
                 currentSize.text,
                 wordmarkClassName
               )}
             >
-              Digi<span className="text-primary font-black">cardo</span>
+              Digicardo
             </span>
 
             {proBadge && (
               <span
                 className={cn(
-                  "font-mono uppercase font-extrabold px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 leading-none",
+                  "font-semibold uppercase tracking-wider rounded-full bg-[#EDF5F2] text-[#0F766E] border border-[#D5EBE4] py-0.5 leading-none",
                   currentSize.badge
                 )}
               >
@@ -83,7 +83,7 @@ export const DigicardoLogo: React.FC<DigicardoLogoProps> = ({
           </div>
 
           {subtitle && (
-            <span className="text-[10px] font-mono text-muted-foreground font-medium leading-tight mt-0.5 tracking-wider">
+            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 leading-tight mt-1">
               {subtitle}
             </span>
           )}

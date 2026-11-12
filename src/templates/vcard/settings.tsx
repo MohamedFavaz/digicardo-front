@@ -33,10 +33,14 @@ export function VCardSettings({
       {/* ── 3. Button Shapes & Roundness ── */}
       <ButtonStylePicker
         selectedRadius={themeTokens.button_radius}
+        selectedStyle={themeTokens.button_style}
+        selectedAnimation={themeTokens.animation}
         stepNumber={3}
         onChangeRadius={(radius: ButtonRadius) =>
           onChangeTheme({ button_radius: radius })
         }
+        onChangeStyle={(style) => onChangeTheme({ button_style: style })}
+        onChangeAnimation={(anim) => onChangeTheme({ animation: anim })}
       />
 
       {/* ── 4. Business Card Settings (VCard specific) ── */}
@@ -51,3 +55,5 @@ export function VCardSettings({
     </div>
   );
 }
+
+export default VCardSettings;

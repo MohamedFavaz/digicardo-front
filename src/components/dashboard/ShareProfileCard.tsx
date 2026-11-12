@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Share2, Copy, Check, Globe, QrCode, ExternalLink } from "lucide-react";
+import { Share2, Copy, Check, Globe, ExternalLink } from "lucide-react";
 
 export interface ShareProfileCardProps {
   username?: string;
@@ -65,19 +65,8 @@ export function ShareProfileCard({ username = "username" }: ShareProfileCardProp
         </p>
       )}
 
-      {/* Quick Action Buttons */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 pt-1">
-        <Link href="/dashboard/qr" className="w-full">
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full h-9 rounded-xl text-xs font-bold gap-1.5 border-border/80 bg-card hover:bg-muted/70 shadow-2xs"
-          >
-            <QrCode className="w-3.5 h-3.5 text-brand-600" />
-            <span>QR &amp; NFC</span>
-          </Button>
-        </Link>
-
+      {/* Quick Action Button */}
+      <div className="pt-1">
         <Link href={`/${username}`} target="_blank" rel="noreferrer" className="w-full">
           <Button
             variant="outline"
@@ -85,7 +74,7 @@ export function ShareProfileCard({ username = "username" }: ShareProfileCardProp
             className="w-full h-9 rounded-xl text-xs font-bold gap-1.5 border-border/80 bg-card hover:bg-muted/70 shadow-2xs"
           >
             <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
-            <span>View Page</span>
+            <span>View Live Page</span>
           </Button>
         </Link>
       </div>

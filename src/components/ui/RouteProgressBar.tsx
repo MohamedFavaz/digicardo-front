@@ -45,7 +45,7 @@ function ProgressBar({ visible }: { visible: boolean }) {
         top: 0,
         left: 0,
         right: 0,
-        height: "3px",
+        height: "2.5px",
         zIndex: 9999,
         pointerEvents: "none",
       }}
@@ -54,12 +54,12 @@ function ProgressBar({ visible }: { visible: boolean }) {
         style={{
           height: "100%",
           width: `${width}%`,
-          background: "linear-gradient(90deg, #5B3FE4, #8b5cf6, #ec4899)",
+          background: "linear-gradient(90deg, #0f172a, #334155, #0f172a)",
           transition: visible
             ? "width 0.2s ease-out"
             : "width 0.3s ease-in, opacity 0.3s ease 0.3s",
           opacity: width === 0 ? 0 : 1,
-          boxShadow: "0 0 10px rgba(91,63,228,0.6)",
+          boxShadow: "0 0 8px rgba(15, 23, 42, 0.35)",
           borderRadius: "0 2px 2px 0",
           willChange: "width",
         }}

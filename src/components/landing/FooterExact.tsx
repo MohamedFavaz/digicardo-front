@@ -9,7 +9,7 @@ export function FooterExact() {
   return (
     <footer className="border-t border-slate-200/80 bg-white py-12 text-slate-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-        
+
         {/* ── Top Row: Logo/Tagline, Contact & WhatsApp, Links & Socials ── */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
           {/* Left Column (5 cols): Logo + Tagline */}
@@ -63,13 +63,13 @@ export function FooterExact() {
           {/* Right Column (3 cols): Links & Social Icons */}
           <div className="md:col-span-3 flex flex-col md:items-end space-y-3">
             <nav className="flex items-center gap-5 text-xs sm:text-sm font-medium text-slate-600">
-              <Link href="/privacy" className="hover:text-[#5B3FE4] transition-colors">
+              <Link href="/privacy" className="hover:text-slate-900 transition-colors">
                 Privacy
               </Link>
-              <Link href="/terms" className="hover:text-[#5B3FE4] transition-colors">
+              <Link href="/terms" className="hover:text-slate-900 transition-colors">
                 Terms
               </Link>
-              <a href="#contact" className="hover:text-[#5B3FE4] transition-colors">
+              <a href="#contact" className="hover:text-slate-900 transition-colors">
                 Contact
               </a>
             </nav>
@@ -79,7 +79,7 @@ export function FooterExact() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-full flex items-center justify-center hover:text-[#5B3FE4] hover:bg-slate-100 transition-colors"
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:text-slate-900 hover:bg-slate-100 transition-colors"
                 aria-label="Instagram"
               >
                 <Instagram className="w-4 h-4 stroke-[2]" />
@@ -88,7 +88,7 @@ export function FooterExact() {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-full flex items-center justify-center hover:text-[#5B3FE4] hover:bg-slate-100 transition-colors"
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:text-slate-900 hover:bg-slate-100 transition-colors"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="w-4 h-4 stroke-[2]" />
@@ -97,7 +97,7 @@ export function FooterExact() {
                 href="https://youtube.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-full flex items-center justify-center hover:text-[#5B3FE4] hover:bg-slate-100 transition-colors"
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:text-slate-900 hover:bg-slate-100 transition-colors"
                 aria-label="YouTube"
               >
                 <Youtube className="w-4 h-4 stroke-[2]" />

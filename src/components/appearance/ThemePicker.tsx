@@ -170,41 +170,41 @@ export function ThemePicker({
   const activeThemeName = currentPreset ? currentPreset.name : "Custom Palette";
 
   return (
-    <div className="rounded-3xl border border-border/80 bg-card overflow-hidden shadow-sm transition-all">
+    <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs transition-all">
       {/* ── Collapsible Header Button ── */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-5 sm:p-6 flex items-center justify-between text-left hover:bg-muted/30 transition-colors select-none group"
+        className="w-full p-5 sm:p-6 flex items-center justify-between text-left hover:bg-slate-50/60 transition-colors select-none group cursor-pointer"
       >
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-8 h-8 rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center font-black text-xs flex-shrink-0">
+        <div className="flex items-center gap-3.5 min-w-0">
+          <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-800 border border-slate-200/60 flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-2xs">
             {stepNumber}
           </div>
           <div className="space-y-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="font-extrabold text-base text-foreground tracking-tight group-hover:text-brand-600 transition-colors">
+              <h3 className="font-bold text-sm text-slate-900 tracking-tight group-hover:text-black transition-colors">
                 Color Palette &amp; Themes
               </h3>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-50 border border-brand-200/80 text-brand-700 text-[10px] font-bold">
-                <Palette className="w-3 h-3 text-brand-600" />
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200/60 text-slate-700 text-[10px] font-semibold">
+                <Palette className="w-3 h-3 text-slate-500" />
                 <span>Presets</span>
               </span>
-              <span className="text-[11px] text-brand-700 font-bold bg-brand-50 border border-brand-200/70 px-2 py-0.5 rounded-md">
+              <span className="text-[11px] text-slate-700 font-semibold bg-slate-100 border border-slate-200/60 px-2.5 py-0.5 rounded-full">
                 Active: {activeThemeName}
               </span>
             </div>
-            <p className="text-xs text-muted-foreground font-medium line-clamp-1">
+            <p className="text-xs text-slate-500 font-medium line-clamp-1">
               Select a designer-crafted palette or fine-tune exact hex tokens for your brand.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0 ml-3">
-          <span className="hidden sm:inline text-xs font-bold text-muted-foreground group-hover:text-foreground transition-colors">
+          <span className="hidden sm:inline text-xs font-semibold text-slate-500 group-hover:text-slate-900 transition-colors">
             {isOpen ? "Collapse" : "Customize"}
           </span>
-          <div className="w-7 h-7 rounded-xl bg-muted/60 flex items-center justify-center text-muted-foreground group-hover:text-foreground group-hover:bg-muted transition-all">
+          <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-hover:text-slate-900 transition-all">
             {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </div>
         </div>
@@ -212,13 +212,13 @@ export function ThemePicker({
 
       {/* ── Collapsible Content Body ── */}
       {isOpen && (
-        <div className="p-6 sm:p-7 pt-4 space-y-6 border-t border-border/60 animate-in fade-in duration-200">
+        <div className="p-6 sm:p-7 pt-4 space-y-6 border-t border-slate-100 animate-in fade-in duration-200">
           {/* Category Filter Bar */}
           <div className="flex items-center justify-between gap-3 flex-wrap">
-            <span className="text-xs font-black text-foreground uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
               Curated Palettes ({filteredPresets.length})
             </span>
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-muted/60 border border-border/70 text-[11px] font-bold">
+            <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 border border-slate-200/70 text-[11px] font-semibold">
               {[
                 { id: "all", label: "All", icon: Sparkles },
                 { id: "light", label: "Light", icon: Sun },
@@ -233,10 +233,10 @@ export function ThemePicker({
                     type="button"
                     onClick={() => setFilterCategory(cat.id as typeof filterCategory)}
                     className={cn(
-                      "px-2.5 py-1 rounded-lg flex items-center gap-1 transition-all select-none",
+                      "px-2.5 py-1 rounded-lg flex items-center gap-1 transition-all select-none cursor-pointer",
                       isActive
-                        ? "bg-card text-foreground shadow-xs border border-border/80"
-                        : "text-muted-foreground hover:text-foreground"
+                        ? "bg-slate-900 text-white shadow-2xs font-bold"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
                     )}
                   >
                     <Icon className="w-3 h-3" />
@@ -249,283 +249,283 @@ export function ThemePicker({
 
           {/* ── Curated Preset Grid with Visual Mini-Card Previews ── */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        {filteredPresets.map((preset) => {
-          const isCurrent =
-            themeTokens.color_background.toLowerCase() ===
-              preset.tokens.color_background?.toLowerCase() &&
-            themeTokens.color_accent.toLowerCase() ===
-              preset.tokens.color_accent?.toLowerCase();
+            {filteredPresets.map((preset) => {
+              const isCurrent =
+                themeTokens.color_background.toLowerCase() ===
+                preset.tokens.color_background?.toLowerCase() &&
+                themeTokens.color_accent.toLowerCase() ===
+                preset.tokens.color_accent?.toLowerCase();
 
-          const bg = preset.tokens.color_background || "#ffffff";
-          const surface = preset.tokens.color_surface || "#f8fafc";
-          const accent = preset.tokens.color_accent || "#6366f1";
-          const textPrimary = preset.tokens.color_text_primary || "#0f172a";
-          const textSecondary = preset.tokens.color_text_secondary || "#64748b";
+              const bg = preset.tokens.color_background || "#ffffff";
+              const surface = preset.tokens.color_surface || "#f8fafc";
+              const accent = preset.tokens.color_accent || "#6366f1";
+              const textPrimary = preset.tokens.color_text_primary || "#0f172a";
+              const textSecondary = preset.tokens.color_text_secondary || "#64748b";
 
-          return (
-            <button
-              key={preset.id}
-              type="button"
-              onClick={() => onChangeTheme(preset.tokens)}
-              className={cn(
-                "relative p-3.5 rounded-2xl border transition-all text-left flex flex-col justify-between gap-3 group select-none shadow-2xs hover:shadow-md hover:-translate-y-0.5",
-                isCurrent
-                  ? "bg-card border-brand-500 ring-2 ring-brand-500/25 shadow-sm"
-                  : "bg-card border-border/80 hover:border-brand-300/80 hover:bg-muted/20"
-              )}
-            >
-              {/* Mini Profile Mockup Preview */}
-              <div
-                className="w-full h-24 rounded-xl p-2 flex flex-col justify-between border border-black/5 overflow-hidden transition-transform duration-200 group-hover:scale-[1.02]"
-                style={{ backgroundColor: bg }}
-              >
-                {/* Simulated Header */}
-                <div className="flex items-center gap-1.5">
+              return (
+                <button
+                  key={preset.id}
+                  type="button"
+                  onClick={() => onChangeTheme(preset.tokens)}
+                  className={cn(
+                    "relative p-3.5 rounded-2xl border transition-all text-left flex flex-col justify-between gap-3 group select-none shadow-2xs hover:shadow-md hover:-translate-y-0.5 cursor-pointer",
+                    isCurrent
+                      ? "bg-white border-2 border-slate-900 shadow-xs"
+                      : "bg-white border-slate-200/80 hover:border-slate-300 hover:bg-slate-50/50"
+                  )}
+                >
+                  {/* Mini Profile Mockup Preview */}
                   <div
-                    className="w-4 h-4 rounded-full flex-shrink-0 shadow-2xs"
-                    style={{ backgroundColor: accent }}
-                  />
-                  <div className="space-y-0.5 flex-1">
-                    <div
-                      className="h-1.5 w-12 rounded-full opacity-80"
-                      style={{ backgroundColor: textPrimary }}
-                    />
-                    <div
-                      className="h-1 w-8 rounded-full opacity-50"
-                      style={{ backgroundColor: textSecondary }}
-                    />
-                  </div>
-                </div>
-
-                {/* Simulated Link Buttons */}
-                <div className="space-y-1">
-                  <div
-                    className="h-3 w-full rounded-md shadow-2xs flex items-center px-1.5"
-                    style={{ backgroundColor: surface }}
-                  >
-                    <div
-                      className="h-1 w-10 rounded-full"
-                      style={{ backgroundColor: textPrimary }}
-                    />
-                  </div>
-                  <div
-                    className="h-3 w-full rounded-md shadow-2xs flex items-center justify-between px-1.5"
-                    style={{ backgroundColor: accent }}
-                  >
-                    <div className="h-1 w-8 rounded-full bg-white/90" />
-                    <div className="h-1 w-2 rounded-full bg-white/60" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom Meta & Color Swatches */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-foreground group-hover:text-brand-600 transition-colors truncate">
-                    {preset.name}
-                  </span>
-                  {isCurrent ? (
-                    <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-brand-600 text-white shadow-xs">
-                      <Check className="w-2.5 h-2.5 stroke-[3]" />
-                    </span>
-                  ) : null}
-                </div>
-
-                <p className="text-[10px] text-muted-foreground line-clamp-1">
-                  {preset.description}
-                </p>
-
-                {/* Color Swatch Dots */}
-                <div className="flex items-center gap-1 pt-1">
-                  <div
-                    className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs"
+                    className="w-full h-24 rounded-xl p-2 flex flex-col justify-between border border-black/5 overflow-hidden transition-transform duration-200 group-hover:scale-[1.02]"
                     style={{ backgroundColor: bg }}
-                    title={`Background: ${bg}`}
-                  />
-                  <div
-                    className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs"
-                    style={{ backgroundColor: surface }}
-                    title={`Surface: ${surface}`}
-                  />
-                  <div
-                    className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs"
-                    style={{ backgroundColor: accent }}
-                    title={`Accent: ${accent}`}
-                  />
-                  <span className="text-[10px] font-mono text-muted-foreground ml-auto uppercase">
-                    {accent}
-                  </span>
-                </div>
+                  >
+                    {/* Simulated Header */}
+                    <div className="flex items-center gap-1.5">
+                      <div
+                        className="w-4 h-4 rounded-full flex-shrink-0 shadow-2xs"
+                        style={{ backgroundColor: accent }}
+                      />
+                      <div className="space-y-0.5 flex-1">
+                        <div
+                          className="h-1.5 w-12 rounded-full opacity-80"
+                          style={{ backgroundColor: textPrimary }}
+                        />
+                        <div
+                          className="h-1 w-8 rounded-full opacity-50"
+                          style={{ backgroundColor: textSecondary }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Simulated Link Buttons */}
+                    <div className="space-y-1">
+                      <div
+                        className="h-3 w-full rounded-md shadow-2xs flex items-center px-1.5"
+                        style={{ backgroundColor: surface }}
+                      >
+                        <div
+                          className="h-1 w-10 rounded-full"
+                          style={{ backgroundColor: textPrimary }}
+                        />
+                      </div>
+                      <div
+                        className="h-3 w-full rounded-md shadow-2xs flex items-center justify-between px-1.5"
+                        style={{ backgroundColor: accent }}
+                      >
+                        <div className="h-1 w-8 rounded-full bg-white/90" />
+                        <div className="h-1 w-2 rounded-full bg-white/60" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom Meta & Color Swatches */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-900 group-hover:text-black transition-colors truncate">
+                        {preset.name}
+                      </span>
+                      {isCurrent ? (
+                        <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-slate-900 text-white shadow-xs">
+                          <Check className="w-2.5 h-2.5 stroke-[3]" />
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <p className="text-[10px] text-slate-500 line-clamp-1">
+                      {preset.description}
+                    </p>
+
+                    {/* Color Swatch Dots */}
+                    <div className="flex items-center gap-1 pt-1">
+                      <div
+                        className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs"
+                        style={{ backgroundColor: bg }}
+                        title={`Background: ${bg}`}
+                      />
+                      <div
+                        className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs"
+                        style={{ backgroundColor: surface }}
+                        title={`Surface: ${surface}`}
+                      />
+                      <div
+                        className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-2xs"
+                        style={{ backgroundColor: accent }}
+                        title={`Accent: ${accent}`}
+                      />
+                      <span className="text-[10px] font-mono text-slate-500 ml-auto uppercase">
+                        {accent}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* ── Expandable Custom Precision Palette Studio ── */}
+          <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 overflow-hidden transition-all">
+            <button
+              type="button"
+              onClick={() => setShowCustom(!showCustom)}
+              className="flex items-center justify-between w-full p-4 text-xs font-bold text-slate-900 hover:text-black hover:bg-slate-100/60 transition-colors select-none cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <Layers className="w-4 h-4 text-slate-800" />
+                <span className="font-extrabold">Custom Color Token Studio</span>
+                <span className="text-[10px] text-slate-500 font-normal">
+                  (Set exact brand hex codes)
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
+                <span>{showCustom ? "Collapse Studio" : "Open Token Editor"}</span>
+                {showCustom ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </div>
             </button>
-          );
-        })}
-      </div>
 
-      {/* ── Expandable Custom Precision Palette Studio ── */}
-      <div className="rounded-2xl border border-border/80 bg-muted/20 overflow-hidden transition-all">
-        <button
-          type="button"
-          onClick={() => setShowCustom(!showCustom)}
-          className="flex items-center justify-between w-full p-4 text-xs font-bold text-foreground hover:text-brand-600 hover:bg-muted/40 transition-colors select-none"
-        >
-          <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-brand-600" />
-            <span className="font-extrabold">Custom Color Token Studio</span>
-            <span className="text-[10px] text-muted-foreground font-normal">
-              (Set exact brand hex codes)
-            </span>
+            {showCustom && (
+              <div className="p-5 pt-1 space-y-4 border-t border-slate-200/80 animate-in fade-in-50 duration-200">
+                <p className="text-[11px] text-slate-500 font-medium">
+                  These design tokens are passed into your profile template. Click the color pip or edit the hex values directly.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                  {/* Background Color */}
+                  <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-900">
+                        Background Canvas
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => copyHex(themeTokens.color_background, "bg")}
+                        className="text-[10px] text-slate-400 hover:text-slate-900 flex items-center gap-1 transition-colors cursor-pointer"
+                      >
+                        <Copy className="w-2.5 h-2.5" />
+                        <span>{copiedKey === "bg" ? "Copied" : "Copy"}</span>
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="relative">
+                        <input
+                          type="color"
+                          value={themeTokens.color_background}
+                          onChange={(e) => onChangeTheme({ color_background: e.target.value })}
+                          className="w-10 h-10 rounded-xl border border-slate-200 p-0.5 bg-white cursor-pointer shadow-2xs"
+                        />
+                      </div>
+                      <Input
+                        type="text"
+                        value={themeTokens.color_background}
+                        onChange={(e) => onChangeTheme({ color_background: e.target.value })}
+                        className="font-mono text-xs font-bold h-10 uppercase bg-white border-slate-200"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Surface / Card Color */}
+                  <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-900">
+                        Surface / Cards
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => copyHex(themeTokens.color_surface, "surface")}
+                        className="text-[10px] text-slate-400 hover:text-slate-900 flex items-center gap-1 transition-colors cursor-pointer"
+                      >
+                        <Copy className="w-2.5 h-2.5" />
+                        <span>{copiedKey === "surface" ? "Copied" : "Copy"}</span>
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="relative">
+                        <input
+                          type="color"
+                          value={themeTokens.color_surface}
+                          onChange={(e) => onChangeTheme({ color_surface: e.target.value })}
+                          className="w-10 h-10 rounded-xl border border-slate-200 p-0.5 bg-white cursor-pointer shadow-2xs"
+                        />
+                      </div>
+                      <Input
+                        type="text"
+                        value={themeTokens.color_surface}
+                        onChange={(e) => onChangeTheme({ color_surface: e.target.value })}
+                        className="font-mono text-xs font-bold h-10 uppercase bg-white border-slate-200"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Primary Text */}
+                  <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-900">
+                        Primary Headings
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => copyHex(themeTokens.color_text_primary, "text1")}
+                        className="text-[10px] text-slate-400 hover:text-slate-900 flex items-center gap-1 transition-colors cursor-pointer"
+                      >
+                        <Copy className="w-2.5 h-2.5" />
+                        <span>{copiedKey === "text1" ? "Copied" : "Copy"}</span>
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="relative">
+                        <input
+                          type="color"
+                          value={themeTokens.color_text_primary}
+                          onChange={(e) => onChangeTheme({ color_text_primary: e.target.value })}
+                          className="w-10 h-10 rounded-xl border border-slate-200 p-0.5 bg-white cursor-pointer shadow-2xs"
+                        />
+                      </div>
+                      <Input
+                        type="text"
+                        value={themeTokens.color_text_primary}
+                        onChange={(e) => onChangeTheme({ color_text_primary: e.target.value })}
+                        className="font-mono text-xs font-bold h-10 uppercase bg-white border-slate-200"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Accent Button */}
+                  <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-900">
+                        Action / Accent Button
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => copyHex(themeTokens.color_accent, "accent")}
+                        className="text-[10px] text-slate-400 hover:text-slate-900 flex items-center gap-1 transition-colors cursor-pointer"
+                      >
+                        <Copy className="w-2.5 h-2.5" />
+                        <span>{copiedKey === "accent" ? "Copied" : "Copy"}</span>
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="relative">
+                        <input
+                          type="color"
+                          value={themeTokens.color_accent}
+                          onChange={(e) => onChangeTheme({ color_accent: e.target.value })}
+                          className="w-10 h-10 rounded-xl border border-slate-200 p-0.5 bg-white cursor-pointer shadow-2xs"
+                        />
+                      </div>
+                      <Input
+                        type="text"
+                        value={themeTokens.color_accent}
+                        onChange={(e) => onChangeTheme({ color_accent: e.target.value })}
+                        className="font-mono text-xs font-bold h-10 uppercase bg-white border-slate-200"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-          <div className="flex items-center gap-1.5 text-xs font-bold text-brand-600">
-            <span>{showCustom ? "Collapse Studio" : "Open Token Editor"}</span>
-            {showCustom ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </div>
-        </button>
-
-        {showCustom && (
-          <div className="p-5 pt-1 space-y-4 border-t border-border/60 animate-in fade-in-50 duration-200">
-            <p className="text-[11px] text-muted-foreground">
-              These design tokens are passed into your profile template. Click the color pip or edit the hex values directly.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-              {/* Background Color */}
-              <div className="p-3.5 rounded-2xl bg-card border border-border/80 shadow-2xs space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-extrabold text-foreground">
-                    Background Canvas
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => copyHex(themeTokens.color_background, "bg")}
-                    className="text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
-                  >
-                    <Copy className="w-2.5 h-2.5" />
-                    <span>{copiedKey === "bg" ? "Copied" : "Copy"}</span>
-                  </button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <input
-                      type="color"
-                      value={themeTokens.color_background}
-                      onChange={(e) => onChangeTheme({ color_background: e.target.value })}
-                      className="w-10 h-10 rounded-xl border border-border/80 p-0.5 bg-card cursor-pointer shadow-2xs"
-                    />
-                  </div>
-                  <Input
-                    type="text"
-                    value={themeTokens.color_background}
-                    onChange={(e) => onChangeTheme({ color_background: e.target.value })}
-                    className="font-mono text-xs font-bold h-10 uppercase bg-background"
-                  />
-                </div>
-              </div>
-
-              {/* Surface / Card Color */}
-              <div className="p-3.5 rounded-2xl bg-card border border-border/80 shadow-2xs space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-extrabold text-foreground">
-                    Surface / Cards
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => copyHex(themeTokens.color_surface, "surface")}
-                    className="text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
-                  >
-                    <Copy className="w-2.5 h-2.5" />
-                    <span>{copiedKey === "surface" ? "Copied" : "Copy"}</span>
-                  </button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <input
-                      type="color"
-                      value={themeTokens.color_surface}
-                      onChange={(e) => onChangeTheme({ color_surface: e.target.value })}
-                      className="w-10 h-10 rounded-xl border border-border/80 p-0.5 bg-card cursor-pointer shadow-2xs"
-                    />
-                  </div>
-                  <Input
-                    type="text"
-                    value={themeTokens.color_surface}
-                    onChange={(e) => onChangeTheme({ color_surface: e.target.value })}
-                    className="font-mono text-xs font-bold h-10 uppercase bg-background"
-                  />
-                </div>
-              </div>
-
-              {/* Primary Text */}
-              <div className="p-3.5 rounded-2xl bg-card border border-border/80 shadow-2xs space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-extrabold text-foreground">
-                    Primary Headings
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => copyHex(themeTokens.color_text_primary, "text1")}
-                    className="text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
-                  >
-                    <Copy className="w-2.5 h-2.5" />
-                    <span>{copiedKey === "text1" ? "Copied" : "Copy"}</span>
-                  </button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <input
-                      type="color"
-                      value={themeTokens.color_text_primary}
-                      onChange={(e) => onChangeTheme({ color_text_primary: e.target.value })}
-                      className="w-10 h-10 rounded-xl border border-border/80 p-0.5 bg-card cursor-pointer shadow-2xs"
-                    />
-                  </div>
-                  <Input
-                    type="text"
-                    value={themeTokens.color_text_primary}
-                    onChange={(e) => onChangeTheme({ color_text_primary: e.target.value })}
-                    className="font-mono text-xs font-bold h-10 uppercase bg-background"
-                  />
-                </div>
-              </div>
-
-              {/* Accent Button */}
-              <div className="p-3.5 rounded-2xl bg-card border border-border/80 shadow-2xs space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-extrabold text-foreground">
-                    Action / Accent Button
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => copyHex(themeTokens.color_accent, "accent")}
-                    className="text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
-                  >
-                    <Copy className="w-2.5 h-2.5" />
-                    <span>{copiedKey === "accent" ? "Copied" : "Copy"}</span>
-                  </button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <input
-                      type="color"
-                      value={themeTokens.color_accent}
-                      onChange={(e) => onChangeTheme({ color_accent: e.target.value })}
-                      className="w-10 h-10 rounded-xl border border-border/80 p-0.5 bg-card cursor-pointer shadow-2xs"
-                    />
-                  </div>
-                  <Input
-                    type="text"
-                    value={themeTokens.color_accent}
-                    onChange={(e) => onChangeTheme({ color_accent: e.target.value })}
-                    className="font-mono text-xs font-bold h-10 uppercase bg-background"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
-  )}
-</div>
   );
 }

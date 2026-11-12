@@ -9,42 +9,42 @@ export function FeaturesRow() {
       title: "Instant Sharing",
       description: "Share via link or QR code",
       icon: Share2,
-      bgColor: "#eeebfc",
-      textColor: "#5B3FE4",
+      bgColor: "#f1f5f9",
+      textColor: "#0f172a",
     },
     {
       title: "Works on Any Device",
       description: "Mobile, tablet or desktop",
       icon: Smartphone,
-      bgColor: "#eeebfc",
-      textColor: "#5B3FE4",
+      bgColor: "#f1f5f9",
+      textColor: "#0f172a",
     },
     {
       title: "Professional Design",
       description: "Clean and modern look",
       icon: PenTool,
-      bgColor: "#eeebfc",
-      textColor: "#5B3FE4",
+      bgColor: "#f1f5f9",
+      textColor: "#0f172a",
     },
     {
       title: "Always Yours",
       description: "Update anytime, anywhere",
       icon: ShieldCheck,
-      bgColor: "#e8f8f0",
-      textColor: "#10b981",
+      bgColor: "#0f172a",
+      textColor: "#ffffff",
     },
   ];
 
   return (
     <section id="features" className="py-12 sm:py-16 bg-white border-y border-slate-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6 text-center">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-6 text-center">
           {features.map((feature, idx) => {
             const Icon = feature.icon;
             return (
               <div key={idx} className="flex flex-col items-center group">
                 <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-200 group-hover:scale-105 shadow-2xs"
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-200 group-hover:scale-105 shadow-2xs border border-slate-200/60"
                   style={{
                     backgroundColor: feature.bgColor,
                     color: feature.textColor,

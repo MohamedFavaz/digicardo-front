@@ -1,18 +1,18 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { 
-  Phone, 
-  Mail, 
-  Building2, 
-  AtSign, 
-  MessageSquare, 
-  Check, 
-  X, 
-  Copy, 
-  Trash2, 
-  UserPlus, 
-  Calendar, 
+import {
+  Phone,
+  Mail,
+  Building2,
+  AtSign,
+  MessageSquare,
+  Check,
+  X,
+  Copy,
+  Trash2,
+  UserPlus,
+  Calendar,
   Clock,
   Search,
   CheckCircle2,
@@ -34,8 +34,8 @@ interface AccessRequest {
 }
 
 const STATUS_FILTERS = [
-  { key: "all", label: "All Requests" },
-  { key: "pending", label: "Pending Review" },
+  { key: "all", label: "All" },
+  { key: "pending", label: "Pending" },
   { key: "approved", label: "Approved" },
   { key: "rejected", label: "Rejected" },
 ];
@@ -63,11 +63,10 @@ function CopyButton({ text, label }: { text: string; label?: string }) {
         setTimeout(() => setCopied(false), 2000);
       }}
       title={`Copy ${label || text}`}
-      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium transition-all ${
-        copied 
-          ? "bg-emerald-100 text-emerald-700" 
-          : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800"
-      }`}
+      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium transition-all ${copied
+        ? "bg-emerald-100 text-emerald-700"
+        : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800"
+        }`}
     >
       {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3 text-slate-400" />}
       <span>{copied ? "Copied" : "Copy"}</span>
@@ -190,44 +189,47 @@ export default function AdminAccessRequestsPage() {
         </div>
       )}
 
-      {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 p-6 rounded-2xl text-white shadow-md">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight">Customer Access Requests</h1>
-            {pendingCount > 0 && (
-              <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-400 text-amber-950 shadow-sm animate-pulse">
-                {pendingCount} Pending Action
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Access Requests</h1>
+            {pendingCount > 0 ? (
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-200">
+                {pendingCount} Pending
+              </span>
+            ) : (
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60">
+                All reviewed
               </span>
             )}
           </div>
-          <p className="text-indigo-200 text-xs mt-1.5 max-w-xl leading-relaxed">
-            Review incoming access requests submitted by customers from the landing page and registration form. Every detail typed by the customer—including their mobile number, desired handle, and brand—is captured below.
+          <p className="text-slate-500 text-xs mt-1 leading-relaxed font-medium">
+            Review customer inquiries, approve handles, and provision accounts.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Link
             href="/admin/admin-panel"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-indigo-900 text-xs font-bold shadow hover:bg-indigo-50 transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
           >
             <UserPlus className="w-4 h-4" />
-            <span>Admin User Panel</span>
+            <span>Provision User</span>
           </Link>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div className="flex items-center gap-1.5 flex-wrap">
           {STATUS_FILTERS.map(f => (
             <button
               key={f.key}
               onClick={() => setStatusFilter(f.key)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                statusFilter === f.key
-                  ? "bg-indigo-600 text-white shadow-sm"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              }`}
+              className={`px-4 py-1.5 rounded-full text-xs transition-all cursor-pointer ${statusFilter === f.key
+                ? "bg-slate-900 text-white shadow-2xs font-bold"
+                : "text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-medium"
+                }`}
             >
               {f.label}
             </button>
@@ -236,12 +238,12 @@ export default function AdminAccessRequestsPage() {
 
         <div className="flex items-center gap-3">
           <div className="relative flex-1 sm:w-80">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search by name, mobile, email, handle…"
-              className="w-full h-9 pl-9 pr-3 rounded-xl border border-slate-200 text-xs placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all"
+              className="w-full h-9 pl-9 pr-4 rounded-full border border-slate-200/90 bg-white text-xs text-slate-800 placeholder-slate-400 shadow-2xs focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-300 transition-all"
             />
           </div>
           <span className="text-xs font-medium text-slate-400 whitespace-nowrap">
@@ -292,20 +294,14 @@ export default function AdminAccessRequestsPage() {
             return (
               <div
                 key={req.id}
-                className={`bg-white border rounded-2xl p-5 sm:p-6 shadow-sm transition-all hover:shadow-md ${
-                  req.status === "pending"
-                    ? "border-amber-200/80 bg-amber-50/10"
-                    : req.status === "approved"
-                    ? "border-emerald-200/80 bg-emerald-50/5"
-                    : "border-slate-200 opacity-75"
-                }`}
+                className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-2xs transition-all hover:shadow-xs"
               >
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
                   {/* Left Column: Customer Profile & Typed Data */}
                   <div className="flex-1 min-w-0 space-y-4">
                     {/* Header: Avatar, Name, Status, Date */}
                     <div className="flex items-start gap-3.5">
-                      <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white font-bold text-base flex items-center justify-center shadow-sm flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-800 font-bold text-sm flex items-center justify-center shadow-2xs flex-shrink-0 border border-slate-200/60">
                         {initial}
                       </div>
 
@@ -315,15 +311,14 @@ export default function AdminAccessRequestsPage() {
 
                           {/* Status Badge */}
                           <span
-                            className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold inline-flex items-center gap-1 ${
-                              req.status === "pending"
-                                ? "bg-amber-100 text-amber-800 border border-amber-300"
-                                : req.status === "approved"
-                                ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
-                                : "bg-red-100 text-red-700 border border-red-200"
-                            }`}
+                            className={`px-3 py-0.5 rounded-full text-[11px] font-bold inline-flex items-center gap-1.5 ${req.status === "pending"
+                              ? "bg-amber-50 text-amber-800 border border-amber-200/60"
+                              : req.status === "approved"
+                                ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
+                                : "bg-red-50 text-red-700 border border-red-200/60"
+                              }`}
                           >
-                            {req.status === "pending" && <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />}
+                            {req.status === "pending" && <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />}
                             {req.status === "approved" && <Check className="w-3 h-3 text-emerald-600" />}
                             {req.status === "rejected" && <X className="w-3 h-3 text-red-500" />}
                             {req.status.toUpperCase()}
@@ -331,8 +326,8 @@ export default function AdminAccessRequestsPage() {
 
                           {/* Handle Badge if provided */}
                           {desiredHandle && (
-                            <span className="px-2 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 text-[11px] font-mono font-bold flex items-center gap-1">
-                              <AtSign className="w-3 h-3" />
+                            <span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200/60 text-[11px] font-mono font-bold flex items-center gap-1">
+                              <AtSign className="w-3 h-3 text-slate-400" />
                               {desiredHandle}
                             </span>
                           )}
@@ -348,17 +343,17 @@ export default function AdminAccessRequestsPage() {
                     {/* Customer Typed Attributes Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2.5 pt-1">
                       {/* Mobile Number - Highlighted */}
-                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0">
+                      <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50/80 border border-slate-100">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center flex-shrink-0">
                             <Phone className="w-3.5 h-3.5" />
                           </div>
                           <div className="min-w-0">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Mobile Number</p>
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Mobile Number</p>
                             {req.phone ? (
                               <a
                                 href={`tel:${req.phone}`}
-                                className="text-xs font-bold text-slate-900 hover:text-indigo-600 transition-colors truncate block"
+                                className="text-xs font-bold text-slate-900 hover:text-black transition-colors truncate block"
                               >
                                 {req.phone}
                               </a>
@@ -371,16 +366,16 @@ export default function AdminAccessRequestsPage() {
                       </div>
 
                       {/* Email Address */}
-                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <div className="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center flex-shrink-0">
+                      <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50/80 border border-slate-100">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center flex-shrink-0">
                             <Mail className="w-3.5 h-3.5" />
                           </div>
                           <div className="min-w-0">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Email Address</p>
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Email Address</p>
                             <a
                               href={`mailto:${req.email}`}
-                              className="text-xs font-bold text-slate-900 hover:text-indigo-600 transition-colors truncate block"
+                              className="text-xs font-bold text-slate-900 hover:text-black transition-colors truncate block"
                             >
                               {req.email}
                             </a>
@@ -390,13 +385,13 @@ export default function AdminAccessRequestsPage() {
                       </div>
 
                       {/* Business / Organization */}
-                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center flex-shrink-0">
+                      <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50/80 border border-slate-100">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center flex-shrink-0">
                             <Building2 className="w-3.5 h-3.5" />
                           </div>
                           <div className="min-w-0">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Organization / Brand</p>
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Organization / Brand</p>
                             <span className="text-xs font-bold text-slate-900 truncate block">
                               {req.business_name || "Individual / Creator"}
                             </span>
@@ -408,9 +403,9 @@ export default function AdminAccessRequestsPage() {
 
                     {/* Customer Typed Message & Requirements */}
                     {messageText && (
-                      <div className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200 text-slate-700 space-y-1">
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                          <MessageSquare className="w-3.5 h-3.5 text-indigo-500" />
+                      <div className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-100 text-slate-700 space-y-1">
+                        <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                          <MessageSquare className="w-3.5 h-3.5 text-slate-600" />
                           <span>Customer Note / Requirements</span>
                         </div>
                         <p className="text-xs leading-relaxed text-slate-800 whitespace-pre-wrap pl-5 font-normal">
@@ -421,8 +416,8 @@ export default function AdminAccessRequestsPage() {
 
                     {/* Review Note if any */}
                     {req.review_note && (
-                      <div className="text-[11px] text-slate-500 bg-slate-100/70 px-3 py-1.5 rounded-lg border border-slate-200/60 inline-flex items-center gap-1.5">
-                        <span className="font-semibold text-slate-700">Admin Note:</span>
+                      <div className="text-[11px] text-slate-600 bg-slate-100/70 px-3 py-1.5 rounded-full border border-slate-200/60 inline-flex items-center gap-1.5">
+                        <span className="font-semibold text-slate-800">Admin Note:</span>
                         <span>{req.review_note}</span>
                       </div>
                     )}
@@ -433,10 +428,10 @@ export default function AdminAccessRequestsPage() {
                     {/* Quick Provision Button */}
                     <Link
                       href={provisionUrl}
-                      className="inline-flex items-center justify-center gap-2 h-9 px-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold border border-indigo-200 transition-all"
+                      className="inline-flex items-center justify-center gap-2 h-9 px-4 rounded-full bg-white hover:bg-slate-50 text-slate-700 hover:text-black text-xs font-semibold border border-slate-200 shadow-2xs transition-all"
                     >
                       <UserPlus className="w-3.5 h-3.5" />
-                      <span>Provision User in Panel</span>
+                      <span>Provision in Panel</span>
                     </Link>
 
                     {/* Review Buttons */}
@@ -446,13 +441,13 @@ export default function AdminAccessRequestsPage() {
                           value={reviewNote[req.id] || ""}
                           onChange={e => setReviewNote(prev => ({ ...prev, [req.id]: e.target.value }))}
                           placeholder="Optional review note…"
-                          className="h-8 px-2.5 rounded-lg border border-slate-200 text-xs placeholder-slate-400 focus:outline-none focus:border-indigo-400 w-full"
+                          className="h-8 px-3 rounded-full border border-slate-200 text-xs placeholder-slate-400 focus:outline-none focus:border-slate-400 w-full"
                         />
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleReview(req.id, "approve")}
                             disabled={reviewing === req.id}
-                            className="flex-1 inline-flex items-center justify-center gap-1 h-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-all disabled:opacity-50"
+                            className="flex-1 inline-flex items-center justify-center gap-1 h-8 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-xs transition-all disabled:opacity-50 cursor-pointer active:scale-95"
                           >
                             <Check className="w-3.5 h-3.5" />
                             <span>{reviewing === req.id ? "Approving…" : "Approve"}</span>
@@ -460,7 +455,7 @@ export default function AdminAccessRequestsPage() {
                           <button
                             onClick={() => handleReview(req.id, "reject")}
                             disabled={reviewing === req.id}
-                            className="flex-1 inline-flex items-center justify-center gap-1 h-8 rounded-xl bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold transition-all disabled:opacity-50"
+                            className="flex-1 inline-flex items-center justify-center gap-1 h-8 rounded-full bg-white hover:bg-red-50 text-red-600 border border-slate-200 hover:border-red-200 text-xs font-semibold transition-all disabled:opacity-50 cursor-pointer"
                           >
                             <X className="w-3.5 h-3.5" />
                             <span>Reject</span>
@@ -476,7 +471,7 @@ export default function AdminAccessRequestsPage() {
                           <button
                             onClick={() => handleReview(req.id, "approve")}
                             disabled={reviewing === req.id}
-                            className="flex-1 inline-flex items-center justify-center gap-1 h-8 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-xs font-bold border border-emerald-200 transition-all disabled:opacity-50"
+                            className="flex-1 inline-flex items-center justify-center gap-1 h-8 rounded-full bg-white text-emerald-700 hover:bg-emerald-50 text-xs font-semibold border border-slate-200 shadow-2xs transition-all disabled:opacity-50"
                           >
                             <Check className="w-3.5 h-3.5" />
                             <span>Switch to Approved</span>
@@ -485,7 +480,7 @@ export default function AdminAccessRequestsPage() {
                           <button
                             onClick={() => handleReview(req.id, "reject")}
                             disabled={reviewing === req.id}
-                            className="flex-1 inline-flex items-center justify-center gap-1 h-8 rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 text-xs font-bold border border-amber-200 transition-all disabled:opacity-50"
+                            className="flex-1 inline-flex items-center justify-center gap-1 h-8 rounded-full bg-white text-amber-700 hover:bg-amber-50 text-xs font-semibold border border-slate-200 shadow-2xs transition-all disabled:opacity-50"
                           >
                             <X className="w-3.5 h-3.5" />
                             <span>Revoke / Reject</span>
@@ -498,7 +493,7 @@ export default function AdminAccessRequestsPage() {
                     <button
                       onClick={() => handleDelete(req.id, req.name)}
                       disabled={deleting === req.id}
-                      className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 text-xs font-semibold transition-all disabled:opacity-50 mt-1"
+                      className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 text-xs font-medium transition-all disabled:opacity-50 mt-1 cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       <span>{deleting === req.id ? "Deleting…" : "Delete Request"}</span>

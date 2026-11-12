@@ -122,41 +122,41 @@ export function TypographyPicker({
   const activeFontLabel = FONT_METADATA[selectedFont]?.label ?? selectedFont;
 
   return (
-    <div className="rounded-3xl border border-border/80 bg-card overflow-hidden shadow-sm transition-all">
+    <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs transition-all">
       {/* ── Collapsible Header Button ── */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-5 sm:p-6 flex items-center justify-between text-left hover:bg-muted/30 transition-colors select-none group"
+        className="w-full p-5 sm:p-6 flex items-center justify-between text-left hover:bg-slate-50/60 transition-colors select-none group cursor-pointer"
       >
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-8 h-8 rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center font-black text-xs flex-shrink-0">
+        <div className="flex items-center gap-3.5 min-w-0">
+          <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-800 border border-slate-200/60 flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-2xs">
             {stepNumber}
           </div>
           <div className="space-y-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="font-extrabold text-base text-foreground tracking-tight group-hover:text-brand-600 transition-colors">
+              <h3 className="font-bold text-sm text-slate-900 tracking-tight group-hover:text-black transition-colors">
                 Typography &amp; Fonts
               </h3>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-50 border border-brand-200/80 text-brand-700 text-[10px] font-bold">
-                <Type className="w-3 h-3 text-brand-600" />
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200/60 text-slate-700 text-[10px] font-semibold">
+                <Type className="w-3 h-3 text-slate-500" />
                 <span>Allowlisted Fonts</span>
               </span>
-              <span className="text-[11px] text-brand-700 font-bold bg-brand-50 border border-brand-200/70 px-2 py-0.5 rounded-md">
+              <span className="text-[11px] text-slate-700 font-semibold bg-slate-100 border border-slate-200/60 px-2.5 py-0.5 rounded-full">
                 Active: {activeFontLabel}
               </span>
             </div>
-            <p className="text-xs text-muted-foreground font-medium line-clamp-1">
+            <p className="text-xs text-slate-500 font-medium line-clamp-1">
               Select typography that conveys your brand personality across headlines, body copy, and CTA buttons.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0 ml-3">
-          <span className="hidden sm:inline text-xs font-bold text-muted-foreground group-hover:text-foreground transition-colors">
+          <span className="hidden sm:inline text-xs font-semibold text-slate-500 group-hover:text-slate-900 transition-colors">
             {isOpen ? "Collapse" : "Customize"}
           </span>
-          <div className="w-7 h-7 rounded-xl bg-muted/60 flex items-center justify-center text-muted-foreground group-hover:text-foreground group-hover:bg-muted transition-all">
+          <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-hover:text-slate-900 transition-all">
             {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </div>
         </div>
@@ -164,13 +164,13 @@ export function TypographyPicker({
 
       {/* ── Collapsible Content Body ── */}
       {isOpen && (
-        <div className="p-6 sm:p-7 pt-4 space-y-6 border-t border-border/60 animate-in fade-in duration-200">
+        <div className="p-6 sm:p-7 pt-4 space-y-6 border-t border-slate-100 animate-in fade-in duration-200">
           {/* Filter Bar */}
           <div className="flex items-center justify-between gap-3 flex-wrap">
-            <span className="text-xs font-black text-foreground uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
               Font Library ({filteredFonts.length})
             </span>
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-muted/60 border border-border/70 text-[11px] font-bold">
+            <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 border border-slate-200/70 text-[11px] font-semibold">
               {[
                 { id: "all", label: "All Fonts" },
                 { id: "sans", label: "Sans-Serif" },
@@ -181,10 +181,10 @@ export function TypographyPicker({
                   type="button"
                   onClick={() => setFilter(cat.id as typeof filter)}
                   className={cn(
-                    "px-3 py-1 rounded-lg transition-all select-none",
+                    "px-3 py-1 rounded-lg transition-all select-none cursor-pointer",
                     filter === cat.id
-                      ? "bg-card text-foreground shadow-2xs border border-border/80"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-slate-900 text-white shadow-2xs font-bold"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
                   )}
                 >
                   {cat.label}
@@ -212,46 +212,46 @@ export function TypographyPicker({
                   type="button"
                   onClick={() => onSelectFont(fontKey)}
                   className={cn(
-                    "p-4 rounded-2xl border transition-all text-left flex flex-col justify-between gap-3 group select-none shadow-2xs hover:shadow-md hover:-translate-y-0.5",
+                    "p-4 rounded-2xl border transition-all text-left flex flex-col justify-between gap-3 group select-none shadow-2xs hover:shadow-md hover:-translate-y-0.5 cursor-pointer",
                     isSelected
-                      ? "bg-card border-brand-500 ring-2 ring-brand-500/25 shadow-sm"
-                      : "bg-card border-border/80 hover:border-brand-300/80 hover:bg-muted/20"
+                      ? "bg-white border-2 border-slate-900 shadow-xs"
+                      : "bg-white border-slate-200/80 hover:border-slate-300 hover:bg-slate-50/50"
                   )}
                 >
                   {/* Header row: Font Name + Category Tag */}
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h4 className="text-sm font-black text-foreground group-hover:text-brand-600 transition-colors">
+                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-black transition-colors">
                         {meta.label}
                       </h4>
-                      <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">
+                      <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
                         {meta.category}
                       </span>
                     </div>
                     {isSelected ? (
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-brand-600 text-white shadow-xs flex-shrink-0">
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-slate-900 text-white shadow-xs flex-shrink-0">
                         <Check className="w-3 h-3 stroke-[3]" />
                       </span>
                     ) : (
-                      <div className="w-5 h-5 rounded-full border border-border/80 group-hover:border-brand-300 transition-colors" />
+                      <div className="w-5 h-5 rounded-full border border-slate-300 group-hover:border-slate-400 transition-colors" />
                     )}
                   </div>
 
                   {/* Large Typographic Specimen rendered in actual font family */}
                   <div
-                    className="py-2.5 px-3 rounded-xl bg-muted/30 border border-border/50 text-foreground"
+                    className="py-2.5 px-3 rounded-xl bg-slate-50 border border-slate-200/60 text-slate-900"
                     style={{ fontFamily: meta.cssFamily }}
                   >
                     <div className="text-lg font-bold truncate leading-tight">
                       {meta.specimen}
                     </div>
-                    <div className="text-xs text-muted-foreground font-medium truncate mt-0.5 opacity-80">
+                    <div className="text-xs text-slate-500 font-medium truncate mt-0.5 opacity-90">
                       Build links that convert.
                     </div>
                   </div>
 
                   {/* Best For Recommendation */}
-                  <div className="pt-1 border-t border-border/50 flex items-center justify-between text-[10px] text-muted-foreground font-medium">
+                  <div className="pt-1 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 font-medium">
                     <span className="truncate">{meta.bestFor}</span>
                   </div>
                 </button>

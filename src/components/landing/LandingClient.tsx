@@ -44,7 +44,7 @@ export function LandingClient() {
   ];
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 antialiased selection:bg-[#5B3FE4]/15 selection:text-[#5B3FE4] flex flex-col justify-between">
+    <div className="min-h-screen bg-white text-slate-900 antialiased selection:bg-slate-900 selection:text-white flex flex-col justify-between overflow-x-hidden">
       {/* ── Fixed Navbar ── */}
       <Navbar onOpenFaq={() => setShowFaqModal(true)} />
 
@@ -76,10 +76,7 @@ export function LandingClient() {
           <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-100 max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div>
-                <span
-                  className="text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider"
-                  style={{ backgroundColor: "#eeebfc", color: "#5B3FE4" }}
-                >
+                <span className="text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-slate-100 text-slate-800 border border-slate-200/80">
                   Help & FAQs
                 </span>
                 <h3 className="text-xl font-extrabold text-slate-900 mt-2">
@@ -112,9 +109,8 @@ export function LandingClient() {
                         {faq.question}
                       </span>
                       <ChevronDown
-                        className={`w-4 h-4 text-slate-400 flex-shrink-0 transition-transform duration-200 ${
-                          isOpen ? "rotate-180 text-[#5B3FE4]" : ""
-                        }`}
+                        className={`w-4 h-4 text-slate-400 flex-shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180 text-slate-900" : ""
+                          }`}
                       />
                     </button>
                     {isOpen && (
@@ -131,8 +127,7 @@ export function LandingClient() {
               <button
                 type="button"
                 onClick={() => setShowFaqModal(false)}
-                className="px-6 py-2.5 rounded-full font-bold text-xs sm:text-sm text-white transition-colors"
-                style={{ backgroundColor: "#5B3FE4" }}
+                className="px-6 py-2.5 rounded-full font-bold text-xs sm:text-sm text-white bg-slate-900 hover:bg-black transition-colors"
               >
                 Close FAQs
               </button>
@@ -157,10 +152,7 @@ export function LandingClient() {
               <X className="w-5 h-5" />
             </button>
 
-            <div
-              className="w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-4"
-              style={{ backgroundColor: "#eeebfc", color: "#5B3FE4" }}
-            >
+            <div className="w-14 h-14 mx-auto rounded-full flex items-center justify-center mb-4 bg-slate-100 text-slate-900 border border-slate-200/60 shadow-2xs">
               <Play className="w-6 h-6 fill-current ml-1" />
             </div>
 
@@ -173,15 +165,15 @@ export function LandingClient() {
 
             <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 mb-6 text-left space-y-2.5">
               <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
-                <CheckCircle2 className="w-4 h-4" style={{ color: "#5B3FE4" }} />
+                <CheckCircle2 className="w-4 h-4 text-slate-900" />
                 <span>Instant contact saving directly to phone address book</span>
               </div>
               <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
-                <CheckCircle2 className="w-4 h-4" style={{ color: "#5B3FE4" }} />
+                <CheckCircle2 className="w-4 h-4 text-slate-900" />
                 <span>Dynamic QR code generator for cards & signage</span>
               </div>
               <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
-                <CheckCircle2 className="w-4 h-4" style={{ color: "#5B3FE4" }} />
+                <CheckCircle2 className="w-4 h-4 text-slate-900" />
                 <span>One-tap WhatsApp, Call, Location & Payment links</span>
               </div>
             </div>
@@ -196,11 +188,7 @@ export function LandingClient() {
               </button>
               <a
                 href="/register"
-                className="px-6 py-2.5 rounded-full font-bold text-xs sm:text-sm text-white shadow-md transition-all"
-                style={{
-                  backgroundColor: "#5B3FE4",
-                  boxShadow: "0 6px 18px rgba(91, 63, 228, 0.25)",
-                }}
+                className="px-6 py-2.5 rounded-full font-bold text-xs sm:text-sm text-white bg-slate-900 hover:bg-black shadow-md transition-all active:scale-95"
               >
                 Create Your Card Now
               </a>

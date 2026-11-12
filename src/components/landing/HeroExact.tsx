@@ -54,7 +54,7 @@ export function HeroExact({ onOpenDemo }: { onOpenDemo?: () => void }) {
             <div>
               <span
                 className="inline-flex items-center px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold tracking-wide"
-                style={{ backgroundColor: "#eeebfc", color: "#5B3FE4" }}
+                style={{ backgroundColor: "#f1f5f9", color: "#0f172a" }}
               >
                 Digital Visiting Card
               </span>
@@ -64,7 +64,7 @@ export function HeroExact({ onOpenDemo }: { onOpenDemo?: () => void }) {
             <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold text-slate-900 leading-[1.12] tracking-tight">
               One Card.
               <br />
-              Many <span style={{ color: "#5B3FE4" }}>Possibilities.</span>
+              Many <span style={{ color: "#0f172a" }}>Possibilities.</span>
             </h1>
 
             {/* Subtitle */}
@@ -79,7 +79,7 @@ export function HeroExact({ onOpenDemo }: { onOpenDemo?: () => void }) {
                 href="/register"
                 className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full text-sm sm:text-base font-bold text-white transition-all transform hover:-translate-y-0.5 active:scale-98"
                 style={{
-                  backgroundColor: "#5B3FE4",
+                  backgroundColor: "#0f172a",
                   boxShadow: "0 8px 22px rgba(91, 63, 228, 0.32)",
                 }}
               >
@@ -90,11 +90,11 @@ export function HeroExact({ onOpenDemo }: { onOpenDemo?: () => void }) {
               <button
                 type="button"
                 onClick={onOpenDemo}
-                className="inline-flex items-center gap-2.5 px-5 py-3.5 rounded-full text-sm sm:text-base font-bold text-slate-900 hover:text-[#5B3FE4] bg-transparent transition-colors group cursor-pointer"
+                className="inline-flex items-center gap-2.5 px-5 py-3.5 rounded-full text-sm sm:text-base font-bold text-slate-900 hover:text-[#0f172a] bg-transparent transition-colors group cursor-pointer"
               >
                 <span
-                  className="w-8 h-8 rounded-full border border-slate-300 group-hover:border-[#5B3FE4] flex items-center justify-center transition-colors"
-                  style={{ color: "#5B3FE4" }}
+                  className="w-8 h-8 rounded-full border border-slate-300 group-hover:border-[#0f172a] flex items-center justify-center transition-colors"
+                  style={{ color: "#0f172a" }}
                 >
                   <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                 </span>
@@ -171,7 +171,7 @@ export function HeroExact({ onOpenDemo }: { onOpenDemo?: () => void }) {
                           "linear-gradient(135deg, #f4f2fd 0%, #ebe7fb 100%)",
                       }}
                     >
-                      <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#5B3FE4_1px,transparent_1px)] [background-size:6px_6px]" />
+                      <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#0f172a_1px,transparent_1px)] [background-size:6px_6px]" />
                     </div>
 
                     {/* Profile Avatar & Header */}
@@ -208,8 +208,8 @@ export function HeroExact({ onOpenDemo }: { onOpenDemo?: () => void }) {
                         <span
                           className="inline-block text-[7.5px] font-bold px-2 py-0.5 rounded-full"
                           style={{
-                            backgroundColor: "#eeebfc",
-                            color: "#5B3FE4",
+                            backgroundColor: "#f1f5f9",
+                            color: "#0f172a",
                           }}
                         >
                           VENWO TECHNOLOGIES
@@ -407,7 +407,7 @@ export function HeroExact({ onOpenDemo }: { onOpenDemo?: () => void }) {
                 {/* Radiating Doodle Rays */}
                 <div
                   className="font-bold text-xl leading-none tracking-widest mb-1 -rotate-6"
-                  style={{ color: "#5B3FE4" }}
+                  style={{ color: "#0f172a" }}
                 >
                   \ | /
                 </div>
@@ -416,7 +416,7 @@ export function HeroExact({ onOpenDemo }: { onOpenDemo?: () => void }) {
                 <div
                   className="text-center font-bold text-sm sm:text-base leading-tight -rotate-6"
                   style={{
-                    color: "#5B3FE4",
+                    color: "#0f172a",
                     fontFamily: "Comic Sans MS, 'Caveat', cursive, sans-serif",
                   }}
                 >
@@ -436,14 +436,14 @@ export function HeroExact({ onOpenDemo }: { onOpenDemo?: () => void }) {
                 >
                   <path
                     d="M15 10 C 25 35, 75 10, 60 55 C 50 75, 20 65, 10 50"
-                    stroke="#5B3FE4"
+                    stroke="#0f172a"
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     fill="none"
                   />
                   <path
                     d="M 12 42 L 8 52 L 20 54"
-                    stroke="#5B3FE4"
+                    stroke="#0f172a"
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"

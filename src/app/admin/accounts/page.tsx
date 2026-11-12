@@ -1,14 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { 
-  CreditCard, 
-  DollarSign, 
-  Calendar, 
-  TrendingUp, 
-  ArrowUpRight, 
-  ChevronLeft, 
-  ChevronRight, 
+import {
+  CreditCard,
+  DollarSign,
+  Calendar,
+  TrendingUp,
+  ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
   Settings,
   Receipt,
   User as UserIcon,
@@ -133,26 +133,26 @@ export default function AdminAccountsPage() {
 
   return (
     <div suppressHydrationWarning className="p-6 lg:p-8 max-w-[1400px] mx-auto space-y-6">
-      {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 p-6 rounded-2xl text-white shadow-md">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight">Revenue Ledger & Accounts</h1>
-            <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-400/20 text-emerald-300 border border-emerald-400/30">
-              Financial Tracking
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Revenue & Accounts</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+              Financials
             </span>
           </div>
-          <p className="text-indigo-200 text-xs mt-1.5 max-w-xl leading-relaxed">
-            Review validity subscription transactions, monthly revenue trajectory, and historical payment records.
+          <p className="text-slate-500 text-xs mt-1 leading-relaxed font-medium">
+            Subscription transactions, monthly revenue, and payment records.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Link
             href="/admin/settings"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-indigo-900 text-xs font-bold shadow hover:bg-indigo-50 transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
           >
             <Settings className="w-4 h-4" />
-            <span>Configure Plan Pricing</span>
+            <span>Plan Pricing</span>
           </Link>
         </div>
       </div>
@@ -181,7 +181,7 @@ export default function AdminAccountsPage() {
       {/* Chart & Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Monthly Revenue Chart (8 cols) */}
-        <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+        <div className="lg:col-span-8 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
           <div className="p-4 border-b border-slate-100 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-emerald-600" />
@@ -204,39 +204,39 @@ export default function AdminAccountsPage() {
         </div>
 
         {/* Quick Summary Card (4 cols) */}
-        <div className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+        <div className="lg:col-span-4 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs flex flex-col justify-between">
           <div className="p-4 border-b border-slate-100">
             <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Account Metrics</h2>
           </div>
 
           <div className="p-5 space-y-3 flex-1">
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between text-xs">
-              <span className="text-slate-500">Total Transactions</span>
+              <span className="text-slate-500 font-medium">Total Transactions</span>
               <span className="font-bold text-slate-900">{recent.length}</span>
             </div>
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between text-xs">
-              <span className="text-slate-500">Average Plan Value</span>
+              <span className="text-slate-500 font-medium">Average Plan Value</span>
               <span className="font-bold text-slate-900">
                 {recent.length > 0
                   ? `${currency}${(
-                      recent.reduce((sum, s) => sum + (s.amount || 0), 0) / recent.length
-                    ).toFixed(0)}`
+                    recent.reduce((sum, s) => sum + (s.amount || 0), 0) / recent.length
+                  ).toFixed(0)}`
                   : "—"}
               </span>
             </div>
-            <div className="p-3 rounded-xl bg-emerald-50/50 border border-emerald-100 flex items-center justify-between text-xs">
-              <span className="text-emerald-800 font-medium">Billing Model</span>
-              <span className="font-bold text-emerald-900">Fixed Validity Plans</span>
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between text-xs">
+              <span className="text-slate-500 font-medium">Billing Model</span>
+              <span className="font-bold text-slate-900">Fixed Validity Plans</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Transactions Ledger Table */}
-      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
         <div className="p-4 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Receipt className="w-4 h-4 text-indigo-600" />
+            <Receipt className="w-4 h-4 text-slate-700" />
             <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Recent Sales Transactions</h2>
           </div>
           <span className="text-xs text-slate-400">{recent.length} Total Records</span>
@@ -245,49 +245,50 @@ export default function AdminAccountsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                <th className="px-5 py-3">Customer</th>
-                <th className="px-5 py-3">Plan Purchased</th>
-                <th className="px-5 py-3">Amount Paid</th>
-                <th className="px-5 py-3">Transaction Date</th>
-                <th className="px-5 py-3">Status</th>
+              <tr className="border-b border-slate-100 bg-white text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-4">Customer</th>
+                <th className="px-6 py-4">Plan Purchased</th>
+                <th className="px-6 py-4">Amount Paid</th>
+                <th className="px-6 py-4">Transaction Date</th>
+                <th className="px-6 py-4">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-slate-100/70">
               {loading ? (
                 [1, 2, 3, 4].map(i => (
                   <tr key={i}>
-                    <td colSpan={5} className="px-5 py-4">
+                    <td colSpan={5} className="px-6 py-4">
                       <div className="h-4 bg-slate-100 rounded animate-pulse" />
                     </td>
                   </tr>
                 ))
               ) : pageSlice.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-12 text-center text-slate-400">
+                  <td colSpan={5} className="px-6 py-12 text-center text-slate-400">
                     No sales recorded yet. When accounts are provisioned with paid plans, transactions will appear here.
                   </td>
                 </tr>
               ) : (
                 pageSlice.map(sale => (
-                  <tr key={sale.id} className="hover:bg-slate-50/60 transition-colors">
-                    <td className="px-5 py-3.5">
-                      <p className="font-bold text-slate-900">{sale.user?.name || "System User"}</p>
+                  <tr key={sale.id} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <p className="font-semibold text-slate-900">{sale.user?.name || "System User"}</p>
                       <p className="text-[11px] text-slate-400">{sale.user?.email || "—"}</p>
                     </td>
-                    <td className="px-5 py-3.5">
-                      <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                    <td className="px-6 py-4">
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60">
                         {sale.plan_label}
                       </span>
                     </td>
-                    <td className="px-5 py-3.5 font-bold text-slate-900">
+                    <td className="px-6 py-4 font-bold text-slate-900">
                       {sale.currency_symbol || "₹"}{Number(sale.amount).toFixed(2)}
                     </td>
-                    <td className="px-5 py-3.5 text-slate-500">
+                    <td className="px-6 py-4 text-slate-500">
                       {sale.sale_date ? formatDate(sale.sale_date) : "—"}
                     </td>
-                    <td className="px-5 py-3.5">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                    <td className="px-6 py-4">
+                      <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200/60 inline-flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                         PAID / COMPLETED
                       </span>
                     </td>

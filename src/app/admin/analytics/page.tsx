@@ -1,14 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { 
-  BarChart3, 
-  Users, 
-  Link2, 
-  ShieldAlert, 
-  TrendingUp, 
-  Search, 
-  Calendar, 
+import {
+  BarChart3,
+  Users,
+  Link2,
+  ShieldAlert,
+  TrendingUp,
+  Search,
+  Calendar,
   ExternalLink,
   CheckCircle2,
   Activity,
@@ -122,26 +122,26 @@ export default function AdminAnalyticsPage() {
 
   return (
     <div suppressHydrationWarning className="p-6 lg:p-8 max-w-[1400px] mx-auto space-y-6">
-      {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 p-6 rounded-2xl text-white shadow-md">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight">Platform Analytics & Growth</h1>
-            <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
-              Live Insights
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Analytics</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60">
+              Insights
             </span>
           </div>
-          <p className="text-indigo-200 text-xs mt-1.5 max-w-xl leading-relaxed">
-            Track user account creation trends, monthly registrations, account status health, and bio link footprint across the platform.
+          <p className="text-slate-500 text-xs mt-1 leading-relaxed font-medium">
+            User growth, registrations, and profile engagement metrics.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Link
             href="/admin/accounts"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-indigo-900 text-xs font-bold shadow hover:bg-indigo-50 transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
           >
             <Activity className="w-4 h-4" />
-            <span>Revenue Ledger</span>
+            <span>Revenue</span>
           </Link>
         </div>
       </div>
@@ -151,15 +151,15 @@ export default function AdminAnalyticsPage() {
         {kpis.map(k => {
           const Icon = k.icon;
           return (
-            <div key={k.label} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
+            <div key={k.label} className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs hover:shadow-xs transition-all">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{k.label}</span>
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${k.color}`}>
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{k.label}</span>
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${k.color}`}>
                   <Icon className="w-4 h-4" />
                 </div>
               </div>
               <div className="mt-2">
-                <span className="text-2xl font-black text-slate-900">{k.value}</span>
+                <span className="text-2xl font-bold text-slate-900 tracking-tight">{k.value}</span>
                 {k.sub && <p className="text-[11px] text-slate-500 font-medium mt-1">{k.sub}</p>}
               </div>
             </div>
@@ -170,10 +170,10 @@ export default function AdminAnalyticsPage() {
       {/* Charts & Breakdown Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Monthly Signups Chart (7 cols) */}
-        <div className="lg:col-span-7 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+        <div className="lg:col-span-7 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
           <div className="p-4 border-b border-slate-100 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-indigo-600" />
+              <BarChart3 className="w-4 h-4 text-slate-700" />
               <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">New Registrations Trend</h2>
             </div>
             <span className="text-xs text-slate-400">Past 8 Months</span>
@@ -193,7 +193,7 @@ export default function AdminAnalyticsPage() {
         </div>
 
         {/* Status Distribution (5 cols) */}
-        <div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+        <div className="lg:col-span-5 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
           <div className="p-4 border-b border-slate-100">
             <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Account Standing Distribution</h2>
           </div>
@@ -239,8 +239,8 @@ export default function AdminAnalyticsPage() {
 
             <div className="pt-3 border-t border-slate-100">
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between text-xs">
-                <span className="text-slate-500">Profiles Created</span>
-                <span className="font-black text-indigo-600 text-sm">{profiles} Total</span>
+                <span className="text-slate-500 font-medium">Profiles Created</span>
+                <span className="font-bold text-slate-900 text-sm">{profiles} Total</span>
               </div>
             </div>
           </div>
@@ -248,7 +248,7 @@ export default function AdminAnalyticsPage() {
       </div>
 
       {/* User Directory Overview */}
-      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
         <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Registered Accounts Directory</h2>
@@ -260,7 +260,7 @@ export default function AdminAnalyticsPage() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search directory…"
-              className="w-full h-8 pl-8 pr-3 rounded-xl border border-slate-200 text-xs placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all"
+              className="w-full h-8 pl-8 pr-3 rounded-full border border-slate-200/90 text-xs placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all"
             />
           </div>
         </div>
@@ -268,42 +268,42 @@ export default function AdminAnalyticsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                <th className="px-5 py-3">User</th>
-                <th className="px-5 py-3">Profile Handle</th>
-                <th className="px-5 py-3">Registered Date</th>
-                <th className="px-5 py-3">Status</th>
+              <tr className="border-b border-slate-100 bg-white text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-4">User</th>
+                <th className="px-6 py-4">Profile Handle</th>
+                <th className="px-6 py-4">Registered Date</th>
+                <th className="px-6 py-4">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-slate-100/70">
               {loading ? (
                 [1, 2, 3].map(i => (
                   <tr key={i}>
-                    <td colSpan={4} className="px-5 py-4">
+                    <td colSpan={4} className="px-6 py-4">
                       <div className="h-4 bg-slate-100 rounded animate-pulse" />
                     </td>
                   </tr>
                 ))
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-5 py-8 text-center text-slate-400">
+                  <td colSpan={4} className="px-6 py-12 text-center text-slate-400">
                     No users found matching search.
                   </td>
                 </tr>
               ) : (
                 filtered.slice(0, 15).map(u => (
-                  <tr key={u.id} className="hover:bg-slate-50/60 transition-colors">
-                    <td className="px-5 py-3">
-                      <p className="font-bold text-slate-900">{u.name}</p>
+                  <tr key={u.id} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <p className="font-semibold text-slate-900">{u.name}</p>
                       <p className="text-[11px] text-slate-400">{u.email}</p>
                     </td>
-                    <td className="px-5 py-3 font-mono">
+                    <td className="px-6 py-4 font-mono">
                       {u.username ? (
                         <a
                           href={`/${u.username}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-indigo-600 hover:underline inline-flex items-center gap-1"
+                          className="text-slate-700 hover:text-black font-semibold hover:underline inline-flex items-center gap-1"
                         >
                           <span>/{u.username}</span>
                           <ExternalLink className="w-2.5 h-2.5" />
@@ -312,18 +312,18 @@ export default function AdminAnalyticsPage() {
                         <span className="text-slate-300">—</span>
                       )}
                     </td>
-                    <td className="px-5 py-3 text-slate-500">
+                    <td className="px-6 py-4 text-slate-500">
                       {formatDate(u.created_at)}
                     </td>
-                    <td className="px-5 py-3">
+                    <td className="px-6 py-4">
                       <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          u.status === "active"
-                            ? "bg-emerald-100 text-emerald-800"
-                            : "bg-amber-100 text-amber-800"
-                        }`}
+                        className={`px-3 py-1 rounded-full text-[11px] font-bold inline-flex items-center gap-1.5 ${u.status === "active"
+                          ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60"
+                          : "bg-amber-50 text-amber-700 border border-amber-200/60"
+                          }`}
                       >
-                        {u.status.toUpperCase()}
+                        <span className={`w-1.5 h-1.5 rounded-full ${u.status === "active" ? "bg-emerald-500" : "bg-amber-500"}`} />
+                        <span>{u.status.toUpperCase()}</span>
                       </span>
                     </td>
                   </tr>

@@ -1,19 +1,19 @@
 "use client";
 import { useEffect, useState, useCallback, FormEvent } from "react";
 import Link from "next/link";
-import { 
-  UserPlus, 
-  Users, 
-  ShieldAlert, 
-  CheckCircle2, 
-  AlertCircle, 
-  Key, 
-  Copy, 
-  Check, 
-  ExternalLink, 
-  Trash2, 
-  Search, 
-  Calendar, 
+import {
+  UserPlus,
+  Users,
+  ShieldAlert,
+  CheckCircle2,
+  AlertCircle,
+  Key,
+  Copy,
+  Check,
+  ExternalLink,
+  Trash2,
+  Search,
+  Calendar,
   CreditCard,
   AtSign,
   Mail,
@@ -66,11 +66,10 @@ function CopyButton({ text, label }: { text: string; label?: string }) {
         setTimeout(() => setCopied(false), 2000);
       }}
       title={`Copy ${label || text}`}
-      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all border ${
-        copied
-          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-          : "bg-slate-50 text-slate-600 border-slate-200 hover:text-slate-900 hover:bg-slate-100"
-      }`}
+      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all border ${copied
+        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+        : "bg-slate-50 text-slate-600 border-slate-200 hover:text-slate-900 hover:bg-slate-100"
+        }`}
     >
       {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
       <span>{copied ? "Copied" : "Copy"}</span>
@@ -180,6 +179,14 @@ export default function AdminPanelPage() {
       });
       const json = await res.json();
       if (!res.ok) {
+        if (res.status === 404) {
+          // User was already deleted from the system
+          setUsers(prev => prev.filter(u => u.id !== deleteTarget.id));
+          setActionFeedback(`User ${deleteTarget.name} has already been deleted.`);
+          setTimeout(() => setActionFeedback(null), 5000);
+          setDeleteTarget(null);
+          return;
+        }
         setDeleteError(json?.error?.message || "Failed to permanently delete user.");
         return;
       }
@@ -273,26 +280,26 @@ export default function AdminPanelPage() {
 
   return (
     <div suppressHydrationWarning className="p-6 lg:p-8 max-w-[1400px] mx-auto space-y-6">
-      {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 p-6 rounded-2xl text-white shadow-md">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight">Admin User Panel</h1>
-            <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
-              {users.length} Total Users
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Admin Panel</h1>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60">
+              {users.length} Users
             </span>
           </div>
-          <p className="text-indigo-200 text-xs mt-1.5 max-w-xl leading-relaxed">
-            Provision new user accounts with validity plans, assign profile handles, monitor account states, and manage active/suspended permissions across the web.
+          <p className="text-slate-500 text-xs mt-1 leading-relaxed font-medium">
+            Provision user accounts, assign validity plans, and manage access.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Link
             href="/admin/access-requests"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
           >
-            <Inbox className="w-4 h-4 text-amber-300" />
-            <span>Review Access Requests</span>
+            <Inbox className="w-3.5 h-3.5" />
+            <span>Access Requests</span>
           </Link>
         </div>
       </div>
@@ -320,7 +327,7 @@ export default function AdminPanelPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs">
                   <Sparkles className="w-4 h-4" />
-                  <span>Account Credentials Ready</span>
+                  <span>Credentials Ready</span>
                 </div>
                 <button
                   onClick={() => setCredentials(null)}
@@ -331,7 +338,7 @@ export default function AdminPanelPage() {
               </div>
 
               <p className="text-[11px] text-slate-300">
-                Please copy and share these credentials with the user now. The password is encrypted and cannot be displayed again.
+                Copy and share these credentials now. The password will not be displayed again.
               </p>
 
               <div className="space-y-2 text-xs">
@@ -346,7 +353,7 @@ export default function AdminPanelPage() {
                 {credentials.email && (
                   <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-800/80 border border-slate-700">
                     <div className="min-w-0">
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block">Email Login</span>
+                      <span className="text-[10px] uppercase font-bold text-slate-400 block">Email</span>
                       <span className="font-mono text-emerald-300 font-bold truncate block">{credentials.email}</span>
                     </div>
                     <CopyButton text={credentials.email} label="email" />
@@ -355,7 +362,7 @@ export default function AdminPanelPage() {
 
                 <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-800/80 border border-slate-700">
                   <div className="min-w-0">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Auto-Generated Password</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Password</span>
                     <span className="font-mono text-amber-300 font-bold truncate block tracking-wider">
                       {credentials.plain_password}
                     </span>
@@ -368,9 +375,8 @@ export default function AdminPanelPage() {
                 <button
                   type="button"
                   onClick={() => {
-                    const allText = `Digicardo Login Details:\nUsername: ${credentials.username}\nEmail: ${
-                      credentials.email || ""
-                    }\nPassword: ${credentials.plain_password}\nLogin URL: ${window.location.origin}/login`;
+                    const allText = `Digicardo Login Details:\nUsername: ${credentials.username}\nEmail: ${credentials.email || ""
+                      }\nPassword: ${credentials.plain_password}\nLogin URL: ${window.location.origin}/login`;
                     navigator.clipboard.writeText(allText);
                     setActionFeedback("All login details copied to clipboard!");
                     setTimeout(() => setActionFeedback(null), 3000);
@@ -378,21 +384,21 @@ export default function AdminPanelPage() {
                   className="w-full h-9 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5"
                 >
                   <Copy className="w-3.5 h-3.5" />
-                  <span>Copy Complete Login Details</span>
+                  <span>Copy All Details</span>
                 </button>
               </div>
             </div>
           )}
 
           {/* User Creation Card */}
-          <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+          <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
             <div className="p-5 border-b border-slate-100 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
                 <UserPlus className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="text-sm font-bold text-slate-900">Create New User</h2>
-                <p className="text-[11px] text-slate-400">Securely provisions a user with credentials & validity</p>
+                <h2 className="text-sm font-bold text-slate-900">New User</h2>
+                <p className="text-[11px] text-slate-400">Account credentials and validity tier</p>
               </div>
             </div>
 
@@ -414,9 +420,8 @@ export default function AdminPanelPage() {
                   value={form.name}
                   onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
                   placeholder="e.g. Sarah Connor"
-                  className={`w-full h-9 px-3 rounded-xl border text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all ${
-                    errors.name ? "border-red-400 bg-red-50/20" : "border-slate-200 focus:border-indigo-500"
-                  }`}
+                  className={`w-full h-9 px-3 rounded-xl border text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${errors.name ? "border-red-400 bg-red-50/20" : "border-slate-200"
+                    }`}
                 />
                 {errors.name && <p className="text-[10px] text-red-500 font-semibold">{errors.name}</p>}
               </div>
@@ -425,16 +430,15 @@ export default function AdminPanelPage() {
               <div className="space-y-1">
                 <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
                   <Mail className="w-3 h-3 text-slate-400" />
-                  <span>Email Address *</span>
+                  <span>Email *</span>
                 </label>
                 <input
                   type="email"
                   value={form.email}
                   onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
                   placeholder="sarah@example.com"
-                  className={`w-full h-9 px-3 rounded-xl border text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all ${
-                    errors.email ? "border-red-400 bg-red-50/20" : "border-slate-200 focus:border-indigo-500"
-                  }`}
+                  className={`w-full h-9 px-3 rounded-xl border text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${errors.email ? "border-red-400 bg-red-50/20" : "border-slate-200"
+                    }`}
                 />
                 {errors.email && <p className="text-[10px] text-red-500 font-semibold">{errors.email}</p>}
               </div>
@@ -443,7 +447,7 @@ export default function AdminPanelPage() {
               <div className="space-y-1">
                 <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
                   <AtSign className="w-3 h-3 text-slate-400" />
-                  <span>Profile Handle / Username *</span>
+                  <span>Handle / Username *</span>
                 </label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-mono text-slate-400 font-bold">
@@ -453,9 +457,8 @@ export default function AdminPanelPage() {
                     value={form.username}
                     onChange={e => setForm(p => ({ ...p, username: e.target.value.toLowerCase().replace(/[^a-z0-9_.-]/g, "") }))}
                     placeholder="sarahc"
-                    className={`w-full h-9 pl-28 pr-3 rounded-xl border text-xs font-mono text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/10 transition-all ${
-                      errors.username ? "border-red-400 bg-red-50/20" : "border-slate-200 focus:border-indigo-500"
-                    }`}
+                    className={`w-full h-9 pl-28 pr-3 rounded-xl border text-xs font-mono text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${errors.username ? "border-red-400 bg-red-50/20" : "border-slate-200"
+                      }`}
                   />
                 </div>
                 {errors.username && <p className="text-[10px] text-red-500 font-semibold">{errors.username}</p>}
@@ -465,14 +468,14 @@ export default function AdminPanelPage() {
               <div className="space-y-1.5">
                 <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
                   <Calendar className="w-3 h-3 text-slate-400" />
-                  <span>Subscription Validity Plan</span>
+                  <span>Validity Plan</span>
                 </label>
                 <select
                   value={form.validity_plan_id}
                   onChange={e => setForm(p => ({ ...p, validity_plan_id: e.target.value }))}
-                  className="w-full h-9 px-3 rounded-xl border border-slate-200 text-xs text-slate-800 bg-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 transition-all"
+                  className="w-full h-9 px-3 rounded-xl border border-slate-200 text-xs text-slate-800 bg-white focus:outline-none focus:border-slate-400 transition-all"
                 >
-                  <option value="">No Plan (No automatic expiration)</option>
+                  <option value="">No Plan (No expiration)</option>
                   {plans.map(p => (
                     <option key={p.id} value={p.id}>
                       {p.name} ({p.months} mo) — {p.currency_symbol || "₹"}{p.price}
@@ -481,10 +484,10 @@ export default function AdminPanelPage() {
                 </select>
 
                 {selectedPlan && (
-                  <div className="p-2.5 rounded-xl bg-indigo-50/60 border border-indigo-100 flex items-center justify-between text-xs">
-                    <span className="text-indigo-700 font-semibold">{selectedPlan.name} Plan:</span>
-                    <span className="font-bold text-indigo-900">
-                      Valid for {selectedPlan.months} months ({selectedPlan.currency_symbol || "₹"}{selectedPlan.price})
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs">
+                    <span className="text-slate-700 font-semibold">{selectedPlan.name}:</span>
+                    <span className="font-bold text-slate-900">
+                      {selectedPlan.months} months ({selectedPlan.currency_symbol || "₹"}{selectedPlan.price})
                     </span>
                   </div>
                 )}
@@ -494,10 +497,10 @@ export default function AdminPanelPage() {
                 <button
                   type="submit"
                   disabled={creating}
-                  className="w-full h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-200 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full h-10 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-xs transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                 >
                   <UserPlus className="w-4 h-4" />
-                  <span>{creating ? "Provisioning User…" : "Create & Provision Account"}</span>
+                  <span>{creating ? "Creating…" : "Create Account"}</span>
                 </button>
               </div>
             </form>
@@ -505,31 +508,28 @@ export default function AdminPanelPage() {
         </div>
 
         {/* Right Column: User Management Table (7 cols) */}
-        <div className="xl:col-span-7 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+        <div className="xl:col-span-7 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
           {/* Header & Filters */}
           <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 flex-wrap">
               <button
                 onClick={() => setStatusFilter("all")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                  statusFilter === "all" ? "bg-indigo-600 text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                }`}
+                className={`px-4 py-1.5 rounded-full text-xs transition-all cursor-pointer ${statusFilter === "all" ? "bg-slate-900 text-white shadow-2xs font-bold" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-medium"
+                  }`}
               >
                 All ({users.length})
               </button>
               <button
                 onClick={() => setStatusFilter("active")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                  statusFilter === "active" ? "bg-emerald-600 text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                }`}
+                className={`px-4 py-1.5 rounded-full text-xs transition-all cursor-pointer ${statusFilter === "active" ? "bg-slate-900 text-white shadow-2xs font-bold" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-medium"
+                  }`}
               >
                 Active ({activeCount})
               </button>
               <button
                 onClick={() => setStatusFilter("suspended")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                  statusFilter === "suspended" ? "bg-amber-600 text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                }`}
+                className={`px-4 py-1.5 rounded-full text-xs transition-all cursor-pointer ${statusFilter === "suspended" ? "bg-slate-900 text-white shadow-2xs font-bold" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-medium"
+                  }`}
               >
                 Suspended ({suspendedCount})
               </button>
@@ -541,7 +541,7 @@ export default function AdminPanelPage() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search users or handles…"
-                className="w-full h-8 pl-8 pr-3 rounded-xl border border-slate-200 text-xs placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all"
+                className="w-full h-8 pl-8 pr-3 rounded-full border border-slate-200/90 text-xs placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all"
               />
             </div>
           </div>
@@ -550,25 +550,25 @@ export default function AdminPanelPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/50">
-                  <th className="px-4 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">User / Handle</th>
-                  <th className="px-4 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Validity Plan</th>
-                  <th className="px-4 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Status</th>
-                  <th className="px-4 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">Actions</th>
+                <tr className="border-b border-slate-100 bg-white">
+                  <th className="px-5 py-3.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">User / Handle</th>
+                  <th className="px-5 py-3.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Validity Plan</th>
+                  <th className="px-5 py-3.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Status</th>
+                  <th className="px-5 py-3.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50 text-xs">
+              <tbody className="divide-y divide-slate-100/70 text-xs">
                 {loading ? (
                   [1, 2, 3, 4, 5].map(i => (
                     <tr key={i}>
-                      <td colSpan={4} className="px-4 py-4">
+                      <td colSpan={4} className="px-5 py-4">
                         <div className="h-5 bg-slate-100 rounded-lg animate-pulse" />
                       </td>
                     </tr>
                   ))
                 ) : filteredUsers.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="px-4 py-12 text-center text-slate-400">
+                    <td colSpan={4} className="px-5 py-12 text-center text-slate-400">
                       No users found matching your filter or search.
                     </td>
                   </tr>
@@ -578,15 +578,15 @@ export default function AdminPanelPage() {
                     const initial = user.name.charAt(0).toUpperCase();
 
                     return (
-                      <tr key={user.id} className="hover:bg-slate-50/80 transition-colors">
+                      <tr key={user.id} className="hover:bg-slate-50/50 transition-colors">
                         {/* User / Handle */}
-                        <td className="px-4 py-3 min-w-[180px]">
+                        <td className="px-5 py-3.5 min-w-[180px]">
                           <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 font-bold flex items-center justify-center text-xs flex-shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-700 font-bold flex items-center justify-center text-xs flex-shrink-0">
                               {initial}
                             </div>
                             <div className="min-w-0">
-                              <p className="font-bold text-slate-900 truncate">{user.name}</p>
+                              <p className="font-semibold text-slate-900 truncate">{user.name}</p>
                               <div className="flex items-center gap-1.5 flex-wrap">
                                 <span className="text-[11px] text-slate-400 truncate">{user.email}</span>
                                 {user.username && (
@@ -594,9 +594,8 @@ export default function AdminPanelPage() {
                                     href={`/${user.username}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className={`text-[10px] font-mono font-bold hover:underline inline-flex items-center gap-0.5 ${
-                                      isSuspended ? "text-slate-400 line-through" : "text-indigo-600"
-                                    }`}
+                                    className={`text-[10px] font-mono font-semibold hover:underline inline-flex items-center gap-0.5 ${isSuspended ? "text-slate-400 line-through" : "text-slate-700"
+                                      }`}
                                   >
                                     <span>/{user.username}</span>
                                     <ExternalLink className="w-2.5 h-2.5" />
@@ -608,7 +607,7 @@ export default function AdminPanelPage() {
                         </td>
 
                         {/* Validity Plan */}
-                        <td className="px-4 py-3">
+                        <td className="px-5 py-3.5">
                           <span className="font-semibold text-slate-800 block">
                             {user.validity_label || "Standard"}
                           </span>
@@ -623,13 +622,12 @@ export default function AdminPanelPage() {
                         </td>
 
                         {/* Status */}
-                        <td className="px-4 py-3">
+                        <td className="px-5 py-3.5">
                           <span
-                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold inline-flex items-center gap-1 ${
-                              isSuspended
-                                ? "bg-amber-100 text-amber-800 border border-amber-300"
-                                : "bg-emerald-100 text-emerald-800 border border-emerald-300"
-                            }`}
+                            className={`px-3 py-1 rounded-full text-[11px] font-bold inline-flex items-center gap-1.5 ${isSuspended
+                              ? "bg-amber-50 text-amber-700 border border-amber-200/60"
+                              : "bg-emerald-50 text-emerald-600 border border-emerald-200/60"
+                              }`}
                           >
                             <span className={`w-1.5 h-1.5 rounded-full ${isSuspended ? "bg-amber-500" : "bg-emerald-500"}`} />
                             <span>{isSuspended ? "SUSPENDED" : "ACTIVE"}</span>
@@ -637,18 +635,14 @@ export default function AdminPanelPage() {
                         </td>
 
                         {/* Actions */}
-                        <td className="px-4 py-3 text-right">
+                        <td className="px-5 py-3.5 text-right">
                           <div className="flex items-center justify-end gap-1.5">
                             {/* Suspend / Reactivate */}
                             <button
                               onClick={() => toggleSuspend(user)}
                               disabled={toggling === user.id || deleting}
                               title={isSuspended ? "Reactivate user & link on web" : "Suspend user & link on web"}
-                              className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all border disabled:opacity-50 ${
-                                isSuspended
-                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
-                                  : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
-                              }`}
+                              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 shadow-2xs disabled:opacity-50`}
                             >
                               {toggling === user.id ? "…" : isSuspended ? "Reactivate" : "Suspend"}
                             </button>
@@ -666,7 +660,7 @@ export default function AdminPanelPage() {
                               }}
                               disabled={toggling === user.id || deleting}
                               title="Permanently delete user & link from database"
-                              className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all border border-slate-200 hover:border-red-200"
+                              className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>

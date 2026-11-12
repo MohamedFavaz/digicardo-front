@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { MobileTopHeader, MobileBottomNav } from "./MobileNav";
@@ -15,6 +16,7 @@ export interface AppShellProps {
 }
 
 export function AppShell({ children, className }: AppShellProps) {
+  const router = useRouter();
   const { user } = useAuth();
   const [isExiting, setIsExiting] = React.useState(false);
   const [mounted, setMounted] = React.useState(false);
@@ -29,22 +31,36 @@ export function AppShell({ children, className }: AppShellProps) {
     (typeof document !== "undefined" && document.cookie.includes("digicardo_impersonating=true"))
   );
 
+  // If an agent account visits the user studio directly without impersonating, redirect to Agent Portal
+  React.useEffect(() => {
+    if (mounted && user?.role === "agent" && !isImpersonating) {
+      router.replace("/agent/dashboard");
+    }
+  }, [mounted, user, isImpersonating, router]);
+
+  const impersonatorRole =
+    user?.impersonator_role ||
+    (typeof window !== "undefined" ? localStorage.getItem("digicardo_impersonator_role") : null);
+  const isAgentMode = impersonatorRole === "agent";
+
   const handleStopImpersonation = async () => {
     setIsExiting(true);
     try {
       const res = await authApi.stopImpersonation();
       if (typeof window !== "undefined") {
         localStorage.removeItem("digicardo_impersonating");
+        localStorage.removeItem("digicardo_impersonator_role");
         document.cookie = "digicardo_impersonating=; path=/; max-age=0;";
       }
-      window.location.href = res?.redirect_url || "/admin/my-links";
+      window.location.href = res?.redirect_url || (isAgentMode ? "/agent/cards" : "/admin/my-links");
     } catch (err) {
       console.error("Failed to stop impersonation:", err);
       if (typeof window !== "undefined") {
         localStorage.removeItem("digicardo_impersonating");
+        localStorage.removeItem("digicardo_impersonator_role");
         document.cookie = "digicardo_impersonating=; path=/; max-age=0;";
       }
-      window.location.href = "/admin/my-links";
+      window.location.href = isAgentMode ? "/agent/cards" : "/admin/my-links";
     } finally {
       setIsExiting(false);
     }
@@ -59,27 +75,56 @@ export function AppShell({ children, className }: AppShellProps) {
       <div className="flex-1 flex flex-col min-w-0 overflow-x-clip min-h-screen" suppressHydrationWarning>
         {/* ── Sticky Top Header Region ── */}
         <div className="sticky top-0 z-30 flex flex-col w-full bg-background/80 backdrop-blur-xl">
-          {/* Impersonation Security Alert Banner (UI/UX Pro Max - Brand Violet) */}
+          {/* Impersonation Security Alert Banner (Admin Violet or Agent Emerald) */}
           {isImpersonating && (
             <div
-              className="w-full bg-card/95 dark:bg-card/90 backdrop-blur-xl border-b border-brand-500/20 dark:border-brand-500/25 px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 flex items-center justify-between gap-3 shadow-2xs select-none transition-all"
+              className={`w-full backdrop-blur-xl border-b px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 flex items-center justify-between gap-3 shadow-2xs select-none transition-all ${isAgentMode
+                  ? "bg-emerald-950/95 text-white border-emerald-500/30"
+                  : "bg-white/95 text-slate-800 border-slate-200/80 shadow-2xs"
+                }`}
               suppressHydrationWarning
             >
               <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-1 rounded-full bg-brand-500/10 dark:bg-brand-500/20 border border-brand-500/30 text-[11px] font-bold text-brand-600 dark:text-brand-300 flex-shrink-0 shadow-2xs">
+                <div
+                  className={`inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-1 rounded-full border text-[11px] font-bold flex-shrink-0 shadow-2xs ${isAgentMode
+                      ? "bg-emerald-500/20 border-emerald-400/40 text-emerald-300"
+                      : "bg-slate-100 border-slate-200 text-slate-800"
+                    }`}
+                >
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-600" />
+                    <span
+                      className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isAgentMode ? "bg-emerald-400" : "bg-slate-900"
+                        }`}
+                    />
+                    <span
+                      className={`relative inline-flex rounded-full h-2 w-2 ${isAgentMode ? "bg-emerald-500" : "bg-slate-900"
+                        }`}
+                    />
                   </span>
-                  <ShieldCheck className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" aria-hidden="true" />
-                  <span className="uppercase font-black tracking-wider text-[10px]">Admin Mode</span>
+                  <ShieldCheck
+                    className={`w-3.5 h-3.5 ${isAgentMode ? "text-emerald-400" : "text-slate-800"}`}
+                    aria-hidden="true"
+                  />
+                  <span className="uppercase font-black tracking-wider text-[10px]">
+                    {isAgentMode ? "Agent Mode" : "Admin Mode"}
+                  </span>
                 </div>
 
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground truncate">
-                  <span className="hidden sm:inline">Managing studio:</span>
-                  <span className="font-bold text-foreground truncate">{user?.name || "User"}</span>
+                <div
+                  className={`flex items-center gap-1.5 text-xs truncate ${isAgentMode ? "text-emerald-100/90" : "text-slate-600 font-medium"
+                    }`}
+                >
+                  <span className="hidden sm:inline">
+                    {isAgentMode ? "Customizing card for customer:" : "Managing studio:"}
+                  </span>
+                  <span className={`font-bold truncate ${isAgentMode ? "text-white" : "text-slate-900"}`}>
+                    {user?.name || "Customer"}
+                  </span>
                   {user?.email && (
-                    <span className="text-muted-foreground/60 text-[11px] font-mono hidden md:inline truncate">
+                    <span
+                      className={`text-[11px] font-mono hidden md:inline truncate ${isAgentMode ? "text-emerald-300/80" : "text-slate-400"
+                        }`}
+                    >
                       ({user.email})
                     </span>
                   )}
@@ -90,8 +135,11 @@ export function AppShell({ children, className }: AppShellProps) {
                 type="button"
                 onClick={handleStopImpersonation}
                 disabled={isExiting}
-                title="Return to Admin Console"
-                className="group inline-flex items-center justify-center gap-2 px-3.5 sm:px-4 py-1.5 min-h-[34px] sm:min-h-[36px] rounded-xl text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 dark:bg-brand-600 dark:hover:bg-brand-500 shadow-xs hover:shadow-[0_4px_16px_rgba(91,63,228,0.3)] transition-all duration-200 cursor-pointer active:scale-95 disabled:opacity-50 flex-shrink-0 select-none"
+                title={isAgentMode ? "Return to Agent Panel" : "Return to Admin Console"}
+                className={`group inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs font-bold text-white shadow-xs transition-all duration-200 cursor-pointer active:scale-95 disabled:opacity-50 flex-shrink-0 select-none ${isAgentMode
+                    ? "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/50 hover:shadow-[0_4px_16px_rgba(16,185,129,0.4)]"
+                    : "bg-slate-900 hover:bg-black text-white"
+                  }`}
               >
                 {isExiting ? (
                   <>
@@ -101,7 +149,7 @@ export function AppShell({ children, className }: AppShellProps) {
                 ) : (
                   <>
                     <ArrowLeft className="w-3.5 h-3.5 text-white transition-transform duration-200 group-hover:-translate-x-0.5" aria-hidden="true" />
-                    <span>Back to Admin</span>
+                    <span>{isAgentMode ? "Back to Agent Panel" : "Back to Admin"}</span>
                   </>
                 )}
               </button>

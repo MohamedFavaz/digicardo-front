@@ -53,6 +53,7 @@ export interface VCardActionIconToggles {
 }
 
 export interface VCardSocialUrls {
+  website?: string;
   facebook?: string;
   instagram?: string;
   youtube?: string;
@@ -98,6 +99,8 @@ export interface VCardCustomOptions {
   banner_transition?: boolean;
   banner_image_url?: string;
   banner_images?: string[];
+  /** External company or personal website URL */
+  website_url?: string;
   custom_avatar_url?: string;
   profile_image_url?: string;
   category_badge_text?: string;

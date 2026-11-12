@@ -24,14 +24,11 @@ export function PricingExact() {
   return (
     <section id="pricing" className="py-16 sm:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* ── Section Header ── */}
         <div className="text-center space-y-3 mb-12 sm:mb-16">
           <div>
-            <span
-              className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide"
-              style={{ backgroundColor: "#eeebfc", color: "#5B3FE4" }}
-            >
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-slate-100 text-slate-800 border border-slate-200/80 shadow-2xs">
               Simple Pricing
             </span>
           </div>
@@ -41,22 +38,19 @@ export function PricingExact() {
           </h2>
 
           <p className="text-sm sm:text-base text-slate-500 font-medium">
-            One card. More opportunities.
+            One card. More opportunities. Transparent pricing without surprises.
           </p>
         </div>
 
         {/* ── Pricing Cards Grid ── */}
         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-          
+
           {/* ── Card 1: 1 Year Plan ── */}
-          <div className="bg-white rounded-[28px] border border-slate-200 p-7 sm:p-9 flex flex-col justify-between shadow-xs hover:shadow-md transition-shadow">
+          <div className="bg-white rounded-[28px] border border-slate-200/90 p-6 sm:p-9 flex flex-col justify-between shadow-2xs hover:shadow-md transition-shadow">
             <div>
               {/* Icon & Title */}
               <div className="flex flex-col items-center text-center">
-                <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
-                  style={{ backgroundColor: "#eeebfc", color: "#5B3FE4" }}
-                >
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-slate-100 text-slate-900 border border-slate-200/60 shadow-2xs">
                   <Calendar className="w-6 h-6 stroke-[2.2]" />
                 </div>
                 <h3 className="font-extrabold text-lg sm:text-xl text-slate-900 mb-1">
@@ -76,10 +70,7 @@ export function PricingExact() {
               <ul className="space-y-3.5 text-xs sm:text-sm text-slate-600 mb-8">
                 {plan1Features.map((item, idx) => (
                   <li key={idx} className="flex items-center gap-3">
-                    <Check
-                      className="w-4 h-4 stroke-[2.5] flex-shrink-0"
-                      style={{ color: "#5B3FE4" }}
-                    />
+                    <Check className="w-4 h-4 stroke-[2.5] flex-shrink-0 text-slate-900" />
                     <span className="font-medium text-slate-700">{item}</span>
                   </li>
                 ))}
@@ -89,71 +80,44 @@ export function PricingExact() {
             {/* CTA Button */}
             <Link
               href="/register?plan=1year"
-              className="w-full text-center py-3.5 px-6 rounded-full font-bold text-sm border-2 transition-all duration-200 active:scale-98 block"
-              style={{
-                borderColor: "#5B3FE4",
-                color: "#5B3FE4",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#5B3FE4";
-                e.currentTarget.style.color = "#ffffff";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "transparent";
-                e.currentTarget.style.color = "#5B3FE4";
-              }}
+              className="w-full text-center py-3.5 px-6 rounded-full font-bold text-sm border-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white transition-all duration-200 active:scale-95 block shadow-2xs"
             >
               Get 1 Year Plan
             </Link>
           </div>
 
           {/* ── Card 2: Lifelong Plan (Best Value) ── */}
-          <div
-            className="bg-white rounded-[28px] p-7 sm:p-9 flex flex-col justify-between relative"
-            style={{
-              border: "2px solid #5B3FE4",
-              boxShadow: "0 12px 32px rgba(91, 63, 228, 0.12)",
-            }}
-          >
+          <div className="bg-slate-950 text-white rounded-[28px] p-6 sm:p-9 flex flex-col justify-between relative shadow-xl border border-slate-800">
             {/* Best Value Badge */}
-            <div
-              className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-white px-4 py-1 rounded-full text-xs font-bold tracking-wide shadow-sm"
-              style={{ backgroundColor: "#5B3FE4" }}
-            >
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-slate-950 bg-white px-4 py-1 rounded-full text-xs font-extrabold tracking-wide shadow-md uppercase">
               Best Value
             </div>
 
             <div>
               {/* Icon & Title */}
               <div className="flex flex-col items-center text-center">
-                <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
-                  style={{ backgroundColor: "#eeebfc", color: "#5B3FE4" }}
-                >
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-slate-900 text-white border border-slate-700 shadow-2xs">
                   <InfinityIcon className="w-6 h-6 stroke-[2.2]" />
                 </div>
-                <h3 className="font-extrabold text-lg sm:text-xl text-slate-900 mb-1">
+                <h3 className="font-extrabold text-lg sm:text-xl text-white mb-1">
                   Lifelong Plan
                 </h3>
                 <div className="flex items-baseline justify-center gap-1 mt-1 mb-6">
-                  <span className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                  <span className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
                     ₹4,000
                   </span>
-                  <span className="text-slate-500 font-medium text-xs sm:text-sm">
+                  <span className="text-slate-400 font-medium text-xs sm:text-sm">
                     / lifetime
                   </span>
                 </div>
               </div>
 
               {/* Checklist */}
-              <ul className="space-y-3.5 text-xs sm:text-sm text-slate-600 mb-8">
+              <ul className="space-y-3.5 text-xs sm:text-sm text-slate-300 mb-8">
                 {plan2Features.map((item, idx) => (
                   <li key={idx} className="flex items-center gap-3">
-                    <Check
-                      className="w-4 h-4 stroke-[2.5] flex-shrink-0"
-                      style={{ color: "#5B3FE4" }}
-                    />
-                    <span className="font-medium text-slate-700">{item}</span>
+                    <Check className="w-4 h-4 stroke-[2.5] flex-shrink-0 text-white" />
+                    <span className="font-medium text-slate-200">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -162,17 +126,7 @@ export function PricingExact() {
             {/* CTA Button */}
             <Link
               href="/register?plan=lifetime"
-              className="w-full text-center py-3.5 px-6 rounded-full font-bold text-sm text-white transition-all duration-200 active:scale-98 block"
-              style={{
-                backgroundColor: "#5B3FE4",
-                boxShadow: "0 6px 18px rgba(91, 63, 228, 0.32)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#4A32C0";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#5B3FE4";
-              }}
+              className="w-full text-center py-3.5 px-6 rounded-full font-bold text-sm bg-white text-slate-900 hover:bg-slate-100 transition-all duration-200 active:scale-95 block shadow-md"
             >
               Get Lifelong Plan
             </Link>

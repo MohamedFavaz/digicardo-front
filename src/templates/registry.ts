@@ -23,8 +23,8 @@ export const TEMPLATE_REGISTRY: Record<string, TemplateDefinition> = {
       animation: "none",
     },
     supportedSections: ["profile", "socials", "quickActions", "qr", "vcard", "share"],
-    Component: dynamic(() => import("./vcard").then((m) => m.VCardTemplate)),
-    SettingsComponent: dynamic(() => import("./vcard/settings").then((m) => m.VCardSettings)),
+    Component: dynamic(() => import("./vcard").then((m) => m.VCardTemplate || m.default)),
+    SettingsComponent: dynamic(() => import("./vcard/settings").then((m) => m.VCardSettings || m.default)),
   },
   botanical: {
     id: "botanical",
@@ -156,8 +156,8 @@ export const TEMPLATE_REGISTRY: Record<string, TemplateDefinition> = {
       { id: "terracotta", name: "Warm Terracotta", primary: "#431407", secondary: "#9a3412", accent: "#c2410c" },
       { id: "charcoal", name: "Minimal Charcoal", primary: "#09090b", secondary: "#52525b", accent: "#27272a" },
     ],
-    Component: dynamic(() => import("./botanical").then((m) => m.BotanicalTemplate)),
-    SettingsComponent: dynamic(() => import("./botanical/settings").then((m) => m.BotanicalSettings)),
+    Component: dynamic(() => import("./botanical").then((m) => m.BotanicalTemplate || m.default)),
+    SettingsComponent: dynamic(() => import("./botanical/settings").then((m) => m.BotanicalSettings || m.default)),
   },
 };
 
