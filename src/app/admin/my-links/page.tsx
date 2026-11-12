@@ -22,6 +22,7 @@ import {
   Loader2,
   ArrowRight,
   MoreVertical,
+  ShieldCheck,
 } from "lucide-react";
 import { DeleteUserModal, DeleteUserTarget } from "@/components/admin/DeleteUserModal";
 
@@ -242,13 +243,20 @@ export default function MyLinksPage() {
             Monitor public profile links, verify subscriptions, and manage account status.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          <Link
+            href="/admin/agents/create"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95"
+          >
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <span>New Agent</span>
+          </Link>
           <Link
             href="/admin/admin-panel"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
           >
             <UserPlus className="w-4 h-4" />
-            <span>New User</span>
+            <span>New Customer</span>
           </Link>
         </div>
       </div>

@@ -122,14 +122,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [loggingOut, setLoggingOut] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [pendingRequests, setPendingRequests] = useState<number>(0);
-  const [agentSectionOpen, setAgentSectionOpen] = useState(() => {
-    // Auto-open if we're on an agent-related page
-    if (typeof window !== "undefined") {
-      const p = window.location.pathname;
-      return p.startsWith("/admin/agents") || p.startsWith("/admin/agent-cards") || p.startsWith("/admin/agent-finance");
-    }
-    return false;
-  });
+  const [agentSectionOpen, setAgentSectionOpen] = useState(true);
   // Guard to prevent rendering children (and triggering a flash redirect) before
   // the initial auth check resolves. Only set to true once we have confirmed the
   // user is a valid admin — or once we have redirected away.

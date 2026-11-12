@@ -392,14 +392,25 @@ export default function AdminPanelPage() {
 
           {/* User Creation Card */}
           <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
-            <div className="p-5 border-b border-slate-100 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
-                <UserPlus className="w-4 h-4" />
+            <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
+                  <UserPlus className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-slate-900">New Customer Card</h2>
+                  <p className="text-[11px] text-slate-400">Account credentials and validity tier</p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-sm font-bold text-slate-900">New User</h2>
-                <p className="text-[11px] text-slate-400">Account credentials and validity tier</p>
-              </div>
+
+              <Link
+                href="/admin/agents/create"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
+                title="Create an Agent Partner"
+              >
+                <span>Create Agent</span>
+                <span>&rarr;</span>
+              </Link>
             </div>
 
             <form onSubmit={handleCreate} className="p-5 space-y-4">
