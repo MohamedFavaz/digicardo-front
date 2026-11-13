@@ -20,9 +20,8 @@ export interface TemplatePickerProps {
 }
 
 /**
- * Full template live preview.
- * Scales the entire card so the FULL template (from header to footer) is visible
- * inside the preview container without being oversized or cropped.
+ * Proportional live template card preview.
+ * Fits the width and height of the box naturally (no skinny long strip, no distortion).
  */
 function TemplateCardScreen({
   template,
@@ -34,80 +33,68 @@ function TemplateCardScreen({
   blocks: ProfileBlock[];
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const contentRef = React.useRef<HTMLDivElement>(null);
-  const [scale, setScale] = React.useState<number>(0.37);
-  const [contentHeight, setContentHeight] = React.useState<number>(880);
+  const [scale, setScale] = React.useState<number>(0.64);
+  const [boxDimensions, setBoxDimensions] = React.useState({ w: 240, h: 290 });
 
   React.useEffect(() => {
-    const calculateFit = () => {
-      const container = containerRef.current;
-      const content = contentRef.current;
-      if (!container) return;
+    const el = containerRef.current;
+    if (!el) return;
 
-      const containerH = container.clientHeight || 350;
-      const containerW = container.clientWidth || 240;
+    const updateFit = () => {
+      const width = el.clientWidth;
+      const height = el.clientHeight;
+      if (width > 0 && height > 0) {
+        // Leave comfortable 12px padding inside the container
+        const availW = Math.max(width - 24, 180);
+        const availH = Math.max(height - 24, 250);
 
-      // Measure the full rendered height of the template (or fallback to 880px)
-      const measuredH = content?.scrollHeight || 880;
-      const targetH = Math.max(measuredH, 750);
-      setContentHeight(targetH);
-
-      // Fit the entire card both vertically and horizontally with comfortable padding
-      const scaleByH = (containerH - 20) / targetH;
-      const scaleByW = (containerW - 20) / 375;
-
-      const fullFitScale = Math.min(scaleByH, scaleByW);
-      // Clamp between 0.30 and 0.55 for optimal visual fidelity
-      setScale(Math.max(0.30, Math.min(fullFitScale, 0.52)));
+        // Virtual mobile device width: 360px
+        // Scale so the card fills 100% of the box width
+        const computedScale = availW / 360;
+        setScale(computedScale);
+        setBoxDimensions({ w: availW, h: availH });
+      }
     };
 
-    calculateFit();
-    const timer = setTimeout(calculateFit, 150);
-
-    const observer = new ResizeObserver(calculateFit);
-    if (containerRef.current) observer.observe(containerRef.current);
-    if (contentRef.current) observer.observe(contentRef.current);
-
-    return () => {
-      clearTimeout(timer);
-      observer.disconnect();
-    };
-  }, [blocks, profile]);
-
-  const scaledW = Math.round(375 * scale);
-  const scaledH = Math.round(contentHeight * scale);
+    updateFit();
+    const observer = new ResizeObserver(updateFit);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[330px] sm:h-[360px] rounded-xl overflow-hidden bg-slate-50/80 border border-slate-200/80 shadow-2xs group-hover:border-slate-300 transition-colors flex items-center justify-center p-2 select-none"
+      className="relative w-full h-[300px] sm:h-[330px] rounded-xl overflow-hidden bg-slate-100/60 border border-slate-200/80 shadow-2xs group-hover:border-slate-300 transition-colors flex items-center justify-center p-3 select-none"
     >
-      {/* Scaled card wrapper: exact layout footprint so it centers perfectly */}
+      {/* Proportionally fitted mobile card: fills box width and height */}
       <div
         style={{
-          width: `${scaledW}px`,
-          height: `${scaledH}px`,
+          width: `${boxDimensions.w}px`,
+          height: `${boxDimensions.h}px`,
         }}
-        className="relative flex-shrink-0 rounded-[18px] overflow-hidden shadow-md border border-slate-200/70 bg-white"
+        className="relative flex-shrink-0 rounded-2xl overflow-hidden shadow-sm border border-slate-200/90 bg-white"
       >
-        {/* Full live template rendered at 375px virtual width, scaled down to fit */}
-        <div
-          ref={contentRef}
-          className="in-phone-frame pointer-events-none"
-          style={{
-            width: "375px",
-            minHeight: `${contentHeight}px`,
-            transform: `scale(${scale})`,
-            transformOrigin: "top left",
-          }}
-        >
-          <ProfileRenderer
-            profile={profile}
-            blocks={blocks}
-            templateId={template.id}
-            themeTokens={template.default_theme}
-          />
+        {/* Scrollable live template inside in-phone-frame */}
+        <div className="in-phone-frame w-full h-full overflow-y-auto no-scrollbar">
+          <div
+            style={{
+              width: "360px",
+              transform: `scale(${scale})`,
+              transformOrigin: "top left",
+            }}
+          >
+            <ProfileRenderer
+              profile={profile}
+              blocks={blocks}
+              templateId={template.id}
+              themeTokens={template.default_theme}
+            />
+          </div>
         </div>
+
+        {/* Subtle bottom fade */}
+        <div className="absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
       </div>
     </div>
   );
@@ -155,7 +142,7 @@ export function TemplatePicker({
         </button>
       </div>
 
-      {/* Grid of Templates - Full Template Visible, Not Oversized */}
+      {/* Grid of Templates */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
         {allTemplates.map((template) => {
           const isActive = selectedTemplateId === template.id;
@@ -239,7 +226,7 @@ export function TemplatePicker({
                 )}
               </div>
 
-              {/* Real Live Template Card Preview - Full Template Fit */}
+              {/* Real Live Template Card Preview - Full Width Fit */}
               <TemplateCardScreen
                 template={template}
                 profile={effectiveProfile}
