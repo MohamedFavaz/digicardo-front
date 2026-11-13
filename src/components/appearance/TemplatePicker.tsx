@@ -21,8 +21,9 @@ export interface TemplatePickerProps {
 
 /**
  * Compact template preview card.
- * Fits 100% of the box width and height cleanly without horizontal slicing,
- * skinny margins, or scrolling.
+ * Compacts headers and spacing so that ALL contents of the template
+ * (banner, avatar, name, verified badge, CTA buttons, and quick actions grid)
+ * are 100% visible inside this exact card size WITHOUT any scrolling.
  */
 function TemplateCardScreen({
   template,
@@ -43,8 +44,8 @@ function TemplateCardScreen({
     const updateScale = () => {
       const width = el.clientWidth;
       if (width > 0) {
-        // Virtual mobile viewport is 360px
-        // Scaling by width / 360 ensures the card fills 100% of the container width
+        // Virtual mobile viewport width is 360px
+        // Scale to 100% width of the container
         setScale(width / 360);
       }
     };
@@ -58,17 +59,18 @@ function TemplateCardScreen({
   return (
     <div
       ref={containerRef}
-      className="compact-preview-card relative w-full h-[300px] sm:h-[325px] rounded-xl overflow-hidden bg-white border border-slate-200/90 shadow-2xs group-hover:border-slate-300 transition-colors select-none"
+      className="compact-preview-card relative w-full h-[310px] sm:h-[335px] rounded-xl overflow-hidden bg-white border border-slate-200/90 shadow-2xs group-hover:border-slate-300 transition-colors select-none"
     >
-      {/* Scoped CSS rules to ensure 100% width fit and compact vertical spacing */}
+      {/* Scoped CSS rules: tightly compacts heights/paddings so ALL components fit without scrolling */}
       <style>{`
         .compact-preview-card .in-phone-frame {
           padding: 0 !important;
           min-height: auto !important;
         }
 
-        /* Prevent 440px desktop max-width from clipping or overflowing on the 360px virtual viewport */
+        /* Prevent desktop 440px constraint from overflowing virtual 360px canvas */
         .compact-preview-card .max-w-\\[440px\\],
+        .compact-preview-card [class*="max-w-[440px]"],
         .compact-preview-card .botanical-page-wrapper,
         .compact-preview-card .card-canvas {
           max-width: 100% !important;
@@ -79,100 +81,131 @@ function TemplateCardScreen({
           border: none !important;
         }
 
-        /* ── VCard Template Compact Layout Rules ── */
-        .compact-preview-card .h-48,
-        .compact-preview-card .sm\\:h-52 {
-          height: 88px !important;
+        /* ── Compact Cover & Banner ── */
+        .compact-preview-card [class*="h-48"],
+        .compact-preview-card [class*="h-52"],
+        .compact-preview-card [class*="sm:h-52"],
+        .compact-preview-card .botanical-cover,
+        .compact-preview-card .botanical-banner {
+          height: 60px !important;
+          min-height: 60px !important;
+          max-height: 60px !important;
         }
-        .compact-preview-card .-mt-14,
-        .compact-preview-card .-mt-16 {
-          margin-top: -24px !important;
+
+        /* ── Compact Circular Avatar ── */
+        .compact-preview-card [class*="-mt-14"],
+        .compact-preview-card [class*="-mt-16"] {
+          margin-top: -20px !important;
         }
-        .compact-preview-card .w-24,
-        .compact-preview-card .w-28,
-        .compact-preview-card .h-24,
-        .compact-preview-card .h-28 {
-          width: 52px !important;
-          height: 52px !important;
+        .compact-preview-card [class*="w-24"],
+        .compact-preview-card [class*="w-28"],
+        .compact-preview-card [class*="h-24"],
+        .compact-preview-card [class*="h-28"] {
+          width: 44px !important;
+          height: 44px !important;
+          border-width: 2px !important;
         }
-        .compact-preview-card .text-xl,
-        .compact-preview-card .sm\\:text-\\[22px\\] {
-          font-size: 13px !important;
+        .compact-preview-card [class*="w-24"] svg,
+        .compact-preview-card [class*="w-28"] svg {
+          width: 18px !important;
+          height: 18px !important;
+        }
+        .compact-preview-card .avatar-wrapper {
+          width: 48px !important;
+          height: 48px !important;
+          margin-top: 2px !important;
+          margin-bottom: 4px !important;
+        }
+        .compact-preview-card .status-dot {
+          width: 10px !important;
+          height: 10px !important;
+          border-width: 1.5px !important;
+        }
+
+        /* ── Compact Typography & Headers ── */
+        .compact-preview-card h1,
+        .compact-preview-card .profile-name,
+        .compact-preview-card [class*="text-xl"],
+        .compact-preview-card [class*="text-[22px]"] {
+          font-size: 12px !important;
           line-height: 1.15 !important;
+          margin: 0 !important;
         }
-        .compact-preview-card .text-xs,
-        .compact-preview-card .text-\\[11px\\] {
-          font-size: 9px !important;
-          line-height: 1.15 !important;
+        .compact-preview-card [class*="text-xs"],
+        .compact-preview-card [class*="text-[11px]"],
+        .compact-preview-card .profile-company,
+        .compact-preview-card .profile-tagline {
+          font-size: 8px !important;
+          line-height: 1.1 !important;
         }
+        .compact-preview-card .profile-hero {
+          margin-bottom: 4px !important;
+        }
+
+        /* ── Tight Vertical Spacing & Margins ── */
         .compact-preview-card .px-5 {
           padding-left: 8px !important;
           padding-right: 8px !important;
         }
-        .compact-preview-card .space-y-2\\.5 > :not([hidden]) ~ :not([hidden]),
-        .compact-preview-card .space-y-2 > :not([hidden]) ~ :not([hidden]),
-        .compact-preview-card .space-y-3 > :not([hidden]) ~ :not([hidden]) {
-          margin-top: 2.5px !important;
+        .compact-preview-card [class*="space-y-2"],
+        .compact-preview-card [class*="space-y-2.5"],
+        .compact-preview-card [class*="space-y-3"] {
+          margin-top: 2px !important;
         }
-        .compact-preview-card .py-3,
-        .compact-preview-card .py-2\\.5,
-        .compact-preview-card .py-2 {
-          padding-top: 3.5px !important;
-          padding-bottom: 3.5px !important;
+        .compact-preview-card [class*="space-y-2"] > :not([hidden]) ~ :not([hidden]),
+        .compact-preview-card [class*="space-y-2.5"] > :not([hidden]) ~ :not([hidden]),
+        .compact-preview-card [class*="space-y-3"] > :not([hidden]) ~ :not([hidden]) {
+          margin-top: 2px !important;
         }
-        .compact-preview-card .pb-8 {
+        .compact-preview-card [class*="pb-8"],
+        .compact-preview-card [class*="pb-6"],
+        .compact-preview-card [class*="pb-4"] {
           padding-bottom: 2px !important;
         }
-        .compact-preview-card .grid-cols-4 {
-          gap: 2px !important;
-        }
-        .compact-preview-card .grid-cols-4 button {
-          padding: 2px !important;
-          gap: 1.5px !important;
-        }
-        .compact-preview-card .grid-cols-4 .w-11,
-        .compact-preview-card .grid-cols-4 .h-11,
-        .compact-preview-card .grid-cols-4 .w-12,
-        .compact-preview-card .grid-cols-4 .h-12 {
-          width: 27px !important;
-          height: 27px !important;
-        }
-        .compact-preview-card .grid-cols-4 svg {
-          width: 13px !important;
-          height: 13px !important;
-        }
-        .compact-preview-card .grid-cols-4 span {
-          font-size: 7.5px !important;
-          line-height: 1 !important;
-        }
 
-        /* ── Botanical Template Compact Layout Rules ── */
-        .compact-preview-card .botanical-cover,
-        .compact-preview-card .botanical-banner {
-          height: 88px !important;
+        /* ── Compact CTA Buttons ── */
+        .compact-preview-card [class*="py-3"],
+        .compact-preview-card [class*="py-2.5"],
+        .compact-preview-card [class*="py-2"] {
+          padding-top: 3px !important;
+          padding-bottom: 3px !important;
         }
-        .compact-preview-card .botanical-avatar-box {
-          margin-top: -24px !important;
-        }
-        .compact-preview-card .botanical-avatar {
-          width: 52px !important;
-          height: 52px !important;
+        .compact-preview-card button[class*="rounded-"],
+        .compact-preview-card .card-action-btn,
+        .compact-preview-card .btn-share-top {
+          padding: 3px 6px !important;
+          font-size: 8px !important;
         }
         .compact-preview-card .card-canvas {
           padding: 4px 6px !important;
         }
-        .compact-preview-card .card-action-bar,
-        .compact-preview-card .botanical-action-grid {
+
+        /* ── Compact Quick Action Grid (All Icons Visible) ── */
+        .compact-preview-card .grid-cols-4,
+        .compact-preview-card [class*="grid-cols-4"] {
           gap: 2px !important;
           margin-top: 3px !important;
         }
-        .compact-preview-card .card-icon-box {
-          width: 27px !important;
-          height: 27px !important;
+        .compact-preview-card .grid-cols-4 button {
+          padding: 1.5px !important;
+          gap: 1px !important;
         }
+        .compact-preview-card .grid-cols-4 [class*="w-11"],
+        .compact-preview-card .grid-cols-4 [class*="w-12"],
+        .compact-preview-card .grid-cols-4 [class*="h-11"],
+        .compact-preview-card .grid-cols-4 [class*="h-12"],
+        .compact-preview-card .card-icon-box {
+          width: 24px !important;
+          height: 24px !important;
+        }
+        .compact-preview-card .grid-cols-4 svg,
         .compact-preview-card .card-icon-box svg {
-          width: 13px !important;
-          height: 13px !important;
+          width: 12px !important;
+          height: 12px !important;
+        }
+        .compact-preview-card .grid-cols-4 span {
+          font-size: 7px !important;
+          line-height: 1 !important;
         }
       `}</style>
 
@@ -322,7 +355,7 @@ export function TemplatePicker({
                 )}
               </div>
 
-              {/* Real Live Template Card Preview - 100% Width Fit */}
+              {/* Real Live Template Card Preview - All Contents Visible Without Scrolling */}
               <TemplateCardScreen
                 template={template}
                 profile={effectiveProfile}
