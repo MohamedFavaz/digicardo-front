@@ -19,6 +19,74 @@ export interface TemplatePickerProps {
   blocks?: ProfileBlock[];
 }
 
+/**
+ * Scaled mini-screen preview of a digital card template.
+ * Automatically computes scale so that the template fits 100% of the screen width cleanly.
+ */
+function TemplateCardScreen({
+  template,
+  profile,
+  blocks,
+}: {
+  template: TemplateDefinition;
+  profile: Profile;
+  blocks: ProfileBlock[];
+}) {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [scale, setScale] = React.useState<number>(0.62);
+  const [containerHeight, setContainerHeight] = React.useState<number>(350);
+
+  React.useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const updateDimensions = () => {
+      const width = el.clientWidth;
+      const height = el.clientHeight;
+      if (width > 0) {
+        // Virtual mobile device width: 375px
+        // Scale = width / 375 so rendered width is exactly 100% of the screen container
+        const computedScale = width / 375;
+        setScale(computedScale);
+        setContainerHeight(height);
+      }
+    };
+
+    updateDimensions();
+    const observer = new ResizeObserver(updateDimensions);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full h-[320px] sm:h-[350px] rounded-xl overflow-hidden bg-slate-100/70 border border-slate-200/80 shadow-2xs group-hover:border-slate-300 transition-colors select-none"
+    >
+      {/* Real Live Render inside in-phone-frame */}
+      <div
+        className="in-phone-frame w-[375px] overflow-y-auto no-scrollbar pointer-events-none"
+        style={{
+          width: "375px",
+          height: `${containerHeight / (scale || 0.62)}px`,
+          transform: `scale(${scale})`,
+          transformOrigin: "top left",
+        }}
+      >
+        <ProfileRenderer
+          profile={profile}
+          blocks={blocks}
+          templateId={template.id}
+          themeTokens={template.default_theme}
+        />
+      </div>
+
+      {/* Subtle bottom fade */}
+      <div className="absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-white/90 via-white/30 to-transparent pointer-events-none" />
+    </div>
+  );
+}
+
 export function TemplatePicker({
   templates,
   selectedTemplateId = "vcard",
@@ -61,7 +129,7 @@ export function TemplatePicker({
         </button>
       </div>
 
-      {/* Grid of Templates - Real Live View Cards (No Phone Chassis, Proportional Dimensions) */}
+      {/* Grid of Templates - Real Live View Cards (No Phone Chassis, Perfectly Fitted) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
         {allTemplates.map((template) => {
           const isActive = selectedTemplateId === template.id;
@@ -145,19 +213,12 @@ export function TemplatePicker({
                 )}
               </div>
 
-              {/* Real Live Template Card Preview - Clean, Borderless & No Mobile Frame */}
-              <div className="relative w-full h-[270px] sm:h-[300px] rounded-xl overflow-hidden bg-slate-50 border border-slate-200/70 shadow-2xs flex justify-center group-hover:border-slate-300 transition-colors">
-                <div className="w-[375px] h-[580px] origin-top scale-[0.46] sm:scale-[0.51] pointer-events-none select-none overflow-hidden">
-                  <ProfileRenderer
-                    profile={effectiveProfile}
-                    blocks={blocks}
-                    templateId={template.id}
-                    themeTokens={template.default_theme}
-                  />
-                </div>
-                {/* Subtle soft gradient fade at bottom */}
-                <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white/90 via-white/40 to-transparent pointer-events-none" />
-              </div>
+              {/* Real Live Template Card Preview - Scaled to Fit 100% */}
+              <TemplateCardScreen
+                template={template}
+                profile={effectiveProfile}
+                blocks={blocks}
+              />
 
               {/* Action Button */}
               <div className="pt-3 flex items-center justify-between text-xs">
@@ -172,7 +233,7 @@ export function TemplatePicker({
                   )}
                 >
                   <span>{isActive ? "Customize Details" : "Select Layout"}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                 </span>
               </div>
             </div>
