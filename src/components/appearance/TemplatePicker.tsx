@@ -20,8 +20,9 @@ export interface TemplatePickerProps {
 }
 
 /**
- * Proportional live template card preview.
- * Fits the width and height of the box naturally (no skinny long strip, no distortion).
+ * Compact template preview card.
+ * Uses compact proportional styling so ALL contents (banner, avatar, title, buttons, quick action grid)
+ * are 100% visible inside the preview box at once without any scrolling, while filling the box width.
  */
 function TemplateCardScreen({
   template,
@@ -33,8 +34,9 @@ function TemplateCardScreen({
   blocks: ProfileBlock[];
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const contentRef = React.useRef<HTMLDivElement>(null);
   const [scale, setScale] = React.useState<number>(0.64);
-  const [boxDimensions, setBoxDimensions] = React.useState({ w: 240, h: 290 });
+  const [boxDimensions, setBoxDimensions] = React.useState({ w: 240, h: 295 });
 
   React.useEffect(() => {
     const el = containerRef.current;
@@ -44,30 +46,149 @@ function TemplateCardScreen({
       const width = el.clientWidth;
       const height = el.clientHeight;
       if (width > 0 && height > 0) {
-        // Leave comfortable 12px padding inside the container
-        const availW = Math.max(width - 24, 180);
-        const availH = Math.max(height - 24, 250);
+        const availW = Math.max(width - 20, 180);
+        const availH = Math.max(height - 20, 250);
 
-        // Virtual mobile device width: 360px
-        // Scale so the card fills 100% of the box width
-        const computedScale = availW / 360;
-        setScale(computedScale);
-        setBoxDimensions({ w: availW, h: availH });
+        // Virtual width 360px
+        const scaleW = availW / 360;
+        const measuredH = contentRef.current?.scrollHeight || 460;
+        const scaleH = availH / Math.max(measuredH, 380);
+
+        // Fit both width and height so all content is visible without scrolling
+        const fitScale = Math.min(scaleW, scaleH);
+        setScale(Math.max(0.48, Math.min(fitScale, 0.72)));
+
+        const renderedW = Math.round(360 * fitScale);
+        const renderedH = Math.round(measuredH * fitScale);
+        setBoxDimensions({
+          w: Math.min(renderedW, availW),
+          h: Math.min(renderedH, availH),
+        });
       }
     };
 
     updateFit();
+    const timer = setTimeout(updateFit, 100);
     const observer = new ResizeObserver(updateFit);
     observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+    if (contentRef.current) observer.observe(contentRef.current);
+
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
+  }, [profile, blocks]);
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[300px] sm:h-[330px] rounded-xl overflow-hidden bg-slate-100/60 border border-slate-200/80 shadow-2xs group-hover:border-slate-300 transition-colors flex items-center justify-center p-3 select-none"
+      className="compact-preview-card relative w-full h-[300px] sm:h-[330px] rounded-xl overflow-hidden bg-slate-100/60 border border-slate-200/80 shadow-2xs group-hover:border-slate-300 transition-colors flex items-center justify-center p-2.5 select-none"
     >
-      {/* Proportionally fitted mobile card: fills box width and height */}
+      {/* Scoped compact stylesheet to fit all template contents without scrolling */}
+      <style>{`
+        .compact-preview-card .in-phone-frame {
+          padding: 0 !important;
+          min-height: auto !important;
+        }
+
+        /* VCard Template Compact Layout Rules */
+        .compact-preview-card .h-48,
+        .compact-preview-card .sm\\:h-52 {
+          height: 100px !important;
+        }
+        .compact-preview-card .-mt-14,
+        .compact-preview-card .-mt-16 {
+          margin-top: -28px !important;
+        }
+        .compact-preview-card .w-24,
+        .compact-preview-card .w-28,
+        .compact-preview-card .h-24,
+        .compact-preview-card .h-28 {
+          width: 58px !important;
+          height: 58px !important;
+        }
+        .compact-preview-card .text-xl,
+        .compact-preview-card .sm\\:text-\\[22px\\] {
+          font-size: 14px !important;
+          line-height: 1.15 !important;
+        }
+        .compact-preview-card .text-xs,
+        .compact-preview-card .text-\\[11px\\] {
+          font-size: 9.5px !important;
+          line-height: 1.2 !important;
+        }
+        .compact-preview-card .px-5 {
+          padding-left: 10px !important;
+          padding-right: 10px !important;
+        }
+        .compact-preview-card .space-y-2\\.5 > :not([hidden]) ~ :not([hidden]),
+        .compact-preview-card .space-y-2 > :not([hidden]) ~ :not([hidden]),
+        .compact-preview-card .space-y-3 > :not([hidden]) ~ :not([hidden]) {
+          margin-top: 3px !important;
+        }
+        .compact-preview-card .py-3,
+        .compact-preview-card .py-2\\.5,
+        .compact-preview-card .py-2 {
+          padding-top: 4px !important;
+          padding-bottom: 4px !important;
+        }
+        .compact-preview-card .pb-8 {
+          padding-bottom: 4px !important;
+        }
+        .compact-preview-card .grid-cols-4 {
+          gap: 3px !important;
+        }
+        .compact-preview-card .grid-cols-4 button {
+          padding: 2px !important;
+          gap: 2px !important;
+        }
+        .compact-preview-card .grid-cols-4 .w-11,
+        .compact-preview-card .grid-cols-4 .h-11,
+        .compact-preview-card .grid-cols-4 .w-12,
+        .compact-preview-card .grid-cols-4 .h-12 {
+          width: 30px !important;
+          height: 30px !important;
+        }
+        .compact-preview-card .grid-cols-4 svg {
+          width: 14px !important;
+          height: 14px !important;
+        }
+        .compact-preview-card .grid-cols-4 span {
+          font-size: 8px !important;
+          line-height: 1 !important;
+        }
+
+        /* Botanical Template Compact Layout Rules */
+        .compact-preview-card .botanical-cover,
+        .compact-preview-card .botanical-banner {
+          height: 95px !important;
+        }
+        .compact-preview-card .botanical-avatar-box {
+          margin-top: -26px !important;
+        }
+        .compact-preview-card .botanical-avatar {
+          width: 58px !important;
+          height: 58px !important;
+        }
+        .compact-preview-card .card-canvas {
+          padding: 6px 8px !important;
+        }
+        .compact-preview-card .card-action-bar,
+        .compact-preview-card .botanical-action-grid {
+          gap: 3px !important;
+          margin-top: 4px !important;
+        }
+        .compact-preview-card .card-icon-box {
+          width: 30px !important;
+          height: 30px !important;
+        }
+        .compact-preview-card .card-icon-box svg {
+          width: 14px !important;
+          height: 14px !important;
+        }
+      `}</style>
+
+      {/* Miniature Card Canvas: fills the preview box proportionally without scrolling */}
       <div
         style={{
           width: `${boxDimensions.w}px`,
@@ -75,26 +196,22 @@ function TemplateCardScreen({
         }}
         className="relative flex-shrink-0 rounded-2xl overflow-hidden shadow-sm border border-slate-200/90 bg-white"
       >
-        {/* Scrollable live template inside in-phone-frame */}
-        <div className="in-phone-frame w-full h-full overflow-y-auto no-scrollbar">
-          <div
-            style={{
-              width: "360px",
-              transform: `scale(${scale})`,
-              transformOrigin: "top left",
-            }}
-          >
-            <ProfileRenderer
-              profile={profile}
-              blocks={blocks}
-              templateId={template.id}
-              themeTokens={template.default_theme}
-            />
-          </div>
+        <div
+          ref={contentRef}
+          className="in-phone-frame pointer-events-none"
+          style={{
+            width: "360px",
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+          }}
+        >
+          <ProfileRenderer
+            profile={profile}
+            blocks={blocks}
+            templateId={template.id}
+            themeTokens={template.default_theme}
+          />
         </div>
-
-        {/* Subtle bottom fade */}
-        <div className="absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
       </div>
     </div>
   );
@@ -226,7 +343,7 @@ export function TemplatePicker({
                 )}
               </div>
 
-              {/* Real Live Template Card Preview - Full Width Fit */}
+              {/* Real Live Template Card Preview - All Contents Visible Without Scrolling */}
               <TemplateCardScreen
                 template={template}
                 profile={effectiveProfile}
