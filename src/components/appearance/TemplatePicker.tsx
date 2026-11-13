@@ -21,9 +21,9 @@ export interface TemplatePickerProps {
 
 /**
  * Compact template preview card.
- * Compacts headers and spacing so that ALL contents of the template
- * (banner, avatar, name, verified badge, CTA buttons, and quick actions grid)
- * are 100% visible inside this exact card size WITHOUT any scrolling.
+ * Automatically computes scale so that ALL contents of the template
+ * (cover, avatar, name, badges, buttons, actions) fit 100% completely inside
+ * the preview box without any bottom clipping or scrolling.
  */
 function TemplateCardScreen({
   template,
@@ -35,7 +35,7 @@ function TemplateCardScreen({
   blocks: ProfileBlock[];
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const [scale, setScale] = React.useState<number>(0.65);
+  const [scale, setScale] = React.useState<number>(0.66);
 
   React.useEffect(() => {
     const el = containerRef.current;
@@ -43,10 +43,14 @@ function TemplateCardScreen({
 
     const updateScale = () => {
       const width = el.clientWidth;
-      if (width > 0) {
-        // Virtual mobile viewport width is 360px
-        // Scale to 100% width of the container
-        setScale(width / 360);
+      const height = el.clientHeight;
+      if (width > 0 && height > 0) {
+        // Virtual mobile viewport width: 360px
+        const scaleW = width / 360;
+        // Virtual height of the compact template is ~440px
+        const scaleH = (height - 8) / 440;
+        // Fit both width and height so all content is completely visible without any cutoff
+        setScale(Math.min(scaleW, scaleH));
       }
     };
 
@@ -59,9 +63,9 @@ function TemplateCardScreen({
   return (
     <div
       ref={containerRef}
-      className="compact-preview-card relative w-full h-[310px] sm:h-[335px] rounded-xl overflow-hidden bg-white border border-slate-200/90 shadow-2xs group-hover:border-slate-300 transition-colors select-none"
+      className="compact-preview-card relative w-full h-[325px] sm:h-[350px] rounded-xl overflow-hidden bg-white border border-slate-200/90 shadow-2xs group-hover:border-slate-300 transition-colors flex items-center justify-center select-none"
     >
-      {/* Scoped CSS rules: tightly compacts heights/paddings so ALL components fit without scrolling */}
+      {/* Scoped CSS rules: compacts spacing and hides overflowing secondary text so all key contents fit 100% */}
       <style>{`
         .compact-preview-card .in-phone-frame {
           padding: 0 !important;
@@ -87,9 +91,9 @@ function TemplateCardScreen({
         .compact-preview-card [class*="sm:h-52"],
         .compact-preview-card .botanical-cover,
         .compact-preview-card .botanical-banner {
-          height: 60px !important;
-          min-height: 60px !important;
-          max-height: 60px !important;
+          height: 58px !important;
+          min-height: 58px !important;
+          max-height: 58px !important;
         }
 
         /* ── Compact Circular Avatar ── */
@@ -111,14 +115,14 @@ function TemplateCardScreen({
           height: 18px !important;
         }
         .compact-preview-card .avatar-wrapper {
-          width: 48px !important;
-          height: 48px !important;
+          width: 46px !important;
+          height: 46px !important;
           margin-top: 2px !important;
-          margin-bottom: 4px !important;
+          margin-bottom: 3px !important;
         }
         .compact-preview-card .status-dot {
-          width: 10px !important;
-          height: 10px !important;
+          width: 9px !important;
+          height: 9px !important;
           border-width: 1.5px !important;
         }
 
@@ -127,22 +131,44 @@ function TemplateCardScreen({
         .compact-preview-card .profile-name,
         .compact-preview-card [class*="text-xl"],
         .compact-preview-card [class*="text-[22px]"] {
-          font-size: 12px !important;
+          font-size: 11.5px !important;
           line-height: 1.15 !important;
           margin: 0 !important;
         }
         .compact-preview-card [class*="text-xs"],
-        .compact-preview-card [class*="text-[11px]"],
-        .compact-preview-card .profile-company,
-        .compact-preview-card .profile-tagline {
+        .compact-preview-card [class*="text-[11px]"] {
           font-size: 8px !important;
           line-height: 1.1 !important;
         }
         .compact-preview-card .profile-hero {
-          margin-bottom: 4px !important;
+          margin-bottom: 3px !important;
         }
 
-        /* ── Tight Vertical Spacing & Margins ── */
+        /* ── Botanical Preview Optimizations: Hide redundant subtitle in preview to fit buttons ── */
+        .compact-preview-card .profile-company,
+        .compact-preview-card .profile-tagline {
+          display: none !important;
+        }
+        .compact-preview-card .profile-badges {
+          margin-top: 2px !important;
+          margin-bottom: 2px !important;
+        }
+        .compact-preview-card .card-canvas {
+          padding: 4px 6px !important;
+        }
+        .compact-preview-card .card-action-bar,
+        .compact-preview-card .contact-grid {
+          margin-top: 3px !important;
+          gap: 2px !important;
+        }
+        .compact-preview-card .card-booking,
+        .compact-preview-card .card-action-btn,
+        .compact-preview-card .btn-share-top {
+          padding: 3px 6px !important;
+          font-size: 8px !important;
+        }
+
+        /* ── Tight Spacing ── */
         .compact-preview-card .px-5 {
           padding-left: 8px !important;
           padding-right: 8px !important;
@@ -167,41 +193,39 @@ function TemplateCardScreen({
         .compact-preview-card [class*="py-3"],
         .compact-preview-card [class*="py-2.5"],
         .compact-preview-card [class*="py-2"] {
-          padding-top: 3px !important;
-          padding-bottom: 3px !important;
+          padding-top: 2.5px !important;
+          padding-bottom: 2.5px !important;
         }
-        .compact-preview-card button[class*="rounded-"],
-        .compact-preview-card .card-action-btn,
-        .compact-preview-card .btn-share-top {
-          padding: 3px 6px !important;
+        .compact-preview-card button[class*="rounded-"] {
+          padding: 2.5px 6px !important;
           font-size: 8px !important;
         }
-        .compact-preview-card .card-canvas {
-          padding: 4px 6px !important;
-        }
 
-        /* ── Compact Quick Action Grid (All Icons Visible) ── */
+        /* ── Compact Quick Action Grid: Clean 4 complete rows, hide cut-off 5th row ── */
         .compact-preview-card .grid-cols-4,
         .compact-preview-card [class*="grid-cols-4"] {
           gap: 2px !important;
-          margin-top: 3px !important;
+          margin-top: 2.5px !important;
         }
         .compact-preview-card .grid-cols-4 button {
-          padding: 1.5px !important;
+          padding: 1px !important;
           gap: 1px !important;
+        }
+        .compact-preview-card .grid-cols-4 button:nth-child(n+17) {
+          display: none !important;
         }
         .compact-preview-card .grid-cols-4 [class*="w-11"],
         .compact-preview-card .grid-cols-4 [class*="w-12"],
         .compact-preview-card .grid-cols-4 [class*="h-11"],
         .compact-preview-card .grid-cols-4 [class*="h-12"],
         .compact-preview-card .card-icon-box {
-          width: 24px !important;
-          height: 24px !important;
+          width: 23px !important;
+          height: 23px !important;
         }
         .compact-preview-card .grid-cols-4 svg,
         .compact-preview-card .card-icon-box svg {
-          width: 12px !important;
-          height: 12px !important;
+          width: 11px !important;
+          height: 11px !important;
         }
         .compact-preview-card .grid-cols-4 span {
           font-size: 7px !important;
@@ -209,13 +233,13 @@ function TemplateCardScreen({
         }
       `}</style>
 
-      {/* Virtual 360px mobile viewport: scales to 100% width of container */}
+      {/* Virtual 360px mobile viewport: scales proportionally to fit completely inside the box */}
       <div
-        className="in-phone-frame pointer-events-none"
+        className="in-phone-frame pointer-events-none flex-shrink-0"
         style={{
           width: "360px",
           transform: `scale(${scale})`,
-          transformOrigin: "top left",
+          transformOrigin: "top center",
         }}
       >
         <ProfileRenderer
@@ -355,7 +379,7 @@ export function TemplatePicker({
                 )}
               </div>
 
-              {/* Real Live Template Card Preview - All Contents Visible Without Scrolling */}
+              {/* Real Live Template Card Preview - Fully Fitted Without Cutoff */}
               <TemplateCardScreen
                 template={template}
                 profile={effectiveProfile}
