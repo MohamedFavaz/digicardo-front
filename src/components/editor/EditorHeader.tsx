@@ -27,27 +27,29 @@ export function EditorHeader({
 }: EditorHeaderProps) {
   const [copied, setCopied] = React.useState(false);
   const username = profile?.username || "demo";
-  const profileUrl = typeof window !== "undefined"
-    ? `${window.location.origin}/${username}`
-    : `https://digicardo.app/${username}`;
+  const profileUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/${username}`
+      : `https://digicardo.app/${username}`;
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(profileUrl);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
+      setTimeout(() => setCopied(false), 2000);
     } catch {
       // Fallback
     }
   };
 
   return (
-    <div className="pb-6 border-b border-border flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="pb-5 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       {/* Title & Save Status */}
       <div className="space-y-1">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-          <span>Studio Editor</span>
-          <span>·</span>
+        <div className="flex items-center gap-2.5">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+            My Page
+          </h1>
           <SaveStatus
             status={saveState}
             errorMessage={errorMessage}
@@ -55,50 +57,43 @@ export function EditorHeader({
           />
         </div>
 
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          My Page Studio
-        </h1>
-
-        <p className="text-xs text-muted-foreground max-w-lg">
-          Reorder, customize, and publish content for your visitors.
+        <p className="text-xs text-slate-500 font-medium">
+          Choose your layout template and customize your digital business card.
         </p>
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center gap-2.5 flex-wrap flex-shrink-0">
+      <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
         <button
+          type="button"
           onClick={handleCopy}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-white hover:bg-muted text-xs font-medium text-foreground transition-colors"
-          title="Copy link"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors shadow-2xs cursor-pointer"
+          title="Copy link to clipboard"
         >
           {copied ? (
             <Check className="w-3.5 h-3.5 text-emerald-600" />
           ) : (
-            <Copy className="w-3.5 h-3.5 text-muted-foreground" />
+            <Copy className="w-3.5 h-3.5 text-slate-400" />
           )}
-          <span>{copied ? "Copied!" : "Copy link"}</span>
+          <span>{copied ? "Copied" : "Copy Link"}</span>
         </button>
 
-        <Link href="/dashboard/appearance">
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5 rounded-xl font-bold text-xs bg-card hover:bg-muted border-border/80 h-9 px-3 shadow-2xs"
-          >
-            <Palette className="w-3.5 h-3.5 text-brand-600" />
-            <span>Appearance</span>
-          </Button>
+        <Link
+          href="/dashboard/appearance"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors shadow-2xs"
+        >
+          <Palette className="w-3.5 h-3.5 text-slate-500" />
+          <span>Appearance</span>
         </Link>
 
-        <Link href={`/${username}`} target="_blank" rel="noreferrer">
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1.5 rounded-xl font-bold text-xs bg-card hover:bg-muted border-border/80 h-9 px-3 shadow-2xs"
-          >
-            <span>View Live</span>
-            <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
-          </Button>
+        <Link
+          href={`/${username}`}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-xs font-semibold text-white transition-all shadow-2xs"
+        >
+          <span>View Live</span>
+          <ExternalLink className="w-3 h-3 text-slate-300" />
         </Link>
       </div>
     </div>

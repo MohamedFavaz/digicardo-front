@@ -8,32 +8,46 @@ import { DoodleSparkle } from "@/components/ui/playful/Doodles";
 
 export function EditorEmptyState() {
   return (
-    <div className="rounded-[36px] border border-dashed border-border bg-card/60 p-10 sm:p-14 text-center space-y-5 shadow-xs select-none">
-      <div className="relative w-16 h-16 rounded-3xl bg-gradient-to-tr from-brand-600 to-pink-500 text-white flex items-center justify-center mx-auto shadow-cta">
-        <Layers className="w-8 h-8" />
-        <DoodleSparkle className="absolute -top-3 -right-3 w-6 h-6 text-amber-400" />
-      </div>
+    <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-2xs space-y-5 select-none">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-2xs flex-shrink-0">
+            <Palette className="w-5 h-5 text-emerald-400" />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-slate-900">
+              Card Content &amp; Actions
+            </h3>
+            <p className="text-xs text-slate-500 font-medium">
+              Manage your contact buttons, services, and profile information.
+            </p>
+          </div>
+        </div>
 
-      <div className="space-y-1.5 max-w-md mx-auto">
-        <h3 className="text-lg sm:text-xl font-black text-foreground tracking-tight">
-          No extra blocks on your page ✨
-        </h3>
-        <p className="text-xs sm:text-sm text-muted-foreground font-medium leading-relaxed">
-          Your card contact details, links, services, and profile settings are configured directly in the Appearance studio.
-        </p>
-      </div>
-
-      <div className="pt-2">
-        <Link href="/dashboard/appearance">
-          <Button
-            variant="pill"
-            size="lg"
-            className="gap-2 bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs shadow-cta h-12 px-7 hover:shadow-hover hover:-translate-y-0.5 active:translate-y-0"
-          >
-            <Palette className="w-4 h-4" />
-            <span>Customize in Appearance</span>
-          </Button>
+        <Link
+          href="/dashboard/appearance"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-semibold shadow-2xs transition-all active:scale-98"
+        >
+          <Palette className="w-3.5 h-3.5 text-slate-300" />
+          <span>Edit Card Details</span>
         </Link>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 border-t border-slate-100 text-xs">
+        <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/60 space-y-1">
+          <span className="font-bold text-slate-800 block">Contact Actions</span>
+          <span className="text-[11px] text-slate-500 block">Call, WhatsApp, Email, Location</span>
+        </div>
+
+        <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/60 space-y-1">
+          <span className="font-bold text-slate-800 block">Services &amp; Booking</span>
+          <span className="text-[11px] text-slate-500 block">Card services, payments, and modals</span>
+        </div>
+
+        <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/60 space-y-1">
+          <span className="font-bold text-slate-800 block">Colors &amp; Theme</span>
+          <span className="text-[11px] text-slate-500 block">Backgrounds, typography, and accents</span>
+        </div>
       </div>
     </div>
   );

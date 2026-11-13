@@ -50,43 +50,40 @@ export function EditorPreview({ profile, blocks, selectedTemplateId }: EditorPre
   };
 
   return (
-    <div className="rounded-[24px] sm:rounded-[36px] border border-border/80 bg-card p-3.5 sm:p-6 shadow-card space-y-4 sm:space-y-5 sticky top-20">
+    <div className="rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-2xs space-y-4 sticky top-20 select-none">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="space-y-0.5">
+      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
           <div className="flex items-center gap-1.5">
-            <Smartphone className="w-4 h-4 text-brand-600" />
-            <h3 className="font-black text-base text-foreground">
-              Live Phone Preview
+            <Smartphone className="w-4 h-4 text-slate-700" />
+            <h3 className="font-bold text-sm text-slate-900">
+              Live Preview
             </h3>
           </div>
-          <p className="text-xs text-muted-foreground font-medium">
-            Real-time synchronized rendering ({tDef.name})
+          <p className="text-[11px] text-slate-500 font-medium">
+            Real-time preview ({tDef.name})
           </p>
         </div>
 
         <div className="flex items-center gap-1.5">
-          <Button
+          <button
             type="button"
-            variant="outline"
-            size="sm"
             onClick={handleCopy}
-            className="rounded-full text-xs font-bold gap-1 bg-card hover:bg-muted"
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors shadow-2xs cursor-pointer"
             title="Copy profile link"
           >
-            {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3 text-muted-foreground" />}
-            <span>{copied ? "Copied!" : "Copy"}</span>
-          </Button>
+            {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3 text-slate-400" />}
+            <span>{copied ? "Copied" : "Copy"}</span>
+          </button>
 
-          <Link href={`/${username}`} target="_blank" rel="noreferrer">
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-full text-xs font-bold gap-1 bg-card hover:bg-muted"
-            >
-              <span>Open</span>
-              <ExternalLink className="w-3 h-3 text-muted-foreground" />
-            </Button>
+          <Link
+            href={`/${username}`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-black text-xs font-semibold text-white transition-all shadow-2xs"
+          >
+            <span>Open</span>
+            <ExternalLink className="w-3 h-3 text-slate-300" />
           </Link>
         </div>
       </div>

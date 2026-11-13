@@ -624,11 +624,10 @@ export default function AdminPanelPage() {
                     setErrors({});
                     setServerError("");
                   }}
-                  className={`py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                    accountType === "customer"
+                  className={`py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${accountType === "customer"
                       ? "bg-white text-slate-900 shadow-xs"
                       : "text-slate-600 hover:text-slate-900"
-                  }`}
+                    }`}
                 >
                   <CreditCard className="w-3.5 h-3.5" />
                   <span>Customer Card</span>
@@ -640,11 +639,10 @@ export default function AdminPanelPage() {
                     setErrors({});
                     setServerError("");
                   }}
-                  className={`py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                    accountType === "agent"
+                  className={`py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${accountType === "agent"
                       ? "bg-white text-emerald-800 shadow-xs"
                       : "text-slate-600 hover:text-slate-900"
-                  }`}
+                    }`}
                 >
                   <Users className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Agent Partner</span>
@@ -671,9 +669,8 @@ export default function AdminPanelPage() {
                     value={form.name}
                     onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
                     placeholder="e.g. Sarah Connor"
-                    className={`w-full h-9 px-3 rounded-xl border text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${
-                      errors.name ? "border-red-400 bg-red-50/20" : "border-slate-200"
-                    }`}
+                    className={`w-full h-9 px-3 rounded-xl border text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${errors.name ? "border-red-400 bg-red-50/20" : "border-slate-200"
+                      }`}
                   />
                   {errors.name && <p className="text-[10px] text-red-500 font-semibold">{errors.name}</p>}
                 </div>
@@ -689,9 +686,8 @@ export default function AdminPanelPage() {
                     value={form.email}
                     onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
                     placeholder="sarah@example.com"
-                    className={`w-full h-9 px-3 rounded-xl border text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${
-                      errors.email ? "border-red-400 bg-red-50/20" : "border-slate-200"
-                    }`}
+                    className={`w-full h-9 px-3 rounded-xl border text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${errors.email ? "border-red-400 bg-red-50/20" : "border-slate-200"
+                      }`}
                   />
                   {errors.email && <p className="text-[10px] text-red-500 font-semibold">{errors.email}</p>}
                 </div>
@@ -712,9 +708,8 @@ export default function AdminPanelPage() {
                         setForm(p => ({ ...p, username: e.target.value.toLowerCase().replace(/[^a-z0-9_.-]/g, "") }))
                       }
                       placeholder="sarahc"
-                      className={`w-full h-9 pl-28 pr-3 rounded-xl border text-xs font-mono text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${
-                        errors.username ? "border-red-400 bg-red-50/20" : "border-slate-200"
-                      }`}
+                      className={`w-full h-9 pl-28 pr-3 rounded-xl border text-xs font-mono text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${errors.username ? "border-red-400 bg-red-50/20" : "border-slate-200"
+                        }`}
                     />
                   </div>
                   {errors.username && <p className="text-[10px] text-red-500 font-semibold">{errors.username}</p>}
@@ -785,9 +780,8 @@ export default function AdminPanelPage() {
                     value={agentForm.name}
                     onChange={e => setAgentForm(p => ({ ...p, name: e.target.value }))}
                     placeholder="e.g. Rahul Sharma"
-                    className={`w-full h-9 px-3 rounded-xl border text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${
-                      errors.name ? "border-red-400 bg-red-50/20" : "border-slate-200"
-                    }`}
+                    className={`w-full h-9 px-3 rounded-xl border text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${errors.name ? "border-red-400 bg-red-50/20" : "border-slate-200"
+                      }`}
                   />
                   {errors.name && <p className="text-[10px] text-red-500 font-semibold">{errors.name}</p>}
                 </div>
@@ -803,9 +797,8 @@ export default function AdminPanelPage() {
                     value={agentForm.email}
                     onChange={e => setAgentForm(p => ({ ...p, email: e.target.value }))}
                     placeholder="agent@example.com"
-                    className={`w-full h-9 px-3 rounded-xl border text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${
-                      errors.email ? "border-red-400 bg-red-50/20" : "border-slate-200"
-                    }`}
+                    className={`w-full h-9 px-3 rounded-xl border text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${errors.email ? "border-red-400 bg-red-50/20" : "border-slate-200"
+                      }`}
                   />
                   {errors.email && <p className="text-[10px] text-red-500 font-semibold">{errors.email}</p>}
                 </div>
@@ -819,9 +812,8 @@ export default function AdminPanelPage() {
                     value={agentForm.mobile}
                     onChange={e => setAgentForm(p => ({ ...p, mobile: e.target.value }))}
                     placeholder="+91 98765 43210"
-                    className={`w-full h-9 px-3 rounded-xl border text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${
-                      errors.mobile ? "border-red-400 bg-red-50/20" : "border-slate-200"
-                    }`}
+                    className={`w-full h-9 px-3 rounded-xl border text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${errors.mobile ? "border-red-400 bg-red-50/20" : "border-slate-200"
+                      }`}
                   />
                   {errors.mobile && <p className="text-[10px] text-red-500 font-semibold">{errors.mobile}</p>}
                 </div>
@@ -849,9 +841,8 @@ export default function AdminPanelPage() {
                     value={agentForm.password}
                     onChange={e => setAgentForm(p => ({ ...p, password: e.target.value }))}
                     placeholder="Min. 8 characters (e.g. Agent@2026)"
-                    className={`w-full h-9 px-3 rounded-xl border text-xs font-mono text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${
-                      errors.password ? "border-red-400 bg-red-50/20" : "border-slate-200"
-                    }`}
+                    className={`w-full h-9 px-3 rounded-xl border text-xs font-mono text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all ${errors.password ? "border-red-400 bg-red-50/20" : "border-slate-200"
+                      }`}
                   />
                   {errors.password && <p className="text-[10px] text-red-500 font-semibold">{errors.password}</p>}
                 </div>

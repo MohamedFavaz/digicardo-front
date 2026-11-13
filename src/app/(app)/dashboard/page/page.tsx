@@ -279,37 +279,33 @@ export default function MyPageStudioPage() {
       />
 
       {/* ── Mobile View Toggle Segmented Control (Hidden on lg) ── */}
-      <div className="flex lg:hidden p-1.5 rounded-2xl bg-muted/60 border border-border/80 text-xs font-bold shadow-2xs gap-1">
+      <div className="flex lg:hidden p-1 rounded-xl bg-slate-100 border border-slate-200/80 text-xs font-semibold shadow-2xs gap-1">
         <button
           type="button"
           onClick={() => setMobileView("content")}
           className={cn(
-            "flex-1 py-2 sm:py-2.5 px-2 rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 transition-all select-none min-w-0",
+            "flex-1 py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 transition-all select-none min-w-0 cursor-pointer",
             mobileView === "content"
-              ? "bg-card text-brand-600 shadow-xs border border-brand-200 dark:border-brand-800"
-              : "text-muted-foreground hover:text-foreground"
+              ? "bg-white text-slate-900 shadow-xs font-bold"
+              : "text-slate-600 hover:text-slate-900"
           )}
         >
           <Layers className="w-3.5 h-3.5 flex-shrink-0" />
-          <span className="truncate">
-            <span className="hidden xs:inline sm:inline">Page </span>Content ({blocks.length})
-          </span>
+          <span className="truncate">Editor</span>
         </button>
 
         <button
           type="button"
           onClick={() => setMobileView("preview")}
           className={cn(
-            "flex-1 py-2 sm:py-2.5 px-2 rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 transition-all select-none min-w-0",
+            "flex-1 py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 transition-all select-none min-w-0 cursor-pointer",
             mobileView === "preview"
-              ? "bg-card text-brand-600 shadow-xs border border-brand-200 dark:border-brand-800"
-              : "text-muted-foreground hover:text-foreground"
+              ? "bg-white text-slate-900 shadow-xs font-bold"
+              : "text-slate-600 hover:text-slate-900"
           )}
         >
           <Smartphone className="w-3.5 h-3.5 flex-shrink-0" />
-          <span className="truncate">
-            <span className="hidden xs:inline sm:inline">Live </span>Phone Preview
-          </span>
+          <span className="truncate">Live Preview</span>
         </button>
       </div>
 
@@ -334,15 +330,15 @@ export default function MyPageStudioPage() {
           </div>
 
           {/* ── Page Blocks & Content ── */}
-          <div className="space-y-3 pt-2">
-            <div>
-              <h2 className="text-sm font-black text-foreground">My Page Content</h2>
-              <p className="text-xs text-muted-foreground">
-                {blocks.length === 0
-                  ? "No extra blocks on your page"
-                  : `${blocks.length} block${blocks.length !== 1 ? "s" : ""} · ${blocks.filter((b) => b.is_visible).length} visible`}
-              </p>
-            </div>
+          <div className="space-y-3">
+            {blocks.length > 0 && (
+              <div>
+                <h2 className="text-sm font-bold text-slate-900">Custom Content Blocks</h2>
+                <p className="text-xs text-slate-500 font-medium">
+                  {blocks.length} block{blocks.length !== 1 ? "s" : ""} · {blocks.filter((b) => b.is_visible).length} visible
+                </p>
+              </div>
+            )}
 
             <BlockList
               blocks={blocks}
