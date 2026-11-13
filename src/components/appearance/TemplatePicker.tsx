@@ -20,8 +20,9 @@ export interface TemplatePickerProps {
 }
 
 /**
- * Scaled mini-screen preview of a digital card template.
- * Automatically computes scale so that the template fits 100% of the screen width cleanly.
+ * Full template live preview.
+ * Scales the entire card so the FULL template (from header to footer) is visible
+ * inside the preview container without being oversized or cropped.
  */
 function TemplateCardScreen({
   template,
@@ -33,56 +34,81 @@ function TemplateCardScreen({
   blocks: ProfileBlock[];
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const [scale, setScale] = React.useState<number>(0.62);
-  const [containerHeight, setContainerHeight] = React.useState<number>(350);
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  const [scale, setScale] = React.useState<number>(0.37);
+  const [contentHeight, setContentHeight] = React.useState<number>(880);
 
   React.useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
+    const calculateFit = () => {
+      const container = containerRef.current;
+      const content = contentRef.current;
+      if (!container) return;
 
-    const updateDimensions = () => {
-      const width = el.clientWidth;
-      const height = el.clientHeight;
-      if (width > 0) {
-        // Virtual mobile device width: 375px
-        // Scale = width / 375 so rendered width is exactly 100% of the screen container
-        const computedScale = width / 375;
-        setScale(computedScale);
-        setContainerHeight(height);
-      }
+      const containerH = container.clientHeight || 350;
+      const containerW = container.clientWidth || 240;
+
+      // Measure the full rendered height of the template (or fallback to 880px)
+      const measuredH = content?.scrollHeight || 880;
+      const targetH = Math.max(measuredH, 750);
+      setContentHeight(targetH);
+
+      // Fit the entire card both vertically and horizontally with comfortable padding
+      const scaleByH = (containerH - 20) / targetH;
+      const scaleByW = (containerW - 20) / 375;
+
+      const fullFitScale = Math.min(scaleByH, scaleByW);
+      // Clamp between 0.30 and 0.55 for optimal visual fidelity
+      setScale(Math.max(0.30, Math.min(fullFitScale, 0.52)));
     };
 
-    updateDimensions();
-    const observer = new ResizeObserver(updateDimensions);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+    calculateFit();
+    const timer = setTimeout(calculateFit, 150);
+
+    const observer = new ResizeObserver(calculateFit);
+    if (containerRef.current) observer.observe(containerRef.current);
+    if (contentRef.current) observer.observe(contentRef.current);
+
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
+  }, [blocks, profile]);
+
+  const scaledW = Math.round(375 * scale);
+  const scaledH = Math.round(contentHeight * scale);
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[320px] sm:h-[350px] rounded-xl overflow-hidden bg-slate-100/70 border border-slate-200/80 shadow-2xs group-hover:border-slate-300 transition-colors select-none"
+      className="relative w-full h-[330px] sm:h-[360px] rounded-xl overflow-hidden bg-slate-50/80 border border-slate-200/80 shadow-2xs group-hover:border-slate-300 transition-colors flex items-center justify-center p-2 select-none"
     >
-      {/* Real Live Render inside in-phone-frame */}
+      {/* Scaled card wrapper: exact layout footprint so it centers perfectly */}
       <div
-        className="in-phone-frame w-[375px] overflow-y-auto no-scrollbar pointer-events-none"
         style={{
-          width: "375px",
-          height: `${containerHeight / (scale || 0.62)}px`,
-          transform: `scale(${scale})`,
-          transformOrigin: "top left",
+          width: `${scaledW}px`,
+          height: `${scaledH}px`,
         }}
+        className="relative flex-shrink-0 rounded-[18px] overflow-hidden shadow-md border border-slate-200/70 bg-white"
       >
-        <ProfileRenderer
-          profile={profile}
-          blocks={blocks}
-          templateId={template.id}
-          themeTokens={template.default_theme}
-        />
+        {/* Full live template rendered at 375px virtual width, scaled down to fit */}
+        <div
+          ref={contentRef}
+          className="in-phone-frame pointer-events-none"
+          style={{
+            width: "375px",
+            minHeight: `${contentHeight}px`,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+          }}
+        >
+          <ProfileRenderer
+            profile={profile}
+            blocks={blocks}
+            templateId={template.id}
+            themeTokens={template.default_theme}
+          />
+        </div>
       </div>
-
-      {/* Subtle bottom fade */}
-      <div className="absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-white/90 via-white/30 to-transparent pointer-events-none" />
     </div>
   );
 }
@@ -129,7 +155,7 @@ export function TemplatePicker({
         </button>
       </div>
 
-      {/* Grid of Templates - Real Live View Cards (No Phone Chassis, Perfectly Fitted) */}
+      {/* Grid of Templates - Full Template Visible, Not Oversized */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
         {allTemplates.map((template) => {
           const isActive = selectedTemplateId === template.id;
@@ -213,7 +239,7 @@ export function TemplatePicker({
                 )}
               </div>
 
-              {/* Real Live Template Card Preview - Scaled to Fit 100% */}
+              {/* Real Live Template Card Preview - Full Template Fit */}
               <TemplateCardScreen
                 template={template}
                 profile={effectiveProfile}
