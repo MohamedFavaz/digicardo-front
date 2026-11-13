@@ -21,8 +21,8 @@ export interface TemplatePickerProps {
 
 /**
  * Compact template preview card.
- * Uses compact proportional styling so ALL contents (banner, avatar, title, buttons, quick action grid)
- * are 100% visible inside the preview box at once without any scrolling, while filling the box width.
+ * Fits 100% of the box width and height cleanly without horizontal slicing,
+ * skinny margins, or scrolling.
  */
 function TemplateCardScreen({
   template,
@@ -34,184 +34,163 @@ function TemplateCardScreen({
   blocks: ProfileBlock[];
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const contentRef = React.useRef<HTMLDivElement>(null);
-  const [scale, setScale] = React.useState<number>(0.64);
-  const [boxDimensions, setBoxDimensions] = React.useState({ w: 240, h: 295 });
+  const [scale, setScale] = React.useState<number>(0.65);
 
   React.useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
-    const updateFit = () => {
+    const updateScale = () => {
       const width = el.clientWidth;
-      const height = el.clientHeight;
-      if (width > 0 && height > 0) {
-        const availW = Math.max(width - 20, 180);
-        const availH = Math.max(height - 20, 250);
-
-        // Virtual width 360px
-        const scaleW = availW / 360;
-        const measuredH = contentRef.current?.scrollHeight || 460;
-        const scaleH = availH / Math.max(measuredH, 380);
-
-        // Fit both width and height so all content is visible without scrolling
-        const fitScale = Math.min(scaleW, scaleH);
-        setScale(Math.max(0.48, Math.min(fitScale, 0.72)));
-
-        const renderedW = Math.round(360 * fitScale);
-        const renderedH = Math.round(measuredH * fitScale);
-        setBoxDimensions({
-          w: Math.min(renderedW, availW),
-          h: Math.min(renderedH, availH),
-        });
+      if (width > 0) {
+        // Virtual mobile viewport is 360px
+        // Scaling by width / 360 ensures the card fills 100% of the container width
+        setScale(width / 360);
       }
     };
 
-    updateFit();
-    const timer = setTimeout(updateFit, 100);
-    const observer = new ResizeObserver(updateFit);
+    updateScale();
+    const observer = new ResizeObserver(updateScale);
     observer.observe(el);
-    if (contentRef.current) observer.observe(contentRef.current);
-
-    return () => {
-      clearTimeout(timer);
-      observer.disconnect();
-    };
-  }, [profile, blocks]);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div
       ref={containerRef}
-      className="compact-preview-card relative w-full h-[300px] sm:h-[330px] rounded-xl overflow-hidden bg-slate-100/60 border border-slate-200/80 shadow-2xs group-hover:border-slate-300 transition-colors flex items-center justify-center p-2.5 select-none"
+      className="compact-preview-card relative w-full h-[300px] sm:h-[325px] rounded-xl overflow-hidden bg-white border border-slate-200/90 shadow-2xs group-hover:border-slate-300 transition-colors select-none"
     >
-      {/* Scoped compact stylesheet to fit all template contents without scrolling */}
+      {/* Scoped CSS rules to ensure 100% width fit and compact vertical spacing */}
       <style>{`
         .compact-preview-card .in-phone-frame {
           padding: 0 !important;
           min-height: auto !important;
         }
 
-        /* VCard Template Compact Layout Rules */
+        /* Prevent 440px desktop max-width from clipping or overflowing on the 360px virtual viewport */
+        .compact-preview-card .max-w-\\[440px\\],
+        .compact-preview-card .botanical-page-wrapper,
+        .compact-preview-card .card-canvas {
+          max-width: 100% !important;
+          width: 100% !important;
+          margin: 0 !important;
+          border-radius: 0 !important;
+          box-shadow: none !important;
+          border: none !important;
+        }
+
+        /* ── VCard Template Compact Layout Rules ── */
         .compact-preview-card .h-48,
         .compact-preview-card .sm\\:h-52 {
-          height: 100px !important;
+          height: 88px !important;
         }
         .compact-preview-card .-mt-14,
         .compact-preview-card .-mt-16 {
-          margin-top: -28px !important;
+          margin-top: -24px !important;
         }
         .compact-preview-card .w-24,
         .compact-preview-card .w-28,
         .compact-preview-card .h-24,
         .compact-preview-card .h-28 {
-          width: 58px !important;
-          height: 58px !important;
+          width: 52px !important;
+          height: 52px !important;
         }
         .compact-preview-card .text-xl,
         .compact-preview-card .sm\\:text-\\[22px\\] {
-          font-size: 14px !important;
+          font-size: 13px !important;
           line-height: 1.15 !important;
         }
         .compact-preview-card .text-xs,
         .compact-preview-card .text-\\[11px\\] {
-          font-size: 9.5px !important;
-          line-height: 1.2 !important;
+          font-size: 9px !important;
+          line-height: 1.15 !important;
         }
         .compact-preview-card .px-5 {
-          padding-left: 10px !important;
-          padding-right: 10px !important;
+          padding-left: 8px !important;
+          padding-right: 8px !important;
         }
         .compact-preview-card .space-y-2\\.5 > :not([hidden]) ~ :not([hidden]),
         .compact-preview-card .space-y-2 > :not([hidden]) ~ :not([hidden]),
         .compact-preview-card .space-y-3 > :not([hidden]) ~ :not([hidden]) {
-          margin-top: 3px !important;
+          margin-top: 2.5px !important;
         }
         .compact-preview-card .py-3,
         .compact-preview-card .py-2\\.5,
         .compact-preview-card .py-2 {
-          padding-top: 4px !important;
-          padding-bottom: 4px !important;
+          padding-top: 3.5px !important;
+          padding-bottom: 3.5px !important;
         }
         .compact-preview-card .pb-8 {
-          padding-bottom: 4px !important;
+          padding-bottom: 2px !important;
         }
         .compact-preview-card .grid-cols-4 {
-          gap: 3px !important;
+          gap: 2px !important;
         }
         .compact-preview-card .grid-cols-4 button {
           padding: 2px !important;
-          gap: 2px !important;
+          gap: 1.5px !important;
         }
         .compact-preview-card .grid-cols-4 .w-11,
         .compact-preview-card .grid-cols-4 .h-11,
         .compact-preview-card .grid-cols-4 .w-12,
         .compact-preview-card .grid-cols-4 .h-12 {
-          width: 30px !important;
-          height: 30px !important;
+          width: 27px !important;
+          height: 27px !important;
         }
         .compact-preview-card .grid-cols-4 svg {
-          width: 14px !important;
-          height: 14px !important;
+          width: 13px !important;
+          height: 13px !important;
         }
         .compact-preview-card .grid-cols-4 span {
-          font-size: 8px !important;
+          font-size: 7.5px !important;
           line-height: 1 !important;
         }
 
-        /* Botanical Template Compact Layout Rules */
+        /* ── Botanical Template Compact Layout Rules ── */
         .compact-preview-card .botanical-cover,
         .compact-preview-card .botanical-banner {
-          height: 95px !important;
+          height: 88px !important;
         }
         .compact-preview-card .botanical-avatar-box {
-          margin-top: -26px !important;
+          margin-top: -24px !important;
         }
         .compact-preview-card .botanical-avatar {
-          width: 58px !important;
-          height: 58px !important;
+          width: 52px !important;
+          height: 52px !important;
         }
         .compact-preview-card .card-canvas {
-          padding: 6px 8px !important;
+          padding: 4px 6px !important;
         }
         .compact-preview-card .card-action-bar,
         .compact-preview-card .botanical-action-grid {
-          gap: 3px !important;
-          margin-top: 4px !important;
+          gap: 2px !important;
+          margin-top: 3px !important;
         }
         .compact-preview-card .card-icon-box {
-          width: 30px !important;
-          height: 30px !important;
+          width: 27px !important;
+          height: 27px !important;
         }
         .compact-preview-card .card-icon-box svg {
-          width: 14px !important;
-          height: 14px !important;
+          width: 13px !important;
+          height: 13px !important;
         }
       `}</style>
 
-      {/* Miniature Card Canvas: fills the preview box proportionally without scrolling */}
+      {/* Virtual 360px mobile viewport: scales to 100% width of container */}
       <div
+        className="in-phone-frame pointer-events-none"
         style={{
-          width: `${boxDimensions.w}px`,
-          height: `${boxDimensions.h}px`,
+          width: "360px",
+          transform: `scale(${scale})`,
+          transformOrigin: "top left",
         }}
-        className="relative flex-shrink-0 rounded-2xl overflow-hidden shadow-sm border border-slate-200/90 bg-white"
       >
-        <div
-          ref={contentRef}
-          className="in-phone-frame pointer-events-none"
-          style={{
-            width: "360px",
-            transform: `scale(${scale})`,
-            transformOrigin: "top left",
-          }}
-        >
-          <ProfileRenderer
-            profile={profile}
-            blocks={blocks}
-            templateId={template.id}
-            themeTokens={template.default_theme}
-          />
-        </div>
+        <ProfileRenderer
+          profile={profile}
+          blocks={blocks}
+          templateId={template.id}
+          themeTokens={template.default_theme}
+        />
       </div>
     </div>
   );
@@ -343,7 +322,7 @@ export function TemplatePicker({
                 )}
               </div>
 
-              {/* Real Live Template Card Preview - All Contents Visible Without Scrolling */}
+              {/* Real Live Template Card Preview - 100% Width Fit */}
               <TemplateCardScreen
                 template={template}
                 profile={effectiveProfile}
