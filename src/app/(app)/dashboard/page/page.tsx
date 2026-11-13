@@ -111,10 +111,10 @@ export default function MyPageStudioPage() {
       setProfile((prev) =>
         prev
           ? {
-              ...prev,
-              template_id: templateId,
-              theme_tokens: mergedTokens,
-            }
+            ...prev,
+            template_id: templateId,
+            theme_tokens: mergedTokens,
+          }
           : null
       );
 
@@ -269,7 +269,7 @@ export default function MyPageStudioPage() {
 
   return (
     <div className="space-y-8 pb-24">
-      
+
       {/* ── Studio Header ── */}
       <EditorHeader
         profile={profile}
@@ -311,10 +311,10 @@ export default function MyPageStudioPage() {
 
       {/* ── Main Studio Grid ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
+
         {/* Left Column: Template Selection & Content Studio (7 cols) */}
         <div className={cn("lg:col-span-7 space-y-8", mobileView === "preview" && "hidden lg:block")}>
-          
+
           {/* ── Choose Page Layout Template (Exclusive to My Page) ── */}
           <div className="space-y-3">
             <TemplatePicker
