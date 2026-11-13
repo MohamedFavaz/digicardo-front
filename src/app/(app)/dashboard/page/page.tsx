@@ -322,6 +322,8 @@ export default function MyPageStudioPage() {
               selectedTemplateId={selectedTemplateId}
               canUseAdvancedTemplates={can("advanced_templates")}
               onSelectTemplate={handleSelectTemplate}
+              profile={profile}
+              blocks={blocks}
               onOpenUpgradeModal={() => {
                 setGatedFeature("advanced_templates");
                 setShowUpgradeModal(true);
