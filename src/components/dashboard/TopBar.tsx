@@ -29,8 +29,10 @@ const PAGE_CONFIG: Record<
   string,
   { title: string; subtitle: string; icon: React.ComponentType<{ className?: string }> }
 > = {
-  "/dashboard": { title: "Overview", subtitle: "Command Center & Metrics", icon: LayoutDashboard },
-  "/dashboard/page": { title: "My Page", subtitle: "Blocks, Links & Bio Content", icon: Layers },
+  "/dashboard": { title: "Dashboard", subtitle: "Overview & Quick Actions", icon: LayoutDashboard },
+  "/dashboard/cards": { title: "My Cards", subtitle: "All Digital Cards & Sharing", icon: CreditCard },
+  "/dashboard/cards/create": { title: "Create Card", subtitle: "Choose Category & Template", icon: Sparkles },
+  "/dashboard/page": { title: "Card Content", subtitle: "Blocks, Links & Bio Content", icon: Layers },
   "/dashboard/appearance": { title: "Appearance", subtitle: "Themes, Colors & Typography", icon: Palette },
   "/dashboard/analytics": { title: "Analytics", subtitle: "Real-time Traffic & Conversions", icon: BarChart3 },
   "/dashboard/notifications": { title: "Notifications", subtitle: "Activity & Contact Inquiries", icon: Bell },

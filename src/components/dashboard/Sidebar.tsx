@@ -9,6 +9,8 @@ import type { Profile } from "@/types/profile";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
+  CreditCard,
+  PlusCircle,
   Layers,
   Palette,
   BarChart3,
@@ -78,9 +80,9 @@ export function Sidebar({ className }: { className?: string }) {
   };
 
   const mainNav: NavItem[] = [
-    { title: "My Smart Profile", href: "/dashboard/page", icon: Layers },
-    { title: "Overview", href: "/dashboard", icon: LayoutDashboard, exact: true },
-    { title: "Appearance", href: "/dashboard/appearance", icon: Palette },
+    { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
+    { title: "My Cards", href: "/dashboard/cards", icon: CreditCard },
+    { title: "Create Card", href: "/dashboard/cards/create", icon: PlusCircle, badge: "New" },
   ];
 
   const toolsNav: NavItem[] = [

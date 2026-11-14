@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 import { DigicardoLogo } from "@/components/ui/DigicardoLogo";
 import {
   LayoutDashboard,
+  CreditCard,
+  PlusCircle,
   Layers,
   Palette,
   BarChart3,
@@ -121,22 +123,22 @@ export function MobileBottomNav() {
   // Primary 4 Bottom Navigation items + More
   const primaryTabs = [
     {
-      title: "Overview",
+      title: "Dashboard",
       href: "/dashboard",
       icon: LayoutDashboard,
       isActive: pathname === "/dashboard",
     },
     {
-      title: "My Page",
-      href: "/dashboard/page",
-      icon: Layers,
-      isActive: pathname.startsWith("/dashboard/page"),
+      title: "My Cards",
+      href: "/dashboard/cards",
+      icon: CreditCard,
+      isActive: pathname === "/dashboard/cards",
     },
     {
-      title: "Design",
-      href: "/dashboard/appearance",
-      icon: Palette,
-      isActive: pathname.startsWith("/dashboard/appearance"),
+      title: "Create",
+      href: "/dashboard/cards/create",
+      icon: PlusCircle,
+      isActive: pathname.startsWith("/dashboard/cards/create"),
     },
     {
       title: "Analytics",
