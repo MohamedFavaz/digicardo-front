@@ -1444,35 +1444,55 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                   window.open(`https://www.google.com/search?q=${encodeURIComponent(displayName)}+reviews`, "_blank");
                 }
               }}
-              className={`w-full h-[52px] sm:h-[54px] px-4 sm:px-5 rounded-full border flex items-center justify-between transition-all active:scale-[0.99] cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.08)] ${btnAnimClass}`}
+              className={`w-full h-12 px-3.5 sm:px-4 rounded-full border flex items-center justify-between transition-all active:scale-[0.99] cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.08)] ${btnAnimClass}`}
               style={{
                 backgroundColor: isDark ? "#1e293b" : "#ffffff",
                 borderColor: isDark ? "#334155" : "rgba(0,0,0,0.04)",
               }}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5">
                 <div
-                  className="w-9 h-9 rounded-[12px] flex items-center justify-center flex-shrink-0"
+                  className="w-7 h-7 rounded-[9px] flex items-center justify-center flex-shrink-0 shadow-2xs"
                   style={{ backgroundColor: "#fff5e5" }}
                 >
-                  <Star className="w-5 h-5 fill-[#ffb900] text-[#ffb900]" />
+                  <svg
+                    width={15}
+                    height={15}
+                    viewBox="0 0 24 24"
+                    fill="#ffb900"
+                    stroke="#ffb900"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    style={{ fill: "#ffb900", stroke: "#ffb900" }}
+                  >
+                    <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+                  </svg>
                 </div>
                 <span
-                  className="font-extrabold text-[15.5px] sm:text-[16px] tracking-tight"
+                  className="font-extrabold text-[15px] sm:text-base tracking-tight"
                   style={{ color: isDark ? "#f8fafc" : "#0d1b2a" }}
                 >
                   {reviewBtnText}
                 </span>
               </div>
-              <div className="flex items-center gap-2 pr-0.5">
+              <div className="flex items-center gap-3 sm:gap-3.5 pr-1 sm:pr-2">
                 {[1, 2, 3, 4, 5].map((starIdx) => (
-                  <Star
+                  <svg
                     key={starIdx}
-                    className="w-[19px] h-[19px] sm:w-5 sm:h-5 text-[#ffb900] fill-[#fef2c2]"
-                    strokeWidth={1.8}
-                    strokeLinejoin="round"
+                    width={18}
+                    height={18}
+                    viewBox="0 0 24 24"
+                    fill="#fef2c2"
+                    stroke="#ffb900"
+                    strokeWidth="1.8"
                     strokeLinecap="round"
-                  />
+                    strokeLinejoin="round"
+                    style={{ fill: "#fef2c2", stroke: "#ffb900" }}
+                    className="flex-shrink-0"
+                  >
+                    <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+                  </svg>
                 ))}
               </div>
             </button>
@@ -1480,24 +1500,25 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
 
           {/* 24x7 Always Open Status Bar */}
           <div
-            className="w-full h-[52px] sm:h-[54px] px-4 sm:px-5 rounded-full border flex items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.06)]"
+            className="w-full h-12 px-3.5 sm:px-4 rounded-full border flex items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.06)]"
             style={{
               backgroundColor: isDark ? "#1e293b" : "#ffffff",
               borderColor: isDark ? "#334155" : "rgba(0,0,0,0.04)",
             }}
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <div
-                className="w-9 h-9 rounded-[12px] flex items-center justify-center flex-shrink-0"
+                className="w-7 h-7 rounded-[9px] flex items-center justify-center flex-shrink-0 shadow-2xs"
                 style={{ backgroundColor: isDark ? "#334155" : "#f1f5ff" }}
               >
                 <Clock
-                  className="w-5 h-5 stroke-[2]"
+                  size={16}
+                  strokeWidth={2}
                   style={{ color: isDark ? "#94a3b8" : "#0d1b2a" }}
                 />
               </div>
               <span
-                className="font-bold text-[14.5px] sm:text-[15px] tracking-tight"
+                className="font-bold text-[14px] sm:text-[14.5px] tracking-tight"
                 style={{ color: isDark ? "#f8fafc" : "#0d1b2a" }}
               >
                 24×7 Always Open
@@ -1511,7 +1532,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
               }}
             >
               <span className="w-2 h-2 rounded-full bg-[#00bc7d]" />
-              <span className="text-[11px] font-black tracking-wider uppercase text-[#007a55]">
+              <span className="text-[10.5px] font-black tracking-wider uppercase text-[#007a55]">
                 OPEN NOW
               </span>
             </div>
