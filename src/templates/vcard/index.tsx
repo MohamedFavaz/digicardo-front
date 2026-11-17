@@ -309,7 +309,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
     () =>
       new Set([
         "call", "email", "website", "bank", "address",
-        "booking", "form", "review", "qr", "save_contact", "install",
+        "booking", "form", "qr", "save_contact", "install",
         "facebook", "instagram", "youtube", "twitter", "linkedin", "telegram", "github",
       ]),
     []
@@ -1004,22 +1004,6 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
       action: () => { const url = getSocialUrl("dribbble"); if (url) window.open(url, "_blank"); },
     },
     {
-      id: "review",
-      label: "Review",
-      icon: Star,
-      bgColor: "#fff8e6",
-      textColor: "#d97706",
-      borderColor: "#fef0c7",
-      enabled: isIconActive("review"),
-      action: () => {
-        if (reviewUrl) {
-          window.open(reviewUrl, "_blank");
-        } else {
-          window.open(`https://www.google.com/search?q=${encodeURIComponent(displayName)}+reviews`, "_blank");
-        }
-      },
-    },
-    {
       id: "save_contact",
       label: "Save",
       icon: UserPlus,
@@ -1408,67 +1392,6 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
               )}
             </div>
           )}
-
-          {/* Review Us Button */}
-          {reviewBtnEnabled && (
-            <button
-              type="button"
-              onClick={() => {
-                trackInteraction("action", "review_click");
-                if (reviewUrl) {
-                  window.open(reviewUrl, "_blank");
-                } else {
-                  window.open(`https://www.google.com/search?q=${encodeURIComponent(displayName)}+reviews`, "_blank");
-                }
-              }}
-              className={`w-full mt-2 py-2.5 px-4 border flex items-center justify-between text-xs font-bold transition-all active:scale-[0.99] cursor-pointer hover:shadow-2xs ${btnAnimClass}`}
-              style={{
-                backgroundColor: statusBarBg,
-                borderColor: statusBarBorder,
-                borderRadius: btnRadiusStyle,
-              }}
-            >
-              <div className="flex items-center gap-2.5">
-                <div
-                  className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 shadow-2xs"
-                  style={{ backgroundColor: "#fef3c7" }}
-                >
-                  <Star className="w-3.5 h-3.5 fill-[#f59e0b] text-[#f59e0b]" />
-                </div>
-                <span className="font-bold text-xs sm:text-sm text-[#166534] tracking-tight">
-                  {reviewBtnText}
-                </span>
-              </div>
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((starIdx) => (
-                  <Star
-                    key={starIdx}
-                    className="w-4 h-4 text-amber-400 fill-amber-400"
-                  />
-                ))}
-              </div>
-            </button>
-          )}
-
-          {/* 24x7 Always Open Status Bar */}
-          <div
-            className="mt-2 py-2 px-4 border flex items-center justify-between text-xs font-semibold"
-            style={{
-              backgroundColor: statusBarBg,
-              borderColor: statusBarBorder,
-              color: textPrimary,
-              borderRadius: btnRadiusStyle,
-            }}
-          >
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5" style={{ color: textSecondary }} />
-              <span>24×7 Always Open</span>
-            </div>
-            <div className="flex items-center gap-1.5 font-bold" style={{ color: primaryBtnColor }}>
-              <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: primaryBtnColor }} />
-              <span>Open Now</span>
-            </div>
-          </div>
         </div>
 
         {/* ── 4. Quick Action Icons Grid (4 Columns, Soft Pastel Rings) ── */}
@@ -1506,6 +1429,70 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
             </div>
           </div>
         )}
+
+        {/* ── Review Us & Status Section ── */}
+        <div className="px-4 pt-2 pb-1 space-y-2">
+          {/* Review Us Button */}
+          {reviewBtnEnabled && (
+            <button
+              type="button"
+              onClick={() => {
+                trackInteraction("action", "review_click");
+                if (reviewUrl) {
+                  window.open(reviewUrl, "_blank");
+                } else {
+                  window.open(`https://www.google.com/search?q=${encodeURIComponent(displayName)}+reviews`, "_blank");
+                }
+              }}
+              className={`w-full py-2.5 px-4 border flex items-center justify-between text-xs font-bold transition-all active:scale-[0.99] cursor-pointer hover:shadow-2xs ${btnAnimClass}`}
+              style={{
+                backgroundColor: statusBarBg,
+                borderColor: statusBarBorder,
+                borderRadius: btnRadiusStyle,
+              }}
+            >
+              <div className="flex items-center gap-2.5">
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 shadow-2xs"
+                  style={{ backgroundColor: "#fef3c7" }}
+                >
+                  <Star className="w-3.5 h-3.5 text-slate-800 stroke-[1.8] fill-transparent" />
+                </div>
+                <span className="font-bold text-xs sm:text-sm text-slate-800 tracking-tight">
+                  {reviewBtnText}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((starIdx) => (
+                  <Star
+                    key={starIdx}
+                    className="w-4 h-4 text-amber-400 fill-transparent stroke-[1.5]"
+                  />
+                ))}
+              </div>
+            </button>
+          )}
+
+          {/* 24x7 Always Open Status Bar */}
+          <div
+            className="py-2 px-4 border flex items-center justify-between text-xs font-semibold"
+            style={{
+              backgroundColor: statusBarBg,
+              borderColor: statusBarBorder,
+              color: textPrimary,
+              borderRadius: btnRadiusStyle,
+            }}
+          >
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5" style={{ color: textSecondary }} />
+              <span>24×7 Always Open</span>
+            </div>
+            <div className="flex items-center gap-1.5 font-bold" style={{ color: primaryBtnColor }}>
+              <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: primaryBtnColor }} />
+              <span>Open Now</span>
+            </div>
+          </div>
+        </div>
 
         {/* ── Image Gallery Section ── */}
         {galleryEnabled && galleryImages.length > 0 && (

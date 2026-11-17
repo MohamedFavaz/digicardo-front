@@ -419,7 +419,7 @@ export function VCardSettingsPicker({
    */
   const DEFAULT_ENABLED_ICON_IDS = new Set([
     "call", "email", "website", "bank", "address",
-    "booking", "form", "review", "qr", "save_contact", "install",
+    "booking", "form", "qr", "save_contact", "install",
     "facebook", "instagram", "youtube", "twitter", "linkedin", "telegram", "github",
   ]);
 
@@ -1473,7 +1473,6 @@ export function VCardSettingsPicker({
                     { id: "address" as const, label: "Address & Map", icon: MapPin },
                     { id: "booking" as const, label: "Book Now", icon: Calendar },
                     { id: "form" as const, label: "Inquiry Form", icon: FileText },
-                    { id: "review" as const, label: "Google Review", icon: Star },
                     { id: "qr" as const, label: "QR Code", icon: QrCode },
                     { id: "save_contact" as const, label: "Save Contact", icon: UserPlus },
                     { id: "install" as const, label: "Install App", icon: Smartphone },
@@ -2617,10 +2616,10 @@ export function VCardSettingsPicker({
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <span className="text-xs font-bold text-slate-900 block">
-                        Show &quot;Review Us&quot; 5-Star Header Button
+                        Show &quot;Review Us&quot; 5-Star Button
                       </span>
                       <span className="text-[11px] text-slate-500">
-                        Shows the Review Us pill with 5 gold stars right above the 24×7 status bar.
+                        Shows the Review Us pill with 5 gold stars after the social icons.
                       </span>
                     </div>
                     <button
