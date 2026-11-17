@@ -1431,7 +1431,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
         )}
 
         {/* ── Review Us & Status Section ── */}
-        <div className="px-4 pt-3 pb-1 space-y-2.5">
+        <div className="px-4 pt-3 pb-1 space-y-3">
           {/* Review Us Button */}
           {reviewBtnEnabled && (
             <button
@@ -1444,31 +1444,34 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                   window.open(`https://www.google.com/search?q=${encodeURIComponent(displayName)}+reviews`, "_blank");
                 }
               }}
-              className={`w-full h-[52px] px-4 rounded-[20px] border flex items-center justify-between transition-all active:scale-[0.99] cursor-pointer shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-xs ${btnAnimClass}`}
+              className={`w-full h-[52px] sm:h-[54px] px-4 sm:px-5 rounded-full border flex items-center justify-between transition-all active:scale-[0.99] cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.08)] ${btnAnimClass}`}
               style={{
                 backgroundColor: isDark ? "#1e293b" : "#ffffff",
-                borderColor: isDark ? "#334155" : "#f1f5f9",
+                borderColor: isDark ? "#334155" : "rgba(0,0,0,0.04)",
               }}
             >
               <div className="flex items-center gap-3">
                 <div
-                  className="w-9 h-9 rounded-[13px] flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: "#fff4e5" }}
+                  className="w-9 h-9 rounded-[12px] flex items-center justify-center flex-shrink-0"
+                  style={{ backgroundColor: "#fff5e5" }}
                 >
-                  <Star className="w-5 h-5 fill-[#f59e0b] text-[#f59e0b]" />
+                  <Star className="w-5 h-5 fill-[#ffb900] text-[#ffb900]" />
                 </div>
                 <span
-                  className="font-extrabold text-[15px] tracking-tight"
-                  style={{ color: isDark ? "#f8fafc" : "#0f172a" }}
+                  className="font-extrabold text-[15.5px] sm:text-[16px] tracking-tight"
+                  style={{ color: isDark ? "#f8fafc" : "#0d1b2a" }}
                 >
                   {reviewBtnText}
                 </span>
               </div>
-              <div className="flex items-center gap-2 pr-1">
+              <div className="flex items-center gap-2 pr-0.5">
                 {[1, 2, 3, 4, 5].map((starIdx) => (
                   <Star
                     key={starIdx}
-                    className="w-[19px] h-[19px] text-[#f59e0b] stroke-[2] fill-[#fffdf2] stroke-linejoin-round stroke-linecap-round"
+                    className="w-[19px] h-[19px] sm:w-5 sm:h-5 text-[#ffb900] fill-[#fef2c2]"
+                    strokeWidth={1.8}
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
                   />
                 ))}
               </div>
@@ -1477,25 +1480,25 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
 
           {/* 24x7 Always Open Status Bar */}
           <div
-            className="w-full h-[52px] px-4 rounded-[20px] border flex items-center justify-between shadow-[0_2px_10px_rgba(0,0,0,0.03)]"
+            className="w-full h-[52px] sm:h-[54px] px-4 sm:px-5 rounded-full border flex items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.06)]"
             style={{
               backgroundColor: isDark ? "#1e293b" : "#ffffff",
-              borderColor: isDark ? "#334155" : "#f1f5f9",
+              borderColor: isDark ? "#334155" : "rgba(0,0,0,0.04)",
             }}
           >
             <div className="flex items-center gap-3">
               <div
-                className="w-9 h-9 rounded-[13px] flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: isDark ? "#334155" : "#f0f5fa" }}
+                className="w-9 h-9 rounded-[12px] flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: isDark ? "#334155" : "#f1f5ff" }}
               >
                 <Clock
                   className="w-5 h-5 stroke-[2]"
-                  style={{ color: isDark ? "#94a3b8" : "#0f172a" }}
+                  style={{ color: isDark ? "#94a3b8" : "#0d1b2a" }}
                 />
               </div>
               <span
-                className="font-bold text-[14px] tracking-tight"
-                style={{ color: isDark ? "#f8fafc" : "#0f172a" }}
+                className="font-bold text-[14.5px] sm:text-[15px] tracking-tight"
+                style={{ color: isDark ? "#f8fafc" : "#0d1b2a" }}
               >
                 24×7 Always Open
               </span>
@@ -1503,12 +1506,12 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
             <div
               className="flex items-center gap-1.5 px-3 py-1 rounded-full border"
               style={{
-                backgroundColor: "#eafaf1",
-                borderColor: "#86efac",
+                backgroundColor: "#ecfdf5",
+                borderColor: "#a7f3d0",
               }}
             >
-              <span className="w-2 h-2 rounded-full bg-[#00c853] animate-pulse" />
-              <span className="text-[10.5px] font-black tracking-wider uppercase text-[#047857]">
+              <span className="w-2 h-2 rounded-full bg-[#00bc7d]" />
+              <span className="text-[11px] font-black tracking-wider uppercase text-[#007a55]">
                 OPEN NOW
               </span>
             </div>
