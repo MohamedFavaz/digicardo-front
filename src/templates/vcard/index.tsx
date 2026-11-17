@@ -1444,31 +1444,31 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                   window.open(`https://www.google.com/search?q=${encodeURIComponent(displayName)}+reviews`, "_blank");
                 }
               }}
-              className={`w-full h-14 px-4 sm:px-5 rounded-full border flex items-center justify-between transition-all active:scale-[0.99] cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-xs ${btnAnimClass}`}
+              className={`w-full h-[52px] px-4 rounded-[20px] border flex items-center justify-between transition-all active:scale-[0.99] cursor-pointer shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-xs ${btnAnimClass}`}
               style={{
                 backgroundColor: isDark ? "#1e293b" : "#ffffff",
-                borderColor: isDark ? "#334155" : "#e2e8f0",
+                borderColor: isDark ? "#334155" : "#f1f5f9",
               }}
             >
               <div className="flex items-center gap-3">
                 <div
-                  className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: "#fff3e0" }}
+                  className="w-9 h-9 rounded-[13px] flex items-center justify-center flex-shrink-0"
+                  style={{ backgroundColor: "#fff4e5" }}
                 >
                   <Star className="w-5 h-5 fill-[#f59e0b] text-[#f59e0b]" />
                 </div>
                 <span
-                  className="font-extrabold text-[15px] sm:text-base tracking-tight"
+                  className="font-extrabold text-[15px] tracking-tight"
                   style={{ color: isDark ? "#f8fafc" : "#0f172a" }}
                 >
                   {reviewBtnText}
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 sm:gap-2 pr-0.5">
+              <div className="flex items-center gap-2 pr-1">
                 {[1, 2, 3, 4, 5].map((starIdx) => (
                   <Star
                     key={starIdx}
-                    className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-[#f59e0b] stroke-[2] fill-transparent"
+                    className="w-[19px] h-[19px] text-[#f59e0b] stroke-[2] fill-[#fffdf2] stroke-linejoin-round stroke-linecap-round"
                   />
                 ))}
               </div>
@@ -1477,16 +1477,16 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
 
           {/* 24x7 Always Open Status Bar */}
           <div
-            className="w-full h-14 px-4 sm:px-5 rounded-full border flex items-center justify-between shadow-[0_2px_8px_rgba(0,0,0,0.03)]"
+            className="w-full h-[52px] px-4 rounded-[20px] border flex items-center justify-between shadow-[0_2px_10px_rgba(0,0,0,0.03)]"
             style={{
               backgroundColor: isDark ? "#1e293b" : "#ffffff",
-              borderColor: isDark ? "#334155" : "#e2e8f0",
+              borderColor: isDark ? "#334155" : "#f1f5f9",
             }}
           >
             <div className="flex items-center gap-3">
               <div
-                className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: isDark ? "#334155" : "#f0f4f8" }}
+                className="w-9 h-9 rounded-[13px] flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: isDark ? "#334155" : "#f0f5fa" }}
               >
                 <Clock
                   className="w-5 h-5 stroke-[2]"
@@ -1494,7 +1494,7 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                 />
               </div>
               <span
-                className="font-extrabold text-[14px] sm:text-[15px] tracking-tight"
+                className="font-bold text-[14px] tracking-tight"
                 style={{ color: isDark ? "#f8fafc" : "#0f172a" }}
               >
                 24×7 Always Open
@@ -1503,12 +1503,12 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
             <div
               className="flex items-center gap-1.5 px-3 py-1 rounded-full border"
               style={{
-                backgroundColor: "#e8faf0",
-                borderColor: "#bbf7d0",
+                backgroundColor: "#eafaf1",
+                borderColor: "#86efac",
               }}
             >
-              <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
-              <span className="text-[10.5px] font-extrabold tracking-wide uppercase text-[#059669]">
+              <span className="w-2 h-2 rounded-full bg-[#00c853] animate-pulse" />
+              <span className="text-[10.5px] font-black tracking-wider uppercase text-[#047857]">
                 OPEN NOW
               </span>
             </div>
