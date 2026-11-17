@@ -122,6 +122,8 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   // Catalog tab inside Services modal: "services" | "products"
   const [catalogTab, setCatalogTab] = useState<"services" | "products">("services");
+  // Lightbox Modal for Image Gallery
+  const [selectedGalleryImage, setSelectedGalleryImage] = useState<string | null>(null);
 
   // Booking Form State
   const [bookName, setBookName] = useState("");
@@ -259,6 +261,12 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
   const viewProductsBtnEnabled = customOpts.view_products_btn_enabled === true;
   const payNowBtnEnabled = customOpts.pay_now_btn_enabled !== false;
   const locationBtnEnabled = customOpts.location_btn_enabled !== false;
+  const reviewBtnEnabled = customOpts.review_btn_enabled !== false;
+  const reviewBtnText = customOpts.review_btn_text || "Review Us";
+  // Image Gallery
+  const galleryEnabled = customOpts.gallery_enabled !== false;
+  const galleryTitle = customOpts.gallery_title || "Image Gallery";
+  const galleryImages = customOpts.gallery_images || [];
 
   // ── Block Classifications ──────────────────────────────────────────────────
   const phoneBlocks = useMemo(() => blocks.filter((b) => b.type === "phone"), [blocks]);
@@ -1401,6 +1409,47 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
             </div>
           )}
 
+          {/* Review Us Button */}
+          {reviewBtnEnabled && (
+            <button
+              type="button"
+              onClick={() => {
+                trackInteraction("action", "review_click");
+                if (reviewUrl) {
+                  window.open(reviewUrl, "_blank");
+                } else {
+                  window.open(`https://www.google.com/search?q=${encodeURIComponent(displayName)}+reviews`, "_blank");
+                }
+              }}
+              className={`w-full mt-2 py-2.5 px-4 border flex items-center justify-between text-xs font-bold transition-all active:scale-[0.99] cursor-pointer hover:shadow-2xs ${btnAnimClass}`}
+              style={{
+                backgroundColor: statusBarBg,
+                borderColor: statusBarBorder,
+                borderRadius: btnRadiusStyle,
+              }}
+            >
+              <div className="flex items-center gap-2.5">
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 shadow-2xs"
+                  style={{ backgroundColor: "#fef3c7" }}
+                >
+                  <Star className="w-3.5 h-3.5 fill-[#f59e0b] text-[#f59e0b]" />
+                </div>
+                <span className="font-bold text-xs sm:text-sm text-[#166534] tracking-tight">
+                  {reviewBtnText}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((starIdx) => (
+                  <Star
+                    key={starIdx}
+                    className="w-4 h-4 text-amber-400 fill-amber-400"
+                  />
+                ))}
+              </div>
+            </button>
+          )}
+
           {/* 24x7 Always Open Status Bar */}
           <div
             className="mt-2 py-2 px-4 border flex items-center justify-between text-xs font-semibold"
@@ -1454,6 +1503,44 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                   </button>
                 );
               })}
+            </div>
+          </div>
+        )}
+
+        {/* ── Image Gallery Section ── */}
+        {galleryEnabled && galleryImages.length > 0 && (
+          <div className="px-4 pt-3 pb-2 space-y-3">
+            <div className="flex items-center justify-between px-1">
+              <h2 className="text-base font-extrabold text-left tracking-tight" style={{ color: textPrimary }}>
+                {galleryTitle}
+              </h2>
+              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200/60">
+                {galleryImages.length} {galleryImages.length === 1 ? "Photo" : "Photos"}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+              {galleryImages.map((imgUrl, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => setSelectedGalleryImage(imgUrl)}
+                  className="relative aspect-square rounded-2xl overflow-hidden border border-slate-200/80 shadow-2xs group cursor-pointer bg-slate-100 transition-all active:scale-[0.98]"
+                  style={{ borderRadius: btnRadiusStyle }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={imgUrl}
+                    alt={`Gallery item ${idx + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-white/95 text-slate-900 flex items-center justify-center shadow-md">
+                      <Eye className="w-4 h-4" />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -2273,6 +2360,34 @@ export function VCardTemplate({ profile, blocks, theme }: TemplateProps) {
                 <span>Copy Link</span>
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── MODAL: Image Gallery Lightbox ── */}
+      {selectedGalleryImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in select-none"
+          onClick={() => setSelectedGalleryImage(null)}
+        >
+          <div
+            className="relative max-w-lg w-full max-h-[88vh] flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setSelectedGalleryImage(null)}
+              className="absolute -top-11 right-0 p-2 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors cursor-pointer"
+              title="Close image"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={selectedGalleryImage}
+              alt="Gallery Preview"
+              className="max-h-[82vh] w-auto max-w-full rounded-2xl object-contain shadow-2xl border border-white/10"
+            />
           </div>
         </div>
       )}

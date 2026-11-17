@@ -50,6 +50,8 @@ import {
   CheckCircle2,
   Info,
   Lock,
+  ArrowLeft,
+  ArrowRight,
 } from "lucide-react";
 
 // ── Inline SVG brand icons not available in lucide-react ──
@@ -335,8 +337,13 @@ export function VCardSettingsPicker({
 }: VCardSettingsPickerProps) {
   const [isCardOpen, setIsCardOpen] = React.useState(defaultOpen);
   const [openSection, setOpenSection] = React.useState<
-    "branding" | "colors" | "services" | "payments" | "bank" | "booking" | "icons" | "social" | null
+    "branding" | "colors" | "services" | "payments" | "bank" | "booking" | "icons" | "social" | "gallery" | null
   >("branding");
+
+  // Gallery Upload & State
+  const [isUploadingGallery, setIsUploadingGallery] = React.useState(false);
+  const [galleryUploadProgress, setGalleryUploadProgress] = React.useState<string | null>(null);
+  const galleryFileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Catalog Section Sub-tabs and Enquiry Dropdown States
   const [catalogActiveTab, setCatalogActiveTab] = React.useState<"services" | "products">("services");
@@ -437,7 +444,7 @@ export function VCardSettingsPicker({
   }, [opts.banner_images, opts.banner_image_url]);
 
   const toggleSection = (
-    sec: "branding" | "colors" | "services" | "payments" | "bank" | "booking" | "icons" | "social"
+    sec: "branding" | "colors" | "services" | "payments" | "bank" | "booking" | "icons" | "social" | "gallery"
   ) => {
     setOpenSection(openSection === sec ? null : sec);
   };
@@ -586,6 +593,72 @@ export function VCardSettingsPicker({
       }
     }
     setCustomBannerInputUrl("");
+  };
+
+  // ── Image Gallery Management Handlers ──
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const filesToUpload = Array.from(files);
+    setIsUploadingGallery(true);
+    setUploadError(null);
+    const newUrls: string[] = [];
+    const errors: string[] = [];
+
+    for (let i = 0; i < filesToUpload.length; i++) {
+      const file = filesToUpload[i];
+      setGalleryUploadProgress(`Uploading photo ${i + 1} of ${filesToUpload.length}...`);
+
+      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+        errors.push(`"${file.name}" is not supported. Use JPEG, PNG, or WebP.`);
+        continue;
+      }
+      if (file.size > 8 * 1024 * 1024) {
+        errors.push(`"${file.name}" exceeds 8 MB limit.`);
+        continue;
+      }
+      try {
+        const media = await mediaApi.uploadImage(file);
+        if (media && media.url) {
+          newUrls.push(media.url);
+        }
+      } catch (err: unknown) {
+        errors.push(`"${file.name}": upload failed.`);
+      }
+    }
+
+    if (errors.length > 0) {
+      setUploadError(errors.join(" | "));
+    }
+
+    if (newUrls.length > 0) {
+      const existing = opts.gallery_images || [];
+      updateCustomOptions({
+        gallery_images: [...existing, ...newUrls],
+        gallery_enabled: true,
+      });
+    }
+
+    setIsUploadingGallery(false);
+    setGalleryUploadProgress(null);
+    if (galleryFileInputRef.current) galleryFileInputRef.current.value = "";
+  };
+
+  const handleRemoveGalleryImage = (indexToRemove: number) => {
+    const existing = opts.gallery_images || [];
+    const updated = existing.filter((_, idx) => idx !== indexToRemove);
+    updateCustomOptions({ gallery_images: updated });
+  };
+
+  const handleMoveGalleryImage = (index: number, direction: "left" | "right") => {
+    const existing = [...(opts.gallery_images || [])];
+    const targetIndex = direction === "left" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= existing.length) return;
+    const temp = existing[index];
+    existing[index] = existing[targetIndex];
+    existing[targetIndex] = temp;
+    updateCustomOptions({ gallery_images: existing });
   };
 
   // ── Profile Photo File Selected -> Open Crop Modal ──
@@ -1014,6 +1087,12 @@ export function VCardSettingsPicker({
                         desc: "Secondary button dedicated to products",
                         icon: Package,
                         isProduct: true,
+                      },
+                      {
+                        key: "review_btn_enabled" as const,
+                        label: "Review Us Button",
+                        desc: "5-star rating card linking to your review URL",
+                        icon: Star,
                       },
                     ].map(({ key, label, desc, icon: Icon, isProduct }) => {
                       const isChecked = isProduct
@@ -2188,7 +2267,175 @@ export function VCardSettingsPicker({
             )}
           </div>
 
-          {/* ── Group 4: Pay Now (UPI & QR) ── */}
+          {/* ── Group 5: Image Gallery & Showcases ── */}
+          <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs">
+            <button
+              type="button"
+              onClick={() => toggleSection("gallery")}
+              className="w-full p-4 flex items-center justify-between font-extrabold text-xs text-slate-900 bg-slate-50/70 hover:bg-slate-100/70 transition-colors select-none cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-slate-900" />
+                <span>5. Image Gallery &amp; Showcases</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200/60 shadow-2xs">
+                  {opts.gallery_images?.length || 0} Photos
+                </span>
+                {openSection === "gallery" ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+              </div>
+            </button>
+
+            {openSection === "gallery" && (
+              <div className="p-4 sm:p-5 space-y-4 border-t border-slate-100 animate-in fade-in duration-150">
+                {/* Enable Gallery Switch */}
+                <div className="flex items-center justify-between p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs">
+                  <div className="space-y-0.5">
+                    <span className="text-xs font-bold text-slate-900 block">
+                      Enable Image Gallery
+                    </span>
+                    <span className="text-[11px] text-slate-500">
+                      Showcase showroom, fabrics, products, or portfolio photos in a 2-column grid.
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={opts.gallery_enabled !== false}
+                    onClick={() => updateCustomOptions({ gallery_enabled: opts.gallery_enabled === false })}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none",
+                      opts.gallery_enabled !== false ? "bg-slate-900" : "bg-slate-200"
+                    )}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out",
+                        opts.gallery_enabled !== false ? "translate-x-5" : "translate-x-0"
+                      )}
+                    />
+                  </button>
+                </div>
+
+                {/* Section Title */}
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold text-slate-800">
+                    Gallery Section Title
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="Image Gallery"
+                    value={opts.gallery_title || ""}
+                    onChange={(e) => updateCustomOptions({ gallery_title: e.target.value })}
+                    className="h-9.5 text-xs bg-white border-slate-200 rounded-xl"
+                  />
+                </div>
+
+                {/* Hidden Multi-File Upload Input */}
+                <input
+                  ref={galleryFileInputRef}
+                  type="file"
+                  multiple
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleGalleryUpload}
+                  className="hidden"
+                  id="vcard-gallery-file-input"
+                />
+
+                {/* Gallery Header Bar */}
+                <div className="flex items-center justify-between gap-3 pt-1">
+                  <span className="text-xs font-bold text-slate-700">
+                    Uploaded Gallery Photos ({opts.gallery_images?.length || 0})
+                  </span>
+                  <button
+                    type="button"
+                    disabled={isUploadingGallery}
+                    onClick={() => galleryFileInputRef.current?.click()}
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all shadow-2xs active:scale-95 disabled:opacity-50 cursor-pointer"
+                  >
+                    {isUploadingGallery ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Plus className="w-3.5 h-3.5" />
+                    )}
+                    <span>{galleryUploadProgress || "Add Gallery Photos"}</span>
+                  </button>
+                </div>
+
+                {/* Uploaded Gallery Grid */}
+                {opts.gallery_images && opts.gallery_images.length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 pt-2">
+                    {opts.gallery_images.map((imgUrl, idx) => (
+                      <div
+                        key={idx}
+                        className="relative group aspect-square rounded-xl overflow-hidden border border-slate-200 bg-slate-100 shadow-2xs"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={imgUrl}
+                          alt={`Gallery photo ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <span className="absolute top-1.5 left-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-black/70 text-white backdrop-blur-xs">
+                          #{idx + 1}
+                        </span>
+
+                        {/* Hover Overlay Controls */}
+                        <div className="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 p-1">
+                          {idx > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => handleMoveGalleryImage(idx, "left")}
+                              className="w-7 h-7 rounded-lg bg-white/95 hover:bg-white text-slate-900 flex items-center justify-center text-xs shadow-xs cursor-pointer"
+                              title="Move backward"
+                            >
+                              <ArrowLeft className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                          {idx < (opts.gallery_images?.length || 0) - 1 && (
+                            <button
+                              type="button"
+                              onClick={() => handleMoveGalleryImage(idx, "right")}
+                              className="w-7 h-7 rounded-lg bg-white/95 hover:bg-white text-slate-900 flex items-center justify-center text-xs shadow-xs cursor-pointer"
+                              title="Move forward"
+                            >
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveGalleryImage(idx)}
+                            className="w-7 h-7 rounded-lg bg-red-600 hover:bg-red-700 text-white flex items-center justify-center text-xs shadow-xs cursor-pointer"
+                            title="Remove photo"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => galleryFileInputRef.current?.click()}
+                    className="p-8 border-2 border-dashed border-slate-200 hover:border-slate-400 rounded-2xl bg-slate-50/60 hover:bg-slate-50 text-center space-y-2 cursor-pointer transition-colors"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center mx-auto">
+                      <ImageIcon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-slate-800">No gallery photos added yet</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        Click here to upload photos (JPEG, PNG, WebP up to 8 MB each).
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* ── Group 6: Pay Now (UPI & QR) ── */}
           <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs">
             <button
               type="button"
@@ -2197,7 +2444,7 @@ export function VCardSettingsPicker({
             >
               <div className="flex items-center gap-2">
                 <CreditCard className="w-4 h-4 text-slate-900" />
-                <span>5. Pay Now (UPI &amp; QR Code)</span>
+                <span>6. Pay Now (UPI &amp; QR Code)</span>
               </div>
               {openSection === "payments" ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
             </button>
@@ -2275,7 +2522,7 @@ export function VCardSettingsPicker({
             >
               <div className="flex items-center gap-2">
                 <Landmark className="w-4 h-4 text-slate-900" />
-                <span>6. Bank Account Details</span>
+                <span>7. Bank Account Details</span>
                 {!isIconActive("bank") && (
                   <span className="ml-1 text-[10px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
                     <Lock className="w-2.5 h-2.5 text-slate-400" />
@@ -2349,7 +2596,7 @@ export function VCardSettingsPicker({
             )}
           </div>
 
-          {/* ── Group 6: Slot Booking & Google Reviews ── */}
+          {/* ── Group 8: Slot Booking & Google Reviews ── */}
           <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs">
             <button
               type="button"
@@ -2358,13 +2605,74 @@ export function VCardSettingsPicker({
             >
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-slate-900" />
-                <span>7. Slot Booking &amp; Google Reviews</span>
+                <span>8. Slot Booking &amp; Google Reviews</span>
               </div>
               {openSection === "booking" ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
             </button>
 
             {openSection === "booking" && (
               <div className="p-4 sm:p-5 space-y-4 border-t border-slate-100 animate-in fade-in duration-150">
+                {/* Review Us 5-Star Button & Google Review URL */}
+                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <span className="text-xs font-bold text-slate-900 block">
+                        Show &quot;Review Us&quot; 5-Star Header Button
+                      </span>
+                      <span className="text-[11px] text-slate-500">
+                        Shows the Review Us pill with 5 gold stars right above the 24×7 status bar.
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={opts.review_btn_enabled !== false}
+                      onClick={() => updateCustomOptions({ review_btn_enabled: opts.review_btn_enabled === false })}
+                      className={cn(
+                        "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none",
+                        opts.review_btn_enabled !== false ? "bg-slate-900" : "bg-slate-200"
+                      )}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={cn(
+                          "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out",
+                          opts.review_btn_enabled !== false ? "translate-x-5" : "translate-x-0"
+                        )}
+                      />
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-100">
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-slate-800">
+                        Button Label
+                      </label>
+                      <Input
+                        type="text"
+                        placeholder="Review Us"
+                        value={opts.review_btn_text || ""}
+                        onChange={(e) => updateCustomOptions({ review_btn_text: e.target.value })}
+                        className="h-9.5 text-xs bg-white border-slate-200 rounded-xl"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                        <Star className="w-3.5 h-3.5 text-amber-500" />
+                        <span>Google Review / Feedback URL</span>
+                      </label>
+                      <Input
+                        type="url"
+                        placeholder="https://g.page/r/yourbusiness/review"
+                        value={opts.google_review_url || ""}
+                        onChange={(e) => updateCustomOptions({ google_review_url: e.target.value })}
+                        className="h-9.5 text-xs bg-white border-slate-200 rounded-xl"
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="flex items-center justify-between p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs">
                   <div className="space-y-0.5">
                     <span className="text-xs font-bold text-slate-900 block">
@@ -2393,35 +2701,11 @@ export function VCardSettingsPicker({
                     />
                   </button>
                 </div>
-
-                {/* Google Review URL — gated by review icon */}
-                {isIconActive("review") ? (
-                  <div className="space-y-1.5 pt-1">
-                    <label className="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                      <Star className="w-3.5 h-3.5 text-amber-500" />
-                      <span>Google Review / Feedback URL</span>
-                    </label>
-                    <Input
-                      type="url"
-                      placeholder="https://g.page/r/yourbusiness/review"
-                      value={opts.google_review_url || ""}
-                      onChange={(e) => updateCustomOptions({ google_review_url: e.target.value })}
-                      className="h-9.5 text-xs bg-white border-slate-200 rounded-xl"
-                    />
-                  </div>
-                ) : (
-                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2">
-                    <Star className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                    <p className="text-[11px] text-slate-600 font-medium">
-                      Enable the <strong>Review</strong> icon in <strong>Section 2 — Action Icons</strong> to add your Google Review URL.
-                    </p>
-                  </div>
-                )}
               </div>
             )}
           </div>
 
-          {/* ── Group 8: Social Media Links & Profiles — URL inputs gated by icon selection ── */}
+          {/* ── Group 9: Social Media Links & Profiles — URL inputs gated by icon selection ── */}
           <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs">
             <button
               type="button"
@@ -2430,7 +2714,7 @@ export function VCardSettingsPicker({
             >
               <div className="flex items-center gap-2">
                 <Share2 className="w-4 h-4 text-slate-900" />
-                <span>8. Social Media Links &amp; Profiles</span>
+                <span>9. Social Media Links &amp; Profiles</span>
               </div>
               {openSection === "social" ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
             </button>

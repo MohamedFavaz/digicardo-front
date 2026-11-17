@@ -144,7 +144,15 @@ export interface VCardCustomOptions {
   bank_holder_name?: string;
   booking_enabled?: boolean;
   booking_whatsapp_message?: string;
+  /** Show/hide the "Review Us" 5-star button */
+  review_btn_enabled?: boolean;
+  /** Custom label for the Review Us button (default: "Review Us") */
+  review_btn_text?: string;
   gallery_enabled?: boolean;
+  /** Custom title for the image gallery section (default: "Image Gallery") */
+  gallery_title?: string;
+  /** Uploaded image URLs for the Image Gallery */
+  gallery_images?: string[];
   google_review_url?: string;
   products?: VCardProduct[];
   /** Separate service entries — distinct from products */
