@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { Suspense } from "react";
 import { RouteProgressBar } from "@/components/ui/RouteProgressBar";
 import "./globals.css";
 
 
-const inter = Inter({
-  subsets: ["latin"],
+// Inter (SIL Open Font License), self-hosted latin variable font 400–800 — builds never depend
+// on reaching Google Fonts (a bad Google response once failed a Vercel deploy).
+const inter = localFont({
+  src: [{ path: "../lib/fonts/files/inter-latin.woff2", weight: "400 800", style: "normal" }],
   variable: "--font-sans",
   display: "swap",
   preload: true,
-  // Only load the weights we actually use
-  weight: ["400", "500", "600", "700", "800"],
+  fallback: ["ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
 });
 
 export const metadata: Metadata = {
