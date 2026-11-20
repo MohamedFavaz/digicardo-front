@@ -23,37 +23,37 @@ export interface AdminHeaderProps {
 
 const ADMIN_NAV_LINKS = [
   {
-    href: "/dashboard/admin",
+    href: "/admin/dashboard",
     label: "Overview",
     icon: <LayoutDashboard className="w-3.5 h-3.5" />,
     exact: true,
   },
   {
-    href: "/dashboard/admin/users",
+    href: "/admin/admin-panel",
     label: "Users",
     icon: <Users className="w-3.5 h-3.5" />,
     exact: false,
   },
   {
-    href: "/dashboard/admin/profiles",
+    href: "/admin/moderation",
     label: "Profiles",
     icon: <FileText className="w-3.5 h-3.5" />,
     exact: false,
   },
   {
-    href: "/dashboard/admin/reports",
+    href: "/admin/reports",
     label: "Reports",
     icon: <ShieldAlert className="w-3.5 h-3.5" />,
     exact: false,
   },
   {
-    href: "/dashboard/admin/moderation",
+    href: "/admin/moderation",
     label: "Audit Log",
     icon: <ShieldCheck className="w-3.5 h-3.5" />,
     exact: false,
   },
   {
-    href: "/dashboard/admin/operations",
+    href: "/admin/system",
     label: "Operations",
     icon: <Activity className="w-3.5 h-3.5" />,
     exact: false,
@@ -69,12 +69,12 @@ export function AdminHeader({
   const pathname = usePathname();
 
   return (
-    <div className="rounded-[36px] bg-gradient-to-br from-card via-card to-brand-50/30 border border-border/80 p-6 sm:p-8 shadow-card space-y-6 select-none">
+    <div className="rounded-2xl bg-gradient-to-br from-card via-card to-brand-50/30 border border-border/80 p-6 sm:p-8 shadow-card space-y-6 select-none">
       {/* Top Banner Row */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2">
           <div className="flex items-center gap-2.5 flex-wrap">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-200/80 shadow-2xs">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-200/80 shadow-2xs">
               <Shield className="w-3 h-3 text-purple-600" />
               <span>{badgeText}</span>
             </span>
@@ -84,7 +84,7 @@ export function AdminHeader({
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
             {title}
           </h1>
 
@@ -114,7 +114,7 @@ export function AdminHeader({
               className={cn(
                 "flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex-shrink-0 shadow-2xs",
                 isActive
-                  ? "bg-brand-600 text-white shadow-cta font-black"
+                  ? "bg-brand-600 text-white shadow-cta font-bold"
                   : "bg-card border border-border/80 text-muted-foreground hover:text-foreground hover:bg-muted font-medium"
               )}
             >

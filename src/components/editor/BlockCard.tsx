@@ -68,7 +68,7 @@ export function BlockCard({
   return (
     <div
       className={cn(
-        "rounded-[28px] border transition-all duration-200 shadow-card overflow-hidden",
+        "rounded-2xl border transition-all duration-200 shadow-card overflow-hidden",
         isEditing
           ? "bg-card border-brand-400 ring-2 ring-brand-500/20"
           : block.is_visible
@@ -112,7 +112,7 @@ export function BlockCard({
           {/* Title & Preview Subtitle */}
           <div className="min-w-0 cursor-pointer flex-1" onClick={() => onToggleEdit(block.id)}>
             <div className="flex items-center gap-2">
-              <span className="text-xs sm:text-sm font-black text-foreground truncate">
+              <span className="text-xs sm:text-sm font-bold text-foreground truncate">
                 {String(title)}
               </span>
               {!block.is_visible && (
@@ -181,7 +181,7 @@ export function BlockCard({
           {/* Delete Block */}
           <button
             onClick={() => onDeleteBlock(block)}
-            className="p-2 rounded-xl border border-border/80 bg-card hover:bg-rose-50 text-muted-foreground hover:text-coral hover:border-coral/30 transition-colors shadow-2xs"
+            className="p-2 rounded-xl border border-border/80 bg-card hover:bg-rose-50 text-muted-foreground hover:text-destructive hover:border-[#F5C2C2] transition-colors shadow-2xs"
             title="Delete block"
           >
             <Trash2 className="w-4 h-4" />

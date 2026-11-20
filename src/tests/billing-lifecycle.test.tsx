@@ -49,7 +49,7 @@ describe("BillingPage Lifecycle Rendering", () => {
 
     expect(html).toContain("Subscription Scheduled for Cancellation");
     expect(html).toContain("Resume Subscription");
-    expect(html).toContain("Manage Billing");
+    expect(html).toContain("Manage payments");
     expect(html).toContain("Pro Plan");
   });
 });

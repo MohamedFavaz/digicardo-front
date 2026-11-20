@@ -7,7 +7,7 @@ export function NotificationsSkeleton() {
   return (
     <div className="space-y-8 animate-in fade-in-50 duration-300">
       {/* Header Skeleton */}
-      <div className="rounded-[36px] border border-border/80 bg-card p-6 sm:p-8 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <Skeleton className="h-6 w-28 rounded-full" />
@@ -32,7 +32,7 @@ export function NotificationsSkeleton() {
       {/* Notifications List Skeleton */}
       <div className="space-y-3">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="rounded-[28px] border border-border/80 bg-card p-5 shadow-card space-y-3">
+          <div key={i} className="rounded-2xl border border-border/80 bg-card p-5 shadow-card space-y-3">
             <div className="flex gap-3 items-center">
               <Skeleton className="h-9 w-9 rounded-2xl flex-shrink-0" />
               <div className="space-y-1.5 flex-1">

@@ -77,7 +77,7 @@ export function AnalyticsDateRangeSelector({
             type="date"
             value={customStart}
             onChange={(e) => setCustomStart(e.target.value)}
-            className="rounded-xl border border-input bg-card px-2 py-1 text-xs text-foreground focus:outline-none focus:border-brand-600 font-mono"
+            className="rounded-xl border border-input bg-card px-2 py-1 text-xs text-foreground focus:outline-none focus:border-brand-600 tabular-nums"
             required
           />
           <span className="text-muted-foreground font-bold">to</span>
@@ -85,7 +85,7 @@ export function AnalyticsDateRangeSelector({
             type="date"
             value={customEnd}
             onChange={(e) => setCustomEnd(e.target.value)}
-            className="rounded-xl border border-input bg-card px-2 py-1 text-xs text-foreground focus:outline-none focus:border-brand-600 font-mono"
+            className="rounded-xl border border-input bg-card px-2 py-1 text-xs text-foreground focus:outline-none focus:border-brand-600 tabular-nums"
             required
           />
           <Button

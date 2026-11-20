@@ -70,7 +70,7 @@ describe("BillingPage Component", () => {
   it("renders subscription header, current tier, usage meters, and plan options", () => {
     const html = renderToStaticMarkup(<BillingPage />);
 
-    expect(html).toContain("Subscription &amp; Plan");
+    expect(html).toContain("Plan &amp; billing"); // settings tab label
     expect(html).toContain("Free Plan");
     expect(html).toContain("Feature Usage &amp; Capacities");
     expect(html).toContain("Profile Identities");

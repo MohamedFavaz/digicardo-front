@@ -11,19 +11,20 @@ export type TemplateCategory =
   | "Editorial"
   | "Business";
 
+/**
+ * "public": the live card at /[username] — tracks analytics.
+ * "preview": rendered inside the dashboard (editor, onboarding, home) — never tracks,
+ * never fetches, so owners don't inflate their own numbers.
+ */
+export type TemplateRenderMode = "public" | "preview";
+
 export interface TemplateProps {
   profile: Profile | PublicProfile;
   blocks: (ProfileBlock | PublicProfileBlock)[];
   theme: ThemeTokens;
-}
-
-export interface TemplateSettingsProps {
-  profile: Profile | null;
-  themeTokens: ThemeTokens;
-  onChangeTheme: (updated: Partial<ThemeTokens>) => void;
-  onSave?: () => Promise<void>;
-  isSaving?: boolean;
-  onUpdateProfile?: (updated: Partial<Profile>) => void;
+  mode?: TemplateRenderMode;
+  /** Branding / report links, rendered by the template at the bottom of its own background. */
+  footer?: React.ReactNode;
 }
 
 export type TemplateSupportedSection =
@@ -63,7 +64,6 @@ export interface TemplateDefinition {
   preview?: string;
   default_theme: ThemeTokens;
   Component: React.ComponentType<TemplateProps>;
-  SettingsComponent?: React.ComponentType<TemplateSettingsProps>;
   supportedSections?: TemplateSupportedSection[];
   supportedBackgrounds?: TemplateSupportedBackground[];
   supportedColorPalettes?: TemplateSupportedColorPalette[];

@@ -48,6 +48,8 @@ export interface AgentCard {
   notes: string | null;
   created_at: string;
   updated_at: string;
+  /** Where the card opens: the agent's domain once it is live, otherwise the main site. */
+  public_url?: string | null;
   // Loaded relations
   profile?: {
     id: string;
@@ -108,6 +110,8 @@ export interface AgentPaymentRecord {
 // ─── Agent User (extends base User) ─────────────────────────────────────────
 export interface AgentUser {
   id: string;
+  /** Landing page + optional domain (admin list). */
+  agent_site?: { slug: string; domain: string | null; domain_status: "pending" | "active" | "failed" | null; published: boolean; landing_disabled: boolean } | null;
   name: string;
   email: string;
   mobile: string | null;

@@ -13,14 +13,14 @@ export interface RecentActivityFeedProps {
 
 export function RecentActivityFeed({ submissions, onDeleteSubmission }: RecentActivityFeedProps) {
   return (
-    <div className="rounded-[28px] sm:rounded-[32px] border border-border/80 bg-card p-4 sm:p-7 shadow-card space-y-5 select-none">
+    <div className="rounded-2xl rounded-2xl border border-border/80 bg-card p-4 sm:p-7 shadow-card space-y-5 select-none">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-2xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-800 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-2xs">
             <Mail className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="text-base font-black text-foreground">Inquiries &amp; Messages</h3>
+            <h3 className="text-base font-bold text-foreground">Inquiries &amp; Messages</h3>
             <p className="text-xs text-muted-foreground font-medium">
               Submissions from your public contact form
             </p>
@@ -51,7 +51,7 @@ export function RecentActivityFeed({ submissions, onDeleteSubmission }: RecentAc
                 </div>
                 <div className="min-w-0 space-y-0.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-black text-foreground truncate">
+                    <span className="text-xs font-bold text-foreground truncate">
                       {sub.name}
                     </span>
                     <span className="text-[10px] font-mono text-muted-foreground">
@@ -88,7 +88,7 @@ export function RecentActivityFeed({ submissions, onDeleteSubmission }: RecentAc
             <Inbox className="w-6 h-6 text-muted-foreground" />
           </div>
           <div>
-            <p className="text-sm font-black text-foreground">Inbox is Empty</p>
+            <p className="text-sm font-bold text-foreground">Inbox is Empty</p>
             <p className="text-xs text-muted-foreground mt-0.5 font-medium max-w-xs">
               When visitors submit your page contact form, messages will appear here.
             </p>

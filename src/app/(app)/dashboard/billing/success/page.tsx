@@ -29,16 +29,16 @@ export default function BillingSuccessPage() {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center p-4">
-      <div className="max-w-md w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 text-center space-y-6 shadow-xl">
+      <div className="max-w-md w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 text-center space-y-6 shadow-xl">
         {isVerifying && isFree ? (
           <div className="space-y-4">
             <div className="w-16 h-16 rounded-full bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center mx-auto text-indigo-600 dark:text-indigo-400">
               <Loader2 className="w-8 h-8 animate-spin" />
             </div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+            <h2 className="text-xl font-bold text-zinc-900 dark:text-white">
               Confirming Your Subscription...
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
               Please wait while our payment webhook activates your new feature entitlements.
             </p>
           </div>
@@ -51,22 +51,22 @@ export default function BillingSuccessPage() {
               <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 mb-2">
                 <Sparkles className="w-3.5 h-3.5" /> Plan Activated
               </div>
-              <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+              <h2 className="text-2xl font-semibold text-zinc-900 dark:text-white">
                 Payment Successful!
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
                 Thank you for upgrading. Your Digicardo account has been updated with premium entitlements.
               </p>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 text-left space-y-2 text-xs">
+            <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 text-left space-y-2 text-xs">
               <div className="flex items-center justify-between">
-                <span className="text-slate-500 dark:text-slate-400">Active Tier</span>
+                <span className="text-zinc-500 dark:text-zinc-400">Active Tier</span>
                 {plan && <PlanBadge planCode={plan.code} size="sm" />}
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-500 dark:text-slate-400">Billing Cycle</span>
-                <span className="font-semibold capitalize text-slate-900 dark:text-white">
+                <span className="text-zinc-500 dark:text-zinc-400">Billing Cycle</span>
+                <span className="font-semibold capitalize text-zinc-900 dark:text-white">
                   {subscription?.billing_interval || "Monthly"}
                 </span>
               </div>

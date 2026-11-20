@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
+import { LogoMark } from "@/components/ui/DigicardoLogo";
 import { Search, Share2, Twitter, AlertTriangle } from "lucide-react";
 import type { Profile } from "@/types/profile";
 import { cn } from "@/lib/utils";
@@ -38,9 +38,11 @@ export function SEOPreviewCard({
   const effectiveOgDesc = ogDescription.trim() || effectiveDescription;
   const effectiveOgImage = ogImageUrl || profile?.avatar_url || null;
 
-  const publicUrl = typeof window !== "undefined"
-    ? `${window.location.origin}/${username}`
-    : `https://digicardo.app/${username}`;
+  const publicUrl = profile?.agent_domain
+    ? `https://${profile.agent_domain}/${username}`
+    : typeof window !== "undefined"
+      ? `${window.location.origin}/${username}`
+      : `https://digicardo.app/${username}`;
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5 space-y-4 shadow-xs">
@@ -118,9 +120,7 @@ export function SEOPreviewCard({
           <div className="p-4 sm:p-5 rounded-2xl bg-muted/20 border border-border/80 space-y-2 select-none font-sans">
             {/* Favicon & Breadcrumb */}
             <div className="flex items-center gap-2 text-xs">
-              <div className="w-6 h-6 rounded-full overflow-hidden bg-white p-0.5 border border-border/80 flex items-center justify-center flex-shrink-0">
-                <Image src="/logo.png" alt="Digicardo" width={18} height={18} className="w-full h-full object-contain" />
-              </div>
+              <LogoMark size={24} />
               <div className="space-y-0 leading-tight">
                 <span className="block text-xs font-semibold text-[#202124] dark:text-zinc-200">
                   Digicardo
@@ -156,7 +156,7 @@ export function SEOPreviewCard({
                 />
               ) : (
                 <div className="text-center space-y-2 p-4">
-                  <div className="w-14 h-14 rounded-full bg-brand-600 text-white mx-auto flex items-center justify-center text-xl font-black shadow-xs">
+                  <div className="w-14 h-14 rounded-full bg-brand-600 text-white mx-auto flex items-center justify-center text-xl font-bold shadow-xs">
                     {displayName.charAt(0).toUpperCase()}
                   </div>
                   <span className="block text-xs font-bold text-foreground">
@@ -188,7 +188,7 @@ export function SEOPreviewCard({
           /* X / Twitter Summary Card with Large Image */
           <div className="rounded-2xl border border-border/80 bg-card overflow-hidden shadow-xs select-none space-y-0">
             {/* Twitter Banner with overlay domain pill */}
-            <div className="relative w-full aspect-[1.91/1] bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 flex items-center justify-center overflow-hidden">
+            <div className="relative w-full aspect-[1.91/1] bg-gradient-to-br from-zinc-900 via-zinc-800 to-indigo-950 flex items-center justify-center overflow-hidden">
               {effectiveOgImage ? (
                 <img
                   src={effectiveOgImage}
@@ -197,7 +197,7 @@ export function SEOPreviewCard({
                 />
               ) : (
                 <div className="text-center space-y-2 p-4">
-                  <div className="w-14 h-14 rounded-full bg-white/10 text-white border border-white/20 mx-auto flex items-center justify-center text-xl font-black">
+                  <div className="w-14 h-14 rounded-full bg-white/10 text-white border border-white/20 mx-auto flex items-center justify-center text-xl font-bold">
                     {displayName.charAt(0).toUpperCase()}
                   </div>
                   <span className="block text-xs font-bold text-white">

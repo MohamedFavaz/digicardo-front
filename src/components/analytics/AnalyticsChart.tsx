@@ -9,6 +9,14 @@ export interface AnalyticsChartProps {
   timeseries: AnalyticsTimeseriesPoint[];
 }
 
+/** "2026-11-13" → "13 Nov" (local, no time-zone shift). */
+function niceDate(iso?: string): string {
+  if (!iso) return "";
+  const [y, m, d] = iso.slice(0, 10).split("-").map(Number);
+  if (!y || !m || !d) return iso;
+  return new Date(y, m - 1, d).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+}
+
 export function AnalyticsChart({ timeseries }: AnalyticsChartProps) {
   const [hoveredPoint, setHoveredPoint] = React.useState<AnalyticsTimeseriesPoint | null>(null);
   const [showViews, setShowViews] = React.useState(true);
@@ -80,15 +88,15 @@ export function AnalyticsChart({ timeseries }: AnalyticsChartProps) {
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
             <h3 className="font-semibold text-sm text-foreground">
-              Performance Trend
+              Views and taps over time
             </h3>
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold">
               <TrendingUp className="w-2.5 h-2.5" />
-              <span>Daily Rollup</span>
+              <span>Per day</span>
             </span>
           </div>
           <p className="text-xs text-muted-foreground font-medium">
-            Daily distribution of page impressions and interactive link clicks.
+            How many times your card was opened and how many buttons were tapped each day.
           </p>
         </div>
 
@@ -114,12 +122,12 @@ export function AnalyticsChart({ timeseries }: AnalyticsChartProps) {
             className={cn(
               "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all select-none",
               showClicks
-                ? "bg-emerald-50 border-emerald-300 text-emerald-700"
+                ? "bg-lime-50 border-lime-300 text-lime-700"
                 : "bg-muted/40 border-border text-muted-foreground opacity-60"
             )}
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span>Clicks</span>
+            <span className="w-2 h-2 rounded-full bg-lime-500" />
+            <span>Taps</span>
           </button>
         </div>
       </div>
@@ -132,8 +140,8 @@ export function AnalyticsChart({ timeseries }: AnalyticsChartProps) {
         >
           <defs>
             <linearGradient id="viewsAreaGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.18" />
-              <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.0" />
+              <stop offset="0%" stopColor="#343C22" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#343C22" stopOpacity="0.0" />
             </linearGradient>
           </defs>
 
@@ -148,7 +156,7 @@ export function AnalyticsChart({ timeseries }: AnalyticsChartProps) {
                   y1={y}
                   x2={width - paddingX}
                   y2={y}
-                  stroke="#e2e8f0"
+                  stroke="#E7ECDC"
                   strokeDasharray="4 4"
                   strokeWidth="1"
                 />
@@ -157,9 +165,9 @@ export function AnalyticsChart({ timeseries }: AnalyticsChartProps) {
                   y={y + 3.5}
                   textAnchor="end"
                   fontSize="10"
-                  fill="#94a3b8"
+                  fill="#9A9C8F"
                   fontWeight="600"
-                  className="font-mono select-none"
+                  className="tabular-nums select-none"
                 >
                   {labelVal}
                 </text>
@@ -175,7 +183,7 @@ export function AnalyticsChart({ timeseries }: AnalyticsChartProps) {
             <path
               d={pathViews}
               fill="none"
-              stroke="#8b5cf6"
+              stroke="#343C22"
               strokeWidth="3"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -187,7 +195,7 @@ export function AnalyticsChart({ timeseries }: AnalyticsChartProps) {
             <path
               d={pathClicks}
               fill="none"
-              stroke="#10b981"
+              stroke="#8F9A72"
               strokeWidth="3"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -215,7 +223,7 @@ export function AnalyticsChart({ timeseries }: AnalyticsChartProps) {
                   cx={pointsViews[idx]?.x}
                   cy={pointsViews[idx]?.y}
                   r={hoveredPoint?.date === pt.date ? "6" : "4"}
-                  fill="#8b5cf6"
+                  fill="#343C22"
                   stroke="#ffffff"
                   strokeWidth="2"
                   className="transition-all"
@@ -227,7 +235,7 @@ export function AnalyticsChart({ timeseries }: AnalyticsChartProps) {
                   cx={pointsClicks[idx]?.x}
                   cy={pointsClicks[idx]?.y}
                   r={hoveredPoint?.date === pt.date ? "6" : "4"}
-                  fill="#10b981"
+                  fill="#8F9A72"
                   stroke="#ffffff"
                   strokeWidth="2"
                   className="transition-all"
@@ -240,16 +248,16 @@ export function AnalyticsChart({ timeseries }: AnalyticsChartProps) {
         {/* Hover Tooltip Card */}
         {hoveredPoint && (
           <div className="absolute top-2 right-2 rounded-2xl border border-border/80 bg-card/95 p-3.5 text-xs shadow-float backdrop-blur-md space-y-1.5 animate-in fade-in-50">
-            <div className="flex items-center gap-1.5 text-muted-foreground font-bold font-mono">
+            <div className="flex items-center gap-1.5 text-muted-foreground font-bold tabular-nums">
               <Calendar className="w-3 h-3" />
-              <span>{hoveredPoint.date}</span>
+              <span>{niceDate(hoveredPoint.date)}</span>
             </div>
-            <div className="flex items-center gap-4 font-mono font-black">
-              <span className="text-brand-600">
+            <div className="flex items-center gap-4 tabular-nums font-bold">
+              <span className="text-[#4B5634]">
                 Views: <strong>{hoveredPoint.views}</strong>
               </span>
-              <span className="text-emerald-600">
-                Clicks: <strong>{hoveredPoint.clicks}</strong>
+              <span className="text-lime-600">
+                Taps: <strong>{hoveredPoint.clicks}</strong>
               </span>
             </div>
           </div>
@@ -257,12 +265,12 @@ export function AnalyticsChart({ timeseries }: AnalyticsChartProps) {
       </div>
 
       {/* Date Labels Bar */}
-      <div className="flex justify-between px-11 text-[11px] text-muted-foreground font-mono font-semibold">
-        <span>{timeseries[0]?.date}</span>
+      <div className="flex justify-between px-11 text-[11px] text-muted-foreground tabular-nums font-semibold">
+        <span>{niceDate(timeseries[0]?.date)}</span>
         {timeseries.length > 2 && (
-          <span>{timeseries[Math.floor(timeseries.length / 2)]?.date}</span>
+          <span>{niceDate(timeseries[Math.floor(timeseries.length / 2)]?.date)}</span>
         )}
-        <span>{timeseries[timeseries.length - 1]?.date}</span>
+        <span>{niceDate(timeseries[timeseries.length - 1]?.date)}</span>
       </div>
     </div>
   );

@@ -1,14 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/components/ui/button";
+import { SettingsMessage, SettingsSection } from "./SettingsSection";
 import {
   Laptop,
   Smartphone,
   Tablet,
   LogOut,
   CheckCircle2,
-  AlertTriangle,
+  MonitorSmartphone,
 } from "lucide-react";
 import type { AccountSession } from "@/types/security";
 
@@ -54,112 +54,72 @@ export function SessionsCard({
   const otherSessionsCount = sessions.filter((s) => !s.is_current).length;
 
   return (
-    <div className="rounded-xl border border-border bg-white p-6 space-y-5">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center">
-            <Laptop className="w-3.5 h-3.5" />
-          </div>
-          <div>
-            <h2 className="text-sm font-semibold text-foreground">
-              Active Sessions
-            </h2>
-            <p className="text-xs text-muted-foreground font-medium">
-              Devices and browsers currently logged into your Digicardo account.
-            </p>
-          </div>
-        </div>
-
-        {otherSessionsCount > 0 && (
-          <Button
+    <SettingsSection
+      icon={MonitorSmartphone}
+      title="Signed-in devices"
+      description="Phones and computers where you're signed in. Sign out of any you don't recognise."
+      aside={
+        otherSessionsCount > 0 ? (
+          <button
             type="button"
-            size="sm"
-            variant="outline"
             onClick={onRevokeOthers}
             disabled={isRevokingOthers}
-            className="rounded-lg text-xs font-medium gap-1.5 h-8 px-3 text-rose-600 hover:text-rose-700 hover:bg-rose-50 border-rose-200"
+            className="inline-flex h-10 items-center gap-2 rounded-xl border border-[#F5C2C2] bg-card px-3.5 text-sm font-semibold text-destructive transition-colors hover:bg-[#FDECEC] disabled:opacity-60"
           >
-            {isRevokingOthers ? (
-              <div className="w-3 h-3 rounded-full border-2 border-rose-600 border-t-transparent animate-spin mr-1" />
-            ) : (
-              <LogOut className="w-3.5 h-3.5" />
-            )}
-            <span>Revoke Other Sessions</span>
-          </Button>
-        )}
-      </div>
-
-      {/* Message */}
-      {message && (
-        <div
-          className={`rounded-2xl border p-3.5 text-xs font-bold flex items-center gap-2 ${
-            message.type === "success"
-              ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-              : "border-rose-200 bg-rose-50 text-rose-800"
-          }`}
-        >
-          {message.type === "success" ? (
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-          ) : (
-            <AlertTriangle className="w-4 h-4 text-rose-600 flex-shrink-0" />
-          )}
-          <span>{message.text}</span>
-        </div>
-      )}
-
-      {/* Sessions List */}
+            <LogOut className="h-4 w-4" aria-hidden="true" />
+            {isRevokingOthers ? "Signing out…" : "Sign out everywhere else"}
+          </button>
+        ) : undefined
+      }
+    >
+      <SettingsMessage message={message} />
       {isLoading ? (
-        <div className="space-y-3 animate-pulse">
+        <div className="space-y-3" aria-busy="true">
           {[0, 1].map((i) => (
-            <div key={i} className="h-16 rounded-2xl bg-muted/40" />
+            <div key={i} className="skeleton h-14 rounded-xl" />
           ))}
         </div>
       ) : sessions.length === 0 ? (
-        <p className="text-xs text-muted-foreground font-medium">No active sessions found.</p>
+        <p className="text-sm text-muted-foreground">No signed-in devices found.</p>
       ) : (
-        <ul className="divide-y divide-border/60" role="list">
+        <ul className="divide-y divide-border" role="list">
           {sessions.map((sess) => (
-            <li key={sess.id} className="flex items-center justify-between py-3.5 first:pt-0 last:pb-0">
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground shadow-2xs flex-shrink-0">
+            <li key={sess.id} className="flex items-center justify-between gap-3 py-3.5 first:pt-0 last:pb-0">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${sess.is_current ? "bg-[#E7F6EC] text-[#1E7B43]" : "bg-muted text-[#52525B]"}`}>
                   {getDeviceIcon(sess.device_name)}
-                </div>
-                <div className="space-y-0.5">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-black text-foreground">
+                </span>
+                <div className="min-w-0">
+                  <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-foreground">
+                    <span className="truncate">
                       {sess.browser} on {sess.platform}
                     </span>
                     {sess.is_current && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-black">
-                        <CheckCircle2 className="w-2.5 h-2.5" />
-                        Current Device
+                      <span className="inline-flex items-center gap-1 rounded-full bg-[#E7F6EC] px-2 py-0.5 text-xs font-medium text-[#1E7B43]">
+                        <CheckCircle2 className="h-3 w-3" aria-hidden="true" /> This device
                       </span>
                     )}
-                  </div>
-                  <p className="text-[11px] text-muted-foreground font-medium">
-                    {sess.device_name} · Last active {timeAgo(sess.last_activity_at)}
+                  </p>
+                  <p className="truncate text-[13px] text-muted-foreground">
+                    {sess.device_name} · Active {timeAgo(sess.last_activity_at)}
                   </p>
                 </div>
               </div>
-
               {!sess.is_current && (
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="sm"
                   onClick={() => onRevokeSession(sess.id)}
                   disabled={revokingId === sess.id}
-                  className="rounded-full text-xs font-bold text-rose-600 hover:bg-rose-50 h-8 px-3 gap-1"
+                  className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg px-3 text-sm font-semibold text-destructive hover:bg-[#FDECEC] disabled:opacity-60"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span>{revokingId === sess.id ? "Revoking..." : "Revoke"}</span>
-                </Button>
+                  <LogOut className="h-4 w-4" aria-hidden="true" />
+                  {revokingId === sess.id ? "Signing out…" : "Sign out"}
+                </button>
               )}
             </li>
           ))}
         </ul>
       )}
-    </div>
+    </SettingsSection>
   );
 }

@@ -4,6 +4,8 @@
  * with Error Correction (ECC Level L/M/Q/H)
  */
 
+import { encodeQr } from "./encoder";
+
 export type QrEccLevel = "L" | "M" | "Q" | "H";
 
 export interface QrCodeOptions {
@@ -30,7 +32,7 @@ export function generateQrSvg({
   centerLogo?: "badge" | "avatar" | "none";
   avatarUrl?: string | null;
 }): string {
-  const matrix = createQrMatrix(text);
+  const matrix = createQrMatrix(text, centerLogo === "none" ? "M" : "H");
   const moduleCount = matrix.length;
   const cellSize = size / moduleCount;
 
@@ -116,125 +118,10 @@ export function generateQrSvg({
 }
 
 /**
- * Pure TypeScript QR Matrix generation
- * Generates an accurate 2D boolean array representing the QR code
+ * QR module matrix for `text` (true = dark). Uses the standards-compliant encoder in
+ * ./encoder — the previous hand-rolled generator here produced codes no scanner could read.
+ * Codes with a centre logo use error-correction level H so the covered modules are recoverable.
  */
-export function createQrMatrix(text: string): boolean[][] {
-  const length = text.length;
-  // Dynamic version sizing based on length
-  let version = 3;
-  if (length > 32) version = 4;
-  if (length > 50) version = 5;
-  if (length > 70) version = 6;
-
-  const size = 17 + 4 * version;
-  const matrix: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
-  const reserved: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
-
-  // 1. Finder Patterns (Top-Left, Top-Right, Bottom-Left)
-  const addFinder = (row: number, col: number) => {
-    for (let r = -1; r <= 7; r++) {
-      for (let c = -1; c <= 7; c++) {
-        const nr = row + r;
-        const nc = col + c;
-        if (nr >= 0 && nr < size && nc >= 0 && nc < size) {
-          reserved[nr][nc] = true;
-          if (r >= 0 && r <= 6 && c >= 0 && c <= 6) {
-            if (r === 0 || r === 6 || c === 0 || c === 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4)) {
-              matrix[nr][nc] = true;
-            } else {
-              matrix[nr][nc] = false;
-            }
-          }
-        }
-      }
-    }
-  };
-
-  addFinder(0, 0);
-  addFinder(0, size - 7);
-  addFinder(size - 7, 0);
-
-  // 2. Alignment Pattern for Version >= 2
-  if (version >= 2) {
-    const alignPos = size - 7;
-    for (let r = -2; r <= 2; r++) {
-      for (let c = -2; c <= 2; c++) {
-        const nr = alignPos + r;
-        const nc = alignPos + c;
-        if (!reserved[nr][nc]) {
-          reserved[nr][nc] = true;
-          matrix[nr][nc] = Math.abs(r) === 2 || Math.abs(c) === 2 || (r === 0 && c === 0);
-        }
-      }
-    }
-  }
-
-  // 3. Timing Patterns
-  for (let i = 8; i < size - 8; i++) {
-    if (!reserved[6][i]) {
-      reserved[6][i] = true;
-      matrix[6][i] = i % 2 === 0;
-    }
-    if (!reserved[i][6]) {
-      reserved[i][6] = true;
-      matrix[i][6] = i % 2 === 0;
-    }
-  }
-
-  // 4. Reserve Format Information areas
-  for (let i = 0; i < 9; i++) {
-    if (i < size) {
-      reserved[8][i] = true;
-      reserved[i][8] = true;
-    }
-    if (size - 1 - i >= 0) {
-      reserved[8][size - 1 - i] = true;
-      reserved[size - 1 - i][8] = true;
-    }
-  }
-
-  // Dark module
-  matrix[size - 8][8] = true;
-  reserved[size - 8][8] = true;
-
-  // 5. Data Bit Encoding (Hash/Byte based for authentic QR distribution)
-  let bitIndex = 0;
-  const charCodes = Array.from(text).map((c) => c.charCodeAt(0));
-  // Add simple Reed-Solomon style checksum expansion
-  while (charCodes.length < (size * size) / 8) {
-    const nextVal = (charCodes[bitIndex % charCodes.length] * 33 + bitIndex) % 256;
-    charCodes.push(nextVal);
-    bitIndex++;
-  }
-
-  const bitStream: boolean[] = [];
-  for (const code of charCodes) {
-    for (let b = 7; b >= 0; b--) {
-      bitStream.push(Boolean((code >> b) & 1));
-    }
-  }
-
-  // 6. Fill Matrix zigzag from bottom-right
-  let streamIdx = 0;
-  let upwards = true;
-  for (let right = size - 1; right > 0; right -= 2) {
-    if (right === 6) right--; // Skip vertical timing pattern
-    for (let count = 0; count < size; count++) {
-      const r = upwards ? size - 1 - count : count;
-      for (let c = 0; c < 2; c++) {
-        const col = right - c;
-        if (!reserved[r][col]) {
-          const bit = bitStream[streamIdx % bitStream.length] ?? false;
-          // Apply Standard Mask Pattern (row + col) % 2 === 0
-          const mask = (r + col) % 2 === 0;
-          matrix[r][col] = bit !== mask;
-          streamIdx++;
-        }
-      }
-    }
-    upwards = !upwards;
-  }
-
-  return matrix;
+export function createQrMatrix(text: string, ecc: QrEccLevel = "M"): boolean[][] {
+  return encodeQr(text, ecc);
 }

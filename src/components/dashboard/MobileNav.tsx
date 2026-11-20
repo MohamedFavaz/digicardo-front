@@ -4,109 +4,68 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { profileApi } from "@/lib/api/profile";
-import type { Profile } from "@/types/profile";
+import { useShellProfile } from "@/lib/hooks/use-shell-profile";
 import { cn } from "@/lib/utils";
-import { DigicardoLogo } from "@/components/ui/DigicardoLogo";
-import {
-  LayoutDashboard,
-  Layers,
-  Palette,
-  BarChart3,
-  MoreHorizontal,
-  Settings,
-  ShieldCheck,
-  LogOut,
-  ExternalLink,
-  Copy,
-  Check,
-  X,
-  Sparkles,
-  Zap,
-  Users,
-  ChevronRight,
-} from "lucide-react";
+import { TapGlyph } from "@/components/ui/DigicardoLogo";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { MOBILE_MORE, MOBILE_TABS, isNavItemActive } from "./nav-config";
+import { useUnreadCount } from "@/lib/hooks/use-unread-count";
+import { PublicLinkPill } from "./TopBar";
+import { ChevronRight, ExternalLink, LogOut, MoreHorizontal, ShieldCheck, X } from "lucide-react";
 
+/** Phone header: logo, "View" card link and notifications. */
 export function MobileTopHeader() {
-  const [profile, setProfile] = React.useState<Profile | null>(null);
-
-  React.useEffect(() => {
-    profileApi
-      .getProfile()
-      .then((p) => setProfile(p))
-      .catch(() => { });
-  }, []);
-
-  const username = profile?.username;
+  const { username, publicUrl } = useShellProfile();
 
   return (
-    <header className="h-16 bg-card/90 dark:bg-card/80 backdrop-blur-2xl border-b border-border/80 px-4 flex items-center justify-between select-none shadow-2xs md:hidden">
-      <Link href="/dashboard" className="flex items-center">
-        <DigicardoLogo size="sm" proBadge />
+    <header className="flex h-14 items-center justify-between bg-[#F3F2EE]/70 px-4 backdrop-blur-md md:hidden">
+      <Link href="/dashboard" prefetch={false} aria-label="Digicardo home">
+        <span className="flex items-center gap-1.5"><span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#343C22]"><TapGlyph className="h-4 w-4" color="#FFFFFF" /></span><span className="text-[17px] font-medium tracking-tight text-[#121212]">Digicardo</span></span>
       </Link>
-
-      {/* Live URL Pill + Notification */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
         {username && (
           <Link
-            href={`/${username}`}
+            href={publicUrl ?? `/${username}`}
             target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-700 bg-white px-2.5 py-1 rounded-full border border-slate-200/90 shadow-2xs hover:bg-slate-50"
+            rel="noopener noreferrer"
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-input bg-card px-3 text-sm font-semibold text-foreground"
           >
-            <span>View</span>
-            <ExternalLink className="w-3 h-3 text-slate-400" />
+            View card
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
         )}
-
         <NotificationBell align="right" />
       </div>
     </header>
   );
 }
 
+/**
+ * Phone bottom bar: the four most used places + "More" (design system v6, 44px+ targets).
+ */
 export function MobileBottomNav() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
-  const [profile, setProfile] = React.useState<Profile | null>(null);
-  const [copied, setCopied] = React.useState(false);
+  const { profile } = useShellProfile();
   const [moreOpen, setMoreOpen] = React.useState(false);
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
 
+  React.useEffect(() => setMoreOpen(false), [pathname]);
+
   React.useEffect(() => {
-    profileApi
-      .getProfile()
-      .then((p) => setProfile(p))
-      .catch(() => { });
-  }, []);
+    if (!moreOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMoreOpen(false);
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [moreOpen]);
 
-  // Close "More" drawer whenever route changes
-  React.useEffect(() => {
-    setMoreOpen(false);
-  }, [pathname]);
-
-  const username = profile?.username;
-  const displayName = profile?.display_name || user?.name || "Creator";
-  const publicUrl = username
-    ? typeof window !== "undefined"
-      ? `${window.location.origin}/${username}`
-      : `https://digicardo.app/${username}`
-    : null;
-
-  const handleCopy = async () => {
-    if (!publicUrl) return;
-    try {
-      await navigator.clipboard.writeText(publicUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Ignore
-    }
-  };
+  // Four tabs fit the bottom bar; Analytics, NFC card and Settings live under "More".
+  const unread = useUnreadCount();
+  const primary = MOBILE_TABS;
+  const moreItems = MOBILE_MORE;
+  const moreActive = moreItems.some((item) => isNavItemActive(pathname, item));
+  const displayName = profile?.display_name || user?.name || "Your account";
 
   const handleLogout = async () => {
     try {
@@ -118,275 +77,122 @@ export function MobileBottomNav() {
     }
   };
 
-  // Primary 4 Bottom Navigation items + More
-  const primaryTabs = [
-    {
-      title: "Overview",
-      href: "/dashboard",
-      icon: LayoutDashboard,
-      isActive: pathname === "/dashboard",
-    },
-    {
-      title: "My Page",
-      href: "/dashboard/page",
-      icon: Layers,
-      isActive: pathname.startsWith("/dashboard/page"),
-    },
-    {
-      title: "Design",
-      href: "/dashboard/appearance",
-      icon: Palette,
-      isActive: pathname.startsWith("/dashboard/appearance"),
-    },
-    {
-      title: "Analytics",
-      href: "/dashboard/analytics",
-      icon: BarChart3,
-      isActive: pathname.startsWith("/dashboard/analytics"),
-    },
-  ];
-
-  interface MoreNavItem {
-    title: string;
-    href: string;
-    icon: React.ComponentType<{ className?: string }>;
-    description: string;
-    badge?: string;
-    badgeType?: "hot" | "live" | "admin";
-  }
-
-  // Secondary items shown in "More" Drawer
-  const moreItems: MoreNavItem[] = [
-    {
-      title: "Notifications",
-      href: "/dashboard/notifications",
-      icon: Users,
-      description: "Contact submissions & subscribers",
-    },
-    {
-      title: "Account Settings",
-      href: "/dashboard/settings",
-      icon: Settings,
-      description: "Profile info, password & security",
-    },
-  ];
-
-  if (user?.role === "admin") {
-    moreItems.push({
-      title: "Admin Console",
-      href: "/admin/dashboard",
-      icon: ShieldCheck,
-      description: "Platform management & governance",
-      badge: "Admin",
-      badgeType: "admin",
-    });
-  }
-
-  const isMoreActive =
-    !primaryTabs.some((t) => t.isActive) ||
-    pathname.startsWith("/dashboard/settings") ||
-    pathname.startsWith("/dashboard/billing");
+  const tabClass = (active: boolean) =>
+    cn(
+      "flex min-h-[54px] flex-1 flex-col items-center justify-center gap-0.5 rounded-full text-[11px] transition-colors",
+      active ? "bg-white font-semibold text-[#343C22]" : "font-medium text-white/75"
+    );
 
   return (
     <>
-      {/* ── Floating Bottom Navigation Dock ── */}
-      <nav className="fixed bottom-3 left-3 right-3 sm:left-6 sm:right-6 max-w-md sm:mx-auto z-40 bg-card/95 dark:bg-card/90 backdrop-blur-2xl border border-border/80 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.18)] p-1.5 flex items-center justify-around select-none md:hidden pb-[calc(0.375rem+env(safe-area-inset-bottom,0px))]">
-        {primaryTabs.map((tab) => {
-          const Icon = tab.icon;
+      <nav
+        aria-label="Main"
+        className="fixed inset-x-3 bottom-[calc(12px+env(safe-area-inset-bottom,0px))] z-40 flex gap-1 rounded-full bg-[#343C22] p-1.5 shadow-[0_18px_36px_-14px_rgba(52,60,34,0.75)] md:hidden"
+      >
+        {primary.map((item) => {
+          const Icon = item.icon;
+          const active = isNavItemActive(pathname, item);
           return (
             <Link
-              key={tab.title}
-              href={tab.href}
-              className={cn(
-                "flex flex-col items-center justify-center flex-1 py-1 text-center transition-all duration-200 active:scale-95 relative",
-                tab.isActive
-                  ? "text-brand-600 font-extrabold"
-                  : "text-muted-foreground hover:text-foreground font-medium"
-              )}
+              key={item.href}
+              href={item.href}
+              prefetch={false}
+              aria-current={active ? "page" : undefined}
+              className={tabClass(active)}
             >
-              <div
-                className={cn(
-                  "p-1.5 rounded-2xl transition-all duration-200",
-                  tab.isActive
-                    ? "bg-brand-500/15 text-brand-600 shadow-xs"
-                    : "hover:bg-muted/50"
+              <span className="relative">
+                <Icon className="h-5 w-5" aria-hidden="true" />
+                {item.unread && unread > 0 && (
+                  <span className="absolute -right-2.5 -top-1.5 min-w-[18px] rounded-full bg-[#B0C08F] px-1 text-center text-[10px] font-bold leading-[18px] text-[#121212] ring-2 ring-[#343C22]">
+                    {unread > 9 ? "9+" : unread}
+                    <span className="sr-only"> unread</span>
+                  </span>
                 )}
-              >
-                <Icon className="w-5 h-5" />
-              </div>
-              <span className="text-[10px] tracking-tight mt-0.5">{tab.title}</span>
+              </span>
+              {item.mobileTitle ?? item.title}
             </Link>
           );
         })}
-
-        {/* More Drawer Button */}
         <button
           type="button"
           onClick={() => setMoreOpen(true)}
-          className={cn(
-            "flex flex-col items-center justify-center flex-1 py-1 text-center transition-all duration-200 active:scale-95 relative",
-            isMoreActive || moreOpen
-              ? "text-brand-600 font-extrabold"
-              : "text-muted-foreground hover:text-foreground font-medium"
-          )}
-          aria-label="Open more menu"
+          aria-haspopup="dialog"
+          aria-expanded={moreOpen}
+          className={tabClass(moreActive || moreOpen)}
         >
-          <div
-            className={cn(
-              "p-1.5 rounded-2xl transition-all duration-200",
-              isMoreActive || moreOpen
-                ? "bg-brand-500/15 text-brand-600 shadow-xs"
-                : "hover:bg-muted/50"
-            )}
-          >
-            <MoreHorizontal className="w-5 h-5" />
-          </div>
-          <span className="text-[10px] tracking-tight mt-0.5">More</span>
+          <MoreHorizontal className="h-5 w-5" aria-hidden="true" />
+          More
         </button>
       </nav>
 
-      {/* ── "More" Slide-Up Mobile Sheet Drawer ── */}
       {moreOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/60 backdrop-blur-md animate-in fade-in duration-200 md:hidden">
-          <div
-            className="fixed inset-0"
+        <div className="fixed inset-0 z-50 flex flex-col justify-end md:hidden" role="dialog" aria-modal="true" aria-label="More">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/40"
+            aria-label="Close menu"
             onClick={() => setMoreOpen(false)}
-            aria-hidden="true"
           />
-
-          <div className="relative z-50 bg-card rounded-t-[36px] border-t border-border/80 p-6 max-h-[85vh] overflow-y-auto shadow-float animate-in slide-in-from-bottom duration-250 space-y-5">
-            {/* Sheet Handle & Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-border/60">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center font-black text-white text-sm shadow-xs">
-                  {displayName.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <h3 className="text-sm font-black text-foreground leading-none">
-                    {displayName}
-                  </h3>
-                  <span className="text-[11px] font-mono text-muted-foreground">
-                    {user?.email ?? `@${username}`}
-                  </span>
-                </div>
+          <div className="relative max-h-[85vh] overflow-y-auto rounded-t-2xl border-t border-border bg-card p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] shadow-float">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="min-w-0">
+                <p className="truncate text-base font-semibold text-foreground">{displayName}</p>
+                {user?.email && <p className="truncate text-sm text-muted-foreground">{user.email}</p>}
               </div>
-
               <button
                 type="button"
                 onClick={() => setMoreOpen(false)}
-                className="p-2 rounded-full hover:bg-muted text-muted-foreground transition-colors"
-                aria-label="Close drawer"
+                aria-label="Close menu"
+                className="flex h-11 w-11 items-center justify-center rounded-lg text-[#52525B] hover:bg-muted"
               >
-                <X className="w-5 h-5" />
+                <X className="h-5 w-5" aria-hidden="true" />
               </button>
             </div>
 
-            {/* Quick Profile URL Card */}
-            {username && (
-              <div className="p-3 rounded-2xl bg-muted/40 border border-border/80 flex items-center justify-between">
-                <div className="min-w-0 space-y-0.5">
-                  <span className="block text-[10px] font-mono uppercase font-bold text-muted-foreground">
-                    Public Link
-                  </span>
-                  <p className="text-xs font-mono font-bold text-foreground truncate">
-                    digicardo.app/{username}
-                  </p>
-                </div>
+            <PublicLinkPill className="mb-4 w-full justify-between" />
 
-                <div className="flex items-center gap-1.5 flex-shrink-0">
-                  <button
-                    type="button"
-                    onClick={handleCopy}
-                    className="p-2 rounded-xl bg-card border border-border text-muted-foreground hover:text-foreground transition-colors"
-                    title="Copy link"
-                  >
-                    {copied ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-600" />
-                    ) : (
-                      <Copy className="w-3.5 h-3.5" />
-                    )}
-                  </button>
-
-                  <Link
-                    href={`/${username}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-2 rounded-xl bg-brand-500 text-white hover:bg-brand-600 transition-colors"
-                    title="Open live link"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
-            )}
-
-            {/* Secondary Menu Links */}
             <div className="space-y-1">
-              <span className="text-[10px] font-mono uppercase font-bold text-muted-foreground px-1">
-                Studio Tools
-              </span>
-
               {moreItems.map((item) => {
                 const Icon = item.icon;
-                const active = pathname.startsWith(item.href);
-
+                const active = isNavItemActive(pathname, item);
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    onClick={() => setMoreOpen(false)}
+                    prefetch={false}
                     className={cn(
-                      "flex items-center justify-between p-3 rounded-2xl transition-colors",
-                      active
-                        ? "bg-brand-500/10 text-brand-600 font-bold"
-                        : "hover:bg-muted/60 text-foreground"
+                      "flex min-h-[52px] items-center gap-3 rounded-lg px-3",
+                      active ? "bg-[#EFECFD] font-semibold text-[#3D2AAD]" : "text-foreground hover:bg-muted"
                     )}
                   >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={cn(
-                          "w-9 h-9 rounded-xl flex items-center justify-center",
-                          active
-                            ? "bg-brand-500 text-white"
-                            : "bg-muted text-muted-foreground"
-                        )}
-                      >
-                        <Icon className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold leading-tight">{item.title}</p>
-                        <p className="text-[11px] text-muted-foreground leading-tight">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-1.5">
-                      {item.badge && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200">
-                          {item.badge}
-                        </span>
-                      )}
-                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
-                    </div>
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                    <span className="flex-1 text-[15px]">{item.title}</span>
+                    <ChevronRight className="h-4 w-4 text-[#A1A1AA]" aria-hidden="true" />
                   </Link>
                 );
               })}
+              {user?.role === "admin" && (
+                <Link
+                  href="/admin/dashboard"
+                  prefetch={false}
+                  className="flex min-h-[52px] items-center gap-3 rounded-lg px-3 text-foreground hover:bg-muted"
+                >
+                  <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+                  <span className="flex-1 text-[15px]">Admin console</span>
+                  <ChevronRight className="h-4 w-4 text-[#A1A1AA]" aria-hidden="true" />
+                </Link>
+              )}
             </div>
 
-            {/* Logout Button */}
-            <div className="pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleLogout}
-                disabled={isLoggingOut}
-                className="w-full gap-2 text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive rounded-2xl h-11 font-bold text-xs shadow-2xs"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>{isLoggingOut ? "Signing Out..." : "Sign Out"}</span>
-              </Button>
-            </div>
+            <button
+              type="button"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-input text-[15px] font-semibold text-destructive hover:bg-[#FDECEC] disabled:opacity-60"
+            >
+              <LogOut className="h-4 w-4" aria-hidden="true" />
+              {isLoggingOut ? "Signing out…" : "Sign out"}
+            </button>
           </div>
         </div>
       )}

@@ -8,7 +8,7 @@ function Skeleton({
   return (
     <div
       className={cn(
-        "animate-pulse rounded-xl bg-muted/80 relative overflow-hidden",
+        "skeleton relative overflow-hidden rounded-xl",
         className
       )}
       {...props}

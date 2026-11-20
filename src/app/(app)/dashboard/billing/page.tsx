@@ -134,7 +134,7 @@ export default function BillingPage() {
       {/* ── Feature Capacities & Usage ── */}
       <div className="space-y-4">
         <div className="space-y-0.5">
-          <h3 className="font-black text-base text-foreground">
+          <h3 className="font-bold text-base text-foreground">
             Feature Usage &amp; Capacities
           </h3>
           <p className="text-xs text-muted-foreground font-medium">
@@ -171,7 +171,7 @@ export default function BillingPage() {
       <div className="space-y-6 pt-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-0.5">
-            <h3 className="text-xl font-black text-foreground">Available Plans</h3>
+            <h3 className="text-xl font-bold text-foreground">Available Plans</h3>
             <p className="text-xs text-muted-foreground font-medium">
               Choose the tier that fits your growth needs. Upgrade or switch anytime.
             </p>
@@ -202,7 +202,7 @@ export default function BillingPage() {
               )}
             >
               <span>Annual</span>
-              <span className="bg-emerald-50 text-emerald-700 border border-emerald-200/80 text-[10px] px-1.5 py-0.5 rounded-md font-black">
+              <span className="bg-emerald-50 text-emerald-700 border border-emerald-200/80 text-[10px] px-1.5 py-0.5 rounded-md font-bold">
                 -22%
               </span>
             </button>
@@ -211,17 +211,17 @@ export default function BillingPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
           {/* FREE TIER CARD */}
-          <div className="rounded-[32px] border border-border/80 bg-card p-6 sm:p-7 shadow-card flex flex-col justify-between space-y-6">
+          <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-card flex flex-col justify-between space-y-6">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-2xl bg-muted text-muted-foreground flex items-center justify-center shadow-2xs">
                   <Zap className="w-4 h-4" />
                 </div>
-                <h4 className="font-black text-lg text-foreground">Free</h4>
+                <h4 className="font-bold text-lg text-foreground">Free</h4>
               </div>
 
               <div>
-                <span className="text-3xl font-black text-foreground">$0</span>
+                <span className="text-3xl font-bold text-foreground">$0</span>
                 <span className="text-xs text-muted-foreground font-medium"> / forever</span>
               </div>
 
@@ -257,8 +257,8 @@ export default function BillingPage() {
           </div>
 
           {/* PRO TIER CARD (POPULAR) */}
-          <div className="rounded-[32px] border-2 border-brand-500 bg-gradient-to-b from-brand-50/30 via-card to-card p-6 sm:p-7 shadow-float relative flex flex-col justify-between space-y-6">
-            <div className="absolute -top-3 right-6 bg-brand-600 text-white text-[10px] font-black px-3 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
+          <div className="rounded-2xl border-2 border-brand-500 bg-gradient-to-b from-brand-50/30 via-card to-card p-6 sm:p-7 shadow-float relative flex flex-col justify-between space-y-6">
+            <div className="absolute -top-3 right-6 bg-brand-600 text-white text-[10px] font-bold px-3 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
               Most Popular
             </div>
 
@@ -267,11 +267,11 @@ export default function BillingPage() {
                 <div className="w-8 h-8 rounded-2xl bg-brand-50 border border-brand-200/80 text-brand-600 flex items-center justify-center shadow-2xs">
                   <Sparkles className="w-4 h-4" />
                 </div>
-                <h4 className="font-black text-lg text-foreground">Pro</h4>
+                <h4 className="font-bold text-lg text-foreground">Pro</h4>
               </div>
 
               <div>
-                <span className="text-3xl font-black text-foreground">
+                <span className="text-3xl font-bold text-foreground">
                   ${selectedBillingInterval === "yearly" ? "7" : "9"}
                 </span>
                 <span className="text-xs text-muted-foreground font-medium"> / month</span>
@@ -308,24 +308,24 @@ export default function BillingPage() {
               onClick={() => setShowUpgradeDialog(true)}
               disabled={isPro}
               variant="pill"
-              className="w-full h-10 bg-brand-600 hover:bg-brand-700 text-white text-xs font-extrabold shadow-cta"
+              className="w-full h-10 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-cta"
             >
               {isPro ? "Current Active Plan" : "Upgrade to Pro"}
             </Button>
           </div>
 
           {/* BUSINESS TIER CARD */}
-          <div className="rounded-[32px] border border-border/80 bg-card p-6 sm:p-7 shadow-card flex flex-col justify-between space-y-6">
+          <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-card flex flex-col justify-between space-y-6">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-2xl bg-amber-50 border border-amber-200/80 text-amber-600 flex items-center justify-center shadow-2xs">
                   <Crown className="w-4 h-4" />
                 </div>
-                <h4 className="font-black text-lg text-foreground">Business</h4>
+                <h4 className="font-bold text-lg text-foreground">Business</h4>
               </div>
 
               <div>
-                <span className="text-3xl font-black text-foreground">
+                <span className="text-3xl font-bold text-foreground">
                   ${selectedBillingInterval === "yearly" ? "23" : "29"}
                 </span>
                 <span className="text-xs text-muted-foreground font-medium"> / month</span>

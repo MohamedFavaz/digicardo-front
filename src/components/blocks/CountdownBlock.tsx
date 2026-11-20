@@ -52,7 +52,7 @@ export function CountdownBlock({ block }: CountdownBlockProps) {
   // Initial SSR render placeholder to prevent hydration mismatch
   if (!mounted) {
     return (
-      <div className="w-full rounded-[var(--lf-radius,0.75rem)] border border-slate-800 bg-slate-900/80 p-5 text-center shadow-md">
+      <div className="w-full rounded-[var(--lf-radius,0.75rem)] border border-zinc-800 bg-zinc-900/80 p-5 text-center shadow-md">
         <h3
           className="text-sm font-semibold tracking-tight"
           style={{ color: "var(--lf-text-primary, #ffffff)" }}
@@ -80,7 +80,7 @@ export function CountdownBlock({ block }: CountdownBlockProps) {
   }
 
   return (
-    <div className="w-full rounded-[var(--lf-radius,0.75rem)] border border-slate-800 bg-slate-900/90 p-5 text-center shadow-lg space-y-3.5">
+    <div className="w-full rounded-[var(--lf-radius,0.75rem)] border border-zinc-800 bg-zinc-900/90 p-5 text-center shadow-lg space-y-3.5">
       <div className="flex items-center justify-center gap-2">
         <Clock className="h-4 w-4 text-[var(--lf-accent,#6366f1)]" />
         <h3
@@ -99,12 +99,12 @@ export function CountdownBlock({ block }: CountdownBlockProps) {
         ].map((unit) => (
           <div
             key={unit.label}
-            className="flex flex-col items-center justify-center rounded-lg border border-slate-800/80 bg-slate-950/60 py-2.5 shadow-xs"
+            className="flex flex-col items-center justify-center rounded-lg border border-zinc-800/80 bg-zinc-950/60 py-2.5 shadow-xs"
           >
-            <span className="font-mono text-xl font-extrabold text-white">
+            <span className="font-mono text-xl font-semibold text-white">
               {String(unit.value).padStart(2, "0")}
             </span>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
               {unit.label}
             </span>
           </div>

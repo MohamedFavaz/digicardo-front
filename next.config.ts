@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Lets a second dev server (e.g. a local preview on another port) build into its own
+  // folder instead of sharing — and corrupting — the main `.next` cache.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
+  // Keep the dev-only Next.js badge away from the sidebar account menu (bottom-left).
+  devIndicators: { position: "bottom-right" },
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,

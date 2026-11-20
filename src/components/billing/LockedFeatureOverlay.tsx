@@ -21,7 +21,7 @@ export const LockedFeatureOverlay: React.FC<LockedFeatureOverlayProps> = ({
       onClick={onClick}
       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-sm cursor-pointer transition-all hover:scale-105 ${
         isBusiness
-          ? "bg-amber-500 text-slate-950 hover:bg-amber-400"
+          ? "bg-amber-500 text-zinc-950 hover:bg-amber-400"
           : "bg-gradient-to-r from-indigo-600 to-violet-600 text-white hover:from-indigo-500 hover:to-violet-500"
       } ${className}`}
       data-testid="locked-feature-badge"

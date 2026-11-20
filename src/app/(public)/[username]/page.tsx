@@ -1,5 +1,6 @@
 import { cache } from "react";
-import { notFound } from "next/navigation";
+import { headers } from "next/headers";
+import { notFound, permanentRedirect } from "next/navigation";
 import { UsernameSchema } from "@/lib/validation/profile";
 import { ProfileRenderer } from "@/components/profile/ProfileRenderer";
 import { ProfileJsonLd } from "@/components/profile/ProfileJsonLd";
@@ -17,6 +18,14 @@ const LARAVEL_INTERNAL_URL =
   "http://127.0.0.1:8000";
 
 export const revalidate = 60;
+
+/** On by default in production; set AGENT_DOMAIN_REDIRECTS=0 to keep agent cards on the main domain too. */
+function agentRedirectsEnabled(): boolean {
+  const flag = process.env.AGENT_DOMAIN_REDIRECTS;
+  if (flag === "0" || flag === "false") return false;
+  if (flag === "1" || flag === "true") return true;
+  return process.env.NODE_ENV === "production";
+}
 
 interface PublicProfileResponse extends PublicProfile {
   theme_tokens?: ThemeTokens | null;
@@ -52,21 +61,27 @@ const getPublicProfile = cache(async (username: string): Promise<PublicProfileRe
   }
 });
 
+/**
+ * Is this card served on the current host? Agent domains (header set by middleware) only serve
+ * that agent's customers' cards — page and metadata alike, so nothing about other cards leaks.
+ */
+async function servedHere(profile: PublicProfileResponse): Promise<boolean> {
+  const agentHost = (await headers()).get("x-agent-domain");
+  return !agentHost || profile.agent_domain === agentHost;
+}
+
+const NOT_FOUND_METADATA: Metadata = {
+  title: "Card not found",
+  robots: { index: false, follow: false },
+};
+
 export async function generateMetadata({
   params,
 }: PublicProfilePageProps): Promise<Metadata> {
   const { username } = await params;
   const profile = await getPublicProfile(username);
 
-  if (!profile) {
-    return {
-      title: "Profile Not Found — Digicardo",
-      robots: {
-        index: false,
-        follow: false,
-      },
-    };
-  }
+  if (!profile || !(await servedHere(profile))) return NOT_FOUND_METADATA;
 
   const meta = resolveProfileMetadata(profile);
 
@@ -92,7 +107,7 @@ export async function generateMetadata({
       title: meta.ogTitle,
       description: meta.ogDescription,
       url: meta.canonicalUrl,
-      siteName: "Digicardo",
+      siteName: profile.agent_domain ? (profile.agent_brand?.name ?? undefined) : "Digicardo",
       username: profile.username,
       images: [
         {
@@ -124,6 +139,14 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
   const profile = await getPublicProfile(username);
   if (!profile) {
     notFound();
+  }
+
+  // Agent domains (set by middleware) only serve that agent's customers' cards.
+  if (!(await servedHere(profile))) notFound();
+  const onAgentHost = Boolean((await headers()).get("x-agent-domain"));
+  if (!onAgentHost && profile.agent_domain && agentRedirectsEnabled()) {
+    // A card made by an agent with a live domain is always shown on that domain.
+    permanentRedirect(`https://${profile.agent_domain}/${profile.username}`);
   }
 
   const blocks = profile.blocks ?? [];

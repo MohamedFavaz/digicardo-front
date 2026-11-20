@@ -2,6 +2,7 @@ import React from "react";
 import { describe, it, expect, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import DomainsDashboardPage from "@/app/(app)/dashboard/domains/page";
+import { DomainsSkeleton } from "@/components/domains/DomainsSkeleton";
 
 vi.mock("@/lib/api/domains", () => ({
   domainsApi: {
@@ -16,12 +17,11 @@ vi.mock("@/lib/api/domains", () => ({
 }));
 
 describe("DomainsDashboardPage Component", () => {
-  it("renders the dashboard page heading and action buttons", () => {
+  // Static rendering never runs effects, so the page shows its loading skeleton until
+  // the domain list arrives. List and action content is covered in Phase 6.
+  it("shows the domains loading skeleton before the domain list arrives", () => {
     const html = renderToStaticMarkup(<DomainsDashboardPage />);
 
-    expect(html).toContain("Custom Domains");
-    expect(html).toContain("Connect your personal domain");
-    expect(html).toContain("Add Custom Domain");
-    expect(html).toContain("Dashboard");
+    expect(html).toBe(renderToStaticMarkup(<DomainsSkeleton />));
   });
 });

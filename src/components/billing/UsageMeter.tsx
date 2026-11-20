@@ -28,19 +28,19 @@ export const UsageMeter: React.FC<UsageMeterProps> = ({
   return (
     <div
       className={cn(
-        "p-5 rounded-[28px] border border-border/80 bg-card shadow-card space-y-3 select-none",
+        "p-5 rounded-2xl border border-border/80 bg-card shadow-card space-y-3 select-none",
         className
       )}
       data-testid="usage-meter"
     >
       <div className="flex items-center justify-between">
-        <span className="text-xs font-black text-foreground">{title}</span>
+        <span className="text-xs font-bold text-foreground">{title}</span>
         <span className="text-xs font-bold text-muted-foreground font-mono">
           {isUnlimited ? (
-            <span className="text-brand-600 font-black">Unlimited</span>
+            <span className="text-brand-600 font-bold">Unlimited</span>
           ) : (
             <span>
-              <strong className="text-foreground font-black">{usage}</strong>
+              <strong className="text-foreground font-bold">{usage}</strong>
               {" / "}
               {limit} {unit}
             </span>

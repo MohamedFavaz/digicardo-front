@@ -239,8 +239,6 @@ export default function AccountSettingsPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in-50 duration-300">
-      
-      {/* ── Studio Header & Sub-Navigation ── */}
       <SettingsHeader />
 
       {/* ── Section 1: Personal Details ── */}

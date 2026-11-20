@@ -10,7 +10,6 @@ import type { AnalyticsPeriod } from "@/types/analytics";
 import { AnalyticsHeader } from "@/components/analytics/AnalyticsHeader";
 import { AnalyticsSummaryCards } from "@/components/analytics/AnalyticsSummaryCards";
 import { AnalyticsChart } from "@/components/analytics/AnalyticsChart";
-import { PerformanceInsightCard } from "@/components/analytics/PerformanceInsightCard";
 import { AnalyticsTopBlocks } from "@/components/analytics/AnalyticsTopBlocks";
 import { AnalyticsReferrers } from "@/components/analytics/AnalyticsReferrers";
 import { AnalyticsEmptyState } from "@/components/analytics/AnalyticsEmptyState";
@@ -110,14 +109,6 @@ export default function AnalyticsDashboardPage() {
 
       {/* ── Section 1: 5 Key Metrics Cards ── */}
       <AnalyticsSummaryCards overview={overview} />
-
-      {/* ── Real Performance Highlights Insight ── */}
-      {hasAnyData && (
-        <PerformanceInsightCard
-          blocks={blocks}
-          timeseries={timeseries}
-        />
-      )}
 
       {/* ── Section 2: Performance Trend Over Time Chart ── */}
       <AnalyticsChart timeseries={timeseries} />

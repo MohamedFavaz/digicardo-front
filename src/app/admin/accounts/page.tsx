@@ -54,16 +54,16 @@ function BarChart({ points, maxVal, currency }: { points: ChartPoint[]; maxVal: 
         const heightPct = maxVal > 0 ? (p.value / maxVal) * 100 : 5;
         return (
           <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
-            <span className="text-[10px] font-bold text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="text-xs font-semibold text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity">
               {p.value > 0 ? `${currency}${Math.round(p.value)}` : ""}
             </span>
-            <div className="w-full bg-slate-100 rounded-t-lg h-24 flex items-end overflow-hidden">
+            <div className="w-full bg-zinc-100 rounded-t-lg h-24 flex items-end overflow-hidden">
               <div
                 className="w-full bg-gradient-to-t from-emerald-600 to-emerald-400 rounded-t-lg transition-all duration-500 group-hover:from-emerald-700 group-hover:to-emerald-500"
                 style={{ height: `${Math.max(heightPct, 8)}%` }}
               />
             </div>
-            <span className="text-[10px] font-semibold text-slate-500 truncate w-full text-center">
+            <span className="text-xs font-semibold text-muted-foreground truncate w-full text-center">
               {p.label}
             </span>
           </div>
@@ -132,24 +132,21 @@ export default function AdminAccountsPage() {
   const pageSlice = recent.slice((salesPage - 1) * PER_PAGE, salesPage * PER_PAGE);
 
   return (
-    <div suppressHydrationWarning className="p-6 lg:p-8 max-w-[1400px] mx-auto space-y-6">
+    <div suppressHydrationWarning className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Revenue & Accounts</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
-              Financials
-            </span>
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">Revenue</h1>
           </div>
-          <p className="text-slate-500 text-xs mt-1 leading-relaxed font-medium">
+          <p className="mt-1 text-[15px] text-muted-foreground">
             Subscription transactions, monthly revenue, and payment records.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Link
             href="/admin/settings"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm font-semibold transition-all shadow-xs cursor-pointer"
           >
             <Settings className="w-4 h-4" />
             <span>Plan Pricing</span>
@@ -162,16 +159,16 @@ export default function AdminAccountsPage() {
         {kpis.map(kpi => {
           const Icon = kpi.icon;
           return (
-            <div key={kpi.label} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
+            <div key={kpi.label} className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{kpi.label}</span>
+                <span className="text-xs font-semibold capitalize text-muted-foreground">{kpi.label}</span>
                 <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${kpi.color}`}>
                   <Icon className="w-4 h-4" />
                 </div>
               </div>
               <div className="mt-2">
-                <span className="text-2xl font-black text-slate-900">{kpi.value}</span>
-                {kpi.sub && <p className="text-[11px] text-slate-500 font-medium mt-1">{kpi.sub}</p>}
+                <span className="text-2xl font-semibold text-foreground">{kpi.value}</span>
+                {kpi.sub && <p className="text-xs text-muted-foreground font-medium mt-1">{kpi.sub}</p>}
               </div>
             </div>
           );
@@ -181,20 +178,20 @@ export default function AdminAccountsPage() {
       {/* Chart & Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Monthly Revenue Chart (8 cols) */}
-        <div className="lg:col-span-8 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="lg:col-span-8 bg-card border border-border rounded-2xl overflow-hidden">
+          <div className="p-4 border-b border-border flex items-center justify-between">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-emerald-600" />
-              <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Revenue Trend (Last 6 Months)</h2>
+              <h2 className="text-xs font-semibold text-foreground capitalize">Revenue Trend (Last 6 Months)</h2>
             </div>
-            <span className="text-xs text-slate-400">Currency: {currency}</span>
+            <span className="text-xs text-muted-foreground">Currency: {currency}</span>
           </div>
 
           <div className="p-5">
             {loading ? (
-              <div className="h-36 bg-slate-100 rounded-xl animate-pulse" />
+              <div className="h-36 bg-zinc-100 rounded-xl animate-pulse" />
             ) : monthly.length === 0 ? (
-              <div className="h-36 flex items-center justify-center text-xs text-slate-400">
+              <div className="h-36 flex items-center justify-center text-xs text-muted-foreground">
                 No monthly sales records recorded yet.
               </div>
             ) : (
@@ -204,19 +201,19 @@ export default function AdminAccountsPage() {
         </div>
 
         {/* Quick Summary Card (4 cols) */}
-        <div className="lg:col-span-4 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs flex flex-col justify-between">
-          <div className="p-4 border-b border-slate-100">
-            <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Account Metrics</h2>
+        <div className="lg:col-span-4 bg-card border border-border rounded-2xl overflow-hidden flex flex-col justify-between">
+          <div className="p-4 border-b border-border">
+            <h2 className="text-xs font-semibold text-foreground capitalize">Account Metrics</h2>
           </div>
 
           <div className="p-5 space-y-3 flex-1">
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between text-xs">
-              <span className="text-slate-500 font-medium">Total Transactions</span>
-              <span className="font-bold text-slate-900">{recent.length}</span>
+            <div className="p-3 rounded-xl bg-muted/50 border border-border flex items-center justify-between text-xs">
+              <span className="text-muted-foreground font-medium">Total Transactions</span>
+              <span className="font-semibold text-foreground">{recent.length}</span>
             </div>
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between text-xs">
-              <span className="text-slate-500 font-medium">Average Plan Value</span>
-              <span className="font-bold text-slate-900">
+            <div className="p-3 rounded-xl bg-muted/50 border border-border flex items-center justify-between text-xs">
+              <span className="text-muted-foreground font-medium">Average Plan Value</span>
+              <span className="font-semibold text-foreground">
                 {recent.length > 0
                   ? `${currency}${(
                     recent.reduce((sum, s) => sum + (s.amount || 0), 0) / recent.length
@@ -224,28 +221,28 @@ export default function AdminAccountsPage() {
                   : "—"}
               </span>
             </div>
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between text-xs">
-              <span className="text-slate-500 font-medium">Billing Model</span>
-              <span className="font-bold text-slate-900">Fixed Validity Plans</span>
+            <div className="p-3 rounded-xl bg-muted/50 border border-border flex items-center justify-between text-xs">
+              <span className="text-muted-foreground font-medium">Billing Model</span>
+              <span className="font-semibold text-foreground">Fixed Validity Plans</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Transactions Ledger Table */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+      <div className="bg-card border border-border rounded-2xl overflow-hidden">
+        <div className="p-4 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Receipt className="w-4 h-4 text-slate-700" />
-            <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Recent Sales Transactions</h2>
+            <Receipt className="w-4 h-4 text-[#52525B]" />
+            <h2 className="text-xs font-semibold text-foreground capitalize">Recent Sales Transactions</h2>
           </div>
-          <span className="text-xs text-slate-400">{recent.length} Total Records</span>
+          <span className="text-xs text-muted-foreground">{recent.length} Total Records</span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-100 bg-white text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+              <tr className="border-b border-border bg-card text-xs font-semibold text-muted-foreground capitalize">
                 <th className="px-6 py-4">Customer</th>
                 <th className="px-6 py-4">Plan Purchased</th>
                 <th className="px-6 py-4">Amount Paid</th>
@@ -253,41 +250,41 @@ export default function AdminAccountsPage() {
                 <th className="px-6 py-4">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100/70">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 [1, 2, 3, 4].map(i => (
                   <tr key={i}>
                     <td colSpan={5} className="px-6 py-4">
-                      <div className="h-4 bg-slate-100 rounded animate-pulse" />
+                      <div className="h-4 bg-zinc-100 rounded animate-pulse" />
                     </td>
                   </tr>
                 ))
               ) : pageSlice.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-slate-400">
+                  <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground">
                     No sales recorded yet. When accounts are provisioned with paid plans, transactions will appear here.
                   </td>
                 </tr>
               ) : (
                 pageSlice.map(sale => (
-                  <tr key={sale.id} className="hover:bg-slate-50/50 transition-colors">
+                  <tr key={sale.id} className="hover:bg-muted/50 transition-colors">
                     <td className="px-6 py-4">
-                      <p className="font-semibold text-slate-900">{sale.user?.name || "System User"}</p>
-                      <p className="text-[11px] text-slate-400">{sale.user?.email || "—"}</p>
+                      <p className="font-semibold text-foreground">{sale.user?.name || "System User"}</p>
+                      <p className="text-xs text-muted-foreground">{sale.user?.email || "—"}</p>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60">
+                      <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-zinc-100 text-[#52525B] border border-border">
                         {sale.plan_label}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-bold text-slate-900">
+                    <td className="px-6 py-4 font-semibold text-foreground">
                       {sale.currency_symbol || "₹"}{Number(sale.amount).toFixed(2)}
                     </td>
-                    <td className="px-6 py-4 text-slate-500">
+                    <td className="px-6 py-4 text-muted-foreground">
                       {sale.sale_date ? formatDate(sale.sale_date) : "—"}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200/60 inline-flex items-center gap-1.5">
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-200/60 inline-flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                         PAID / COMPLETED
                       </span>
@@ -301,15 +298,15 @@ export default function AdminAccountsPage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-5 py-3.5 border-t border-slate-100 bg-slate-50/50">
-            <p className="text-xs text-slate-500">
+          <div className="flex items-center justify-between px-5 py-3.5 border-t border-border bg-muted/50">
+            <p className="text-xs text-muted-foreground">
               Page {salesPage} of {totalPages}
             </p>
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => setSalesPage(p => Math.max(1, p - 1))}
                 disabled={salesPage === 1 || loading}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 disabled:opacity-40 transition-all flex items-center gap-1"
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold text-[#52525B] bg-card border border-border hover:bg-muted/50 disabled:opacity-40 transition-all flex items-center gap-1"
               >
                 <ChevronLeft className="w-3 h-3" />
                 <span>Prev</span>
@@ -317,7 +314,7 @@ export default function AdminAccountsPage() {
               <button
                 onClick={() => setSalesPage(p => Math.min(totalPages, p + 1))}
                 disabled={salesPage === totalPages || loading}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 disabled:opacity-40 transition-all flex items-center gap-1"
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold text-[#52525B] bg-card border border-border hover:bg-muted/50 disabled:opacity-40 transition-all flex items-center gap-1"
               >
                 <span>Next</span>
                 <ChevronRight className="w-3 h-3" />

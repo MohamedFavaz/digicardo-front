@@ -23,13 +23,13 @@ export function NFCTestCard({ username }: NFCTestCardProps) {
   };
 
   return (
-    <div className="rounded-[36px] border border-border/80 bg-gradient-to-br from-card via-card to-brand-50/20 p-6 sm:p-7 shadow-card space-y-4">
+    <div className="rounded-2xl border border-border/80 bg-gradient-to-br from-card via-card to-brand-50/20 p-6 sm:p-7 shadow-card space-y-4">
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-emerald-600 flex items-center justify-center shadow-2xs">
           <Smartphone className="w-4 h-4" />
         </div>
         <div>
-          <h3 className="font-black text-sm text-foreground">
+          <h3 className="font-bold text-sm text-foreground">
             Contactless Tap Simulator
           </h3>
           <p className="text-[11px] text-muted-foreground font-medium">
@@ -40,7 +40,7 @@ export function NFCTestCard({ username }: NFCTestCardProps) {
 
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 rounded-2xl bg-muted/20 border border-border/60">
         <div className="space-y-0.5 text-center sm:text-left">
-          <span className="block text-xs font-black text-foreground">
+          <span className="block text-xs font-bold text-foreground">
             Instant Browser Launch
           </span>
           <span className="block text-[11px] text-muted-foreground font-medium">
@@ -53,7 +53,7 @@ export function NFCTestCard({ username }: NFCTestCardProps) {
           size="sm"
           onClick={handleSimulateTap}
           variant="pill"
-          className="h-9 px-5 gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-cta flex-shrink-0"
+          className="h-9 px-5 gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-cta flex-shrink-0"
         >
           <Radio className={`w-3.5 h-3.5 ${simulating ? "animate-ping" : ""}`} />
           <span>{simulating ? "Simulating Tap..." : "Simulate Phone Tap ↗"}</span>

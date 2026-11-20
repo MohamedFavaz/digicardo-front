@@ -41,17 +41,17 @@ export function AddBlockSheet({
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/60 backdrop-blur-sm animate-in fade-in-50">
-      <div className="w-full max-w-2xl max-h-[85vh] rounded-[36px] bg-card border border-border/80 p-6 sm:p-8 shadow-float flex flex-col space-y-5 animate-in zoom-in-95 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-zinc-950/60 backdrop-blur-sm animate-in fade-in-50">
+      <div className="w-full max-w-2xl max-h-[85vh] rounded-2xl bg-card border border-border/80 p-6 sm:p-8 shadow-float flex flex-col space-y-5 animate-in zoom-in-95 overflow-hidden">
         
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
             <div className="flex items-center gap-2">
-              <h3 className="font-black text-xl text-foreground">
+              <h3 className="font-bold text-xl text-foreground">
                 Add Content Block
               </h3>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-50 border border-brand-200/80 text-brand-700 text-[11px] font-extrabold">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-50 border border-brand-200/80 text-brand-700 text-[11px] font-semibold">
                 <Sparkles className="w-3 h-3 text-brand-600" />
                 <span>18 Types</span>
               </span>
@@ -89,7 +89,7 @@ export function AddBlockSheet({
             type="button"
             onClick={() => setSelectedCategory("ALL")}
             className={cn(
-              "px-3.5 py-1.5 rounded-full text-xs font-extrabold transition-all whitespace-nowrap select-none",
+              "px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap select-none",
               selectedCategory === "ALL"
                 ? "bg-brand-600 text-white shadow-xs"
                 : "bg-muted/60 text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -103,7 +103,7 @@ export function AddBlockSheet({
               type="button"
               onClick={() => setSelectedCategory(cat.id)}
               className={cn(
-                "px-3.5 py-1.5 rounded-full text-xs font-extrabold transition-all whitespace-nowrap select-none",
+                "px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap select-none",
                 selectedCategory === cat.id
                   ? "bg-brand-600 text-white shadow-xs"
                   : "bg-muted/60 text-muted-foreground hover:text-foreground hover:bg-muted"

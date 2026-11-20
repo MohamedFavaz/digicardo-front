@@ -7,7 +7,8 @@ export type NotificationCategory =
   | 'domain'
   | 'contact'
   | 'profile'
-  | 'marketing';
+  | 'marketing'
+  | 'message';
 
 export type NotificationType =
   | 'welcome'
@@ -21,7 +22,18 @@ export type NotificationType =
   | 'subscription_resumed'
   | 'domain_verified'
   | 'domain_failed'
-  | 'contact_received';
+  | 'contact_received'
+  | 'system_alert'
+  | 'admin_message'
+  | 'agent_message';
+
+/** Extra data on a message sent by an admin or an agent (category "message"). */
+export interface MessageNotificationData {
+  broadcast_id?: string;
+  sender_name?: string;
+  sender_role?: 'admin' | 'agent';
+  link_url?: string | null;
+}
 
 export interface Notification {
   id: string;

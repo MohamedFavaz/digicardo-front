@@ -7,6 +7,21 @@ import type {
   ThemeTokens,
 } from "@/types/profile";
 import type { TemplateDefinition } from "@/templates/types";
+import type { ProfileBlock } from "@/types/blocks";
+import type { CardContent, UpdateContentRequest } from "@/lib/zod/content";
+import type { TemplateManifest } from "@/templates/manifests";
+
+/** GET /profile/editor — everything the card editor needs (ADR-030). */
+export interface EditorData {
+  profile: Profile;
+  content: CardContent;
+  content_stored: boolean;
+  template_id: string;
+  theme_tokens: ThemeTokens | null;
+  blocks: ProfileBlock[];
+  templates: TemplateManifest[];
+  version: number;
+}
 
 export interface AppearanceData {
   template_id: string;
@@ -61,6 +76,16 @@ export const profileApi = {
    */
   getTemplates: async (): Promise<TemplateDefinition[]> => {
     return apiClient.get<TemplateDefinition[]>("/templates");
+  },
+
+  /** Load the card editor in one call. */
+  getEditor: async (): Promise<EditorData> => {
+    return apiClient.get<EditorData>("/profile/editor");
+  },
+
+  /** Replace the given parts of the card content (optimistic locking via `version`). */
+  updateContent: async (data: UpdateContentRequest): Promise<{ content: CardContent; version: number }> => {
+    return apiClient.patch<{ content: CardContent; version: number }>("/profile/content", data);
   },
 
   /**

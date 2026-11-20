@@ -59,7 +59,7 @@ export function ContactBlock({ block, username }: ContactBlockProps) {
   };
 
   return (
-    <div className="w-full rounded-[var(--lf-radius,0.75rem)] border border-slate-800 bg-slate-900/90 p-5 shadow-lg space-y-4 text-left">
+    <div className="w-full rounded-[var(--lf-radius,0.75rem)] border border-zinc-800 bg-zinc-900/90 p-5 shadow-lg space-y-4 text-left">
       <div className="space-y-1">
         <h3
           className="text-base font-bold tracking-tight"
@@ -109,7 +109,7 @@ export function ContactBlock({ block, username }: ContactBlockProps) {
 
           {config.name_enabled !== false && (
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-300">Name</label>
+              <label className="text-xs font-medium text-zinc-300">Name</label>
               <input
                 type="text"
                 required
@@ -117,14 +117,14 @@ export function ContactBlock({ block, username }: ContactBlockProps) {
                 placeholder="Your Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none"
+                className="w-full rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-indigo-500 focus:outline-none"
               />
             </div>
           )}
 
           {config.email_enabled !== false && (
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-300">Email</label>
+              <label className="text-xs font-medium text-zinc-300">Email</label>
               <input
                 type="email"
                 required
@@ -132,28 +132,28 @@ export function ContactBlock({ block, username }: ContactBlockProps) {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none"
+                className="w-full rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-indigo-500 focus:outline-none"
               />
             </div>
           )}
 
           {config.phone_enabled && (
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-300">Phone Number (Optional)</label>
+              <label className="text-xs font-medium text-zinc-300">Phone Number (Optional)</label>
               <input
                 type="tel"
                 disabled={isSubmitting}
                 placeholder="+1 (555) 000-0000"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none"
+                className="w-full rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-indigo-500 focus:outline-none"
               />
             </div>
           )}
 
           {config.message_enabled !== false && (
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-300">Message</label>
+              <label className="text-xs font-medium text-zinc-300">Message</label>
               <textarea
                 required
                 rows={3}
@@ -161,7 +161,7 @@ export function ContactBlock({ block, username }: ContactBlockProps) {
                 placeholder="Write your message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="w-full rounded-md border border-slate-700 bg-slate-950 p-2.5 text-xs text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none"
+                className="w-full rounded-md border border-zinc-700 bg-zinc-950 p-2.5 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-indigo-500 focus:outline-none"
               />
             </div>
           )}

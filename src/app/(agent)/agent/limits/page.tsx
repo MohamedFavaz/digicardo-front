@@ -22,13 +22,13 @@ export default function AgentLimitsPage() {
   const pct = limit > 0 ? Math.round((used / limit) * 100) : 0;
 
   return (
-    <div className="p-6 lg:p-8 max-w-2xl mx-auto space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
       <div>
-        <h1 className="text-xl font-black text-slate-900 tracking-tight">Card Creation Limits</h1>
-        <p className="text-xs text-slate-500 mt-1">Your card quota usage and remaining credits</p>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Card credits</h1>
+        <p className="mt-1 text-[15px] text-muted-foreground">Your card quota usage and remaining credits</p>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center">
+      <div className="bg-card rounded-2xl border border-border shadow-sm p-8 text-center">
         {/* Circular gauge visualization */}
         <div className="relative w-40 h-40 mx-auto mb-6">
           <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
@@ -39,31 +39,31 @@ export default function AgentLimitsPage() {
               strokeDasharray={`${(pct / 100) * 327} 327`} />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-3xl font-black text-slate-900">{pct}%</span>
-            <span className="text-[10px] font-bold text-slate-400 uppercase">Used</span>
+            <span className="text-3xl font-semibold text-foreground">{pct}%</span>
+            <span className="text-xs font-semibold text-muted-foreground capitalize">Used</span>
           </div>
         </div>
 
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+          <div className="p-4 rounded-xl bg-muted/50 border border-border">
             <CreditCard className="w-5 h-5 text-indigo-500 mx-auto mb-2" />
-            <p className="text-xl font-black text-slate-900">{used}</p>
-            <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Cards Used</p>
+            <p className="text-xl font-semibold text-foreground">{used}</p>
+            <p className="text-xs font-semibold text-muted-foreground capitalize mt-1">Cards Used</p>
           </div>
           <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100">
             <CheckCircle2 className="w-5 h-5 text-emerald-500 mx-auto mb-2" />
-            <p className="text-xl font-black text-emerald-700">{remaining}</p>
-            <p className="text-[10px] font-bold text-emerald-500 uppercase mt-1">Remaining</p>
+            <p className="text-xl font-semibold text-emerald-700">{remaining}</p>
+            <p className="text-xs font-semibold text-emerald-500 capitalize mt-1">Remaining</p>
           </div>
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+          <div className="p-4 rounded-xl bg-muted/50 border border-border">
             <Gauge className="w-5 h-5 text-violet-500 mx-auto mb-2" />
-            <p className="text-xl font-black text-slate-900">{limit}</p>
-            <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Total Limit</p>
+            <p className="text-xl font-semibold text-foreground">{limit}</p>
+            <p className="text-xs font-semibold text-muted-foreground capitalize mt-1">Total Limit</p>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full h-4 bg-slate-100 rounded-full overflow-hidden mb-2">
+        <div className="w-full h-4 bg-zinc-100 rounded-full overflow-hidden mb-2">
           <div className={`h-full rounded-full transition-all ${pct >= 90 ? "bg-gradient-to-r from-red-400 to-red-500" : pct >= 70 ? "bg-gradient-to-r from-amber-400 to-amber-500" : "bg-gradient-to-r from-emerald-400 to-emerald-500"}`}
             style={{ width: `${Math.min(pct, 100)}%` }} />
         </div>
@@ -75,7 +75,7 @@ export default function AgentLimitsPage() {
         )}
 
         {data?.restore_on_delete && (
-          <p className="text-[11px] text-slate-400 mt-4">
+          <p className="text-xs text-muted-foreground mt-4">
             <span className="font-semibold">Note:</span> Deleting a card restores the credit back to your quota.
           </p>
         )}

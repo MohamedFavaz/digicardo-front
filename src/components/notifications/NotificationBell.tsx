@@ -14,13 +14,14 @@ import type { Notification } from '@/types/notifications';
 import { cn } from '@/lib/utils';
 
 const CATEGORY_COLORS: Record<string, string> = {
-  system: 'bg-slate-900',
+  system: 'bg-zinc-900',
   security: 'bg-rose-500',
   subscription: 'bg-emerald-500',
   domain: 'bg-indigo-500',
   contact: 'bg-amber-500',
   profile: 'bg-sky-500',
   marketing: 'bg-violet-500',
+  message: 'bg-[#5B3FE4]',
 };
 
 function timeAgo(isoString: string): string {
@@ -153,20 +154,20 @@ export function NotificationBell({ align = 'right', className }: NotificationBel
         className={cn(
           "relative inline-flex h-9 w-9 items-center justify-center rounded-full border transition-all cursor-pointer shadow-2xs focus:outline-none select-none",
           open
-            ? "bg-slate-100 border-slate-300 text-slate-900 ring-2 ring-slate-200"
-            : "bg-white border-slate-200/90 text-slate-600 hover:text-slate-900 hover:bg-slate-50 hover:border-slate-300",
+            ? "bg-zinc-100 border-zinc-300 text-zinc-900 ring-2 ring-zinc-200"
+            : "bg-white border-zinc-200/90 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 hover:border-zinc-300",
           className
         )}
       >
         {hasUnread ? (
-          <BellRing className="h-4 w-4 text-slate-900 animate-[wiggle_0.6s_ease-in-out_infinite]" />
+          <BellRing className="h-4 w-4 text-zinc-900 animate-[wiggle_0.6s_ease-in-out_infinite]" />
         ) : (
           <Bell className="h-4 w-4" />
         )}
         {hasUnread && (
           <span
             aria-hidden="true"
-            className="absolute -top-1 -right-1 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-slate-900 text-[10px] font-bold text-white shadow-xs"
+            className="absolute -top-1 -right-1 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-zinc-900 text-[10px] font-bold text-white shadow-xs"
           >
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
@@ -180,7 +181,7 @@ export function NotificationBell({ align = 'right', className }: NotificationBel
           role="dialog"
           aria-label="Notifications panel"
           className={cn(
-            "z-50 rounded-2xl border border-slate-200/90 bg-white shadow-xl shadow-slate-900/10 overflow-hidden animate-in fade-in-50 zoom-in-95 duration-150",
+            "z-50 rounded-2xl border border-zinc-200/90 bg-white shadow-xl shadow-zinc-900/10 overflow-hidden animate-in fade-in-50 zoom-in-95 duration-150",
             // Mobile responsive: anchored cleanly within screen margins
             "max-sm:fixed max-sm:left-4 max-sm:right-4 max-sm:top-16 max-sm:w-auto max-sm:max-w-none",
             // Desktop: anchored relative to the bell button
@@ -189,11 +190,11 @@ export function NotificationBell({ align = 'right', className }: NotificationBel
           )}
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-slate-100 bg-white px-4 py-3">
+          <div className="flex items-center justify-between border-b border-zinc-100 bg-white px-4 py-3">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-slate-900">Notifications</span>
+              <span className="text-sm font-bold text-zinc-900">Notifications</span>
               {hasUnread && (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200/60">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 text-zinc-700 border border-zinc-200/60">
                   {unreadCount} new
                 </span>
               )}
@@ -202,7 +203,7 @@ export function NotificationBell({ align = 'right', className }: NotificationBel
               {hasUnread && (
                 <button
                   onClick={handleMarkAllRead}
-                  className="flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
+                  className="flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
                   title="Mark all as read"
                 >
                   <Check className="h-3 w-3" />
@@ -212,7 +213,7 @@ export function NotificationBell({ align = 'right', className }: NotificationBel
               <Link
                 href="/dashboard/notifications"
                 onClick={() => setOpen(false)}
-                className="rounded-full px-2.5 py-1 text-[11px] font-bold text-slate-900 hover:bg-slate-100 transition-colors"
+                className="rounded-full px-2.5 py-1 text-[11px] font-bold text-zinc-900 hover:bg-zinc-100 transition-colors"
               >
                 View all
               </Link>
@@ -220,56 +221,59 @@ export function NotificationBell({ align = 'right', className }: NotificationBel
           </div>
 
           {/* Notification List */}
-          <div className="max-h-80 overflow-y-auto divide-y divide-slate-100/80">
+          <div className="max-h-80 overflow-y-auto divide-y divide-zinc-100/80">
             {isLoading ? (
               <div className="flex flex-col gap-3 px-4 py-6">
                 {[0, 1, 2].map((i) => (
                   <div key={i} className="flex gap-3 animate-pulse">
-                    <div className="h-2 w-2 mt-1.5 rounded-full bg-slate-200 flex-shrink-0" />
+                    <div className="h-2 w-2 mt-1.5 rounded-full bg-zinc-200 flex-shrink-0" />
                     <div className="flex-1 space-y-1.5">
-                      <div className="h-3 w-3/4 rounded bg-slate-200" />
-                      <div className="h-2.5 w-full rounded bg-slate-100" />
+                      <div className="h-3 w-3/4 rounded bg-zinc-200" />
+                      <div className="h-2.5 w-full rounded bg-zinc-100" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center gap-2 px-4 py-10 text-center">
-                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-1">
+                <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-400 mb-1">
                   <Bell className="h-5 w-5" />
                 </div>
-                <p className="text-xs font-bold text-slate-700">No notifications yet</p>
-                <p className="text-[11px] text-slate-400">We will notify you when something important happens</p>
+                <p className="text-xs font-bold text-zinc-700">No notifications yet</p>
+                <p className="text-[11px] text-zinc-400">We will notify you when something important happens</p>
               </div>
             ) : (
-              <ul className="divide-y divide-slate-100" role="list">
+              <ul className="divide-y divide-zinc-100" role="list">
                 {notifications.map((notif) => (
                   <li
                     key={notif.id}
                     className={cn(
                       "group flex items-start gap-3 px-4 py-3 transition-colors",
                       notif.is_read
-                        ? "bg-white hover:bg-slate-50/70 opacity-70 hover:opacity-100"
-                        : "bg-slate-50/50 hover:bg-slate-100/60"
+                        ? "bg-white hover:bg-zinc-50/70 opacity-70 hover:opacity-100"
+                        : "bg-zinc-50/50 hover:bg-zinc-100/60"
                     )}
                   >
                     <div
                       className={cn(
                         "mt-1.5 h-2 w-2 flex-shrink-0 rounded-full",
-                        notif.is_read ? "bg-slate-300" : (CATEGORY_COLORS[notif.category] || "bg-slate-900")
+                        notif.is_read ? "bg-zinc-300" : (CATEGORY_COLORS[notif.category] || "bg-zinc-900")
                       )}
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-xs font-bold text-slate-900 leading-snug">{notif.title}</p>
-                      <p className="mt-0.5 text-xs text-slate-600 line-clamp-2 leading-relaxed">{notif.body}</p>
-                      <p className="mt-1 text-[10px] text-slate-400 font-medium">{timeAgo(notif.created_at)}</p>
+                      {notif.category === 'message' && typeof notif.data?.sender_name === 'string' && (
+                        <p className="text-[10px] font-semibold text-[#5B3FE4]">From {notif.data.sender_name}</p>
+                      )}
+                      <p className="truncate text-xs font-bold text-zinc-900 leading-snug">{notif.title}</p>
+                      <p className="mt-0.5 text-xs text-zinc-600 line-clamp-2 leading-relaxed">{notif.body}</p>
+                      <p className="mt-1 text-[10px] text-zinc-400 font-medium">{timeAgo(notif.created_at)}</p>
                     </div>
                     <div className="flex flex-shrink-0 flex-col items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       {!notif.is_read && (
                         <button
                           onClick={() => handleMarkRead(notif.id)}
                           title="Mark read"
-                          className="rounded-full p-1 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors cursor-pointer"
+                          className="rounded-full p-1 text-zinc-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors cursor-pointer"
                         >
                           <Check className="h-3 w-3" />
                         </button>
@@ -277,7 +281,7 @@ export function NotificationBell({ align = 'right', className }: NotificationBel
                       <button
                         onClick={() => handleDelete(notif.id)}
                         title="Delete"
-                        className="rounded-full p-1 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                        className="rounded-full p-1 text-zinc-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                       >
                         <Trash2 className="h-3 w-3" />
                       </button>
@@ -290,11 +294,11 @@ export function NotificationBell({ align = 'right', className }: NotificationBel
 
           {/* Footer link */}
           {notifications.length > 0 && (
-            <div className="border-t border-slate-100 px-4 py-2.5 bg-slate-50/60">
+            <div className="border-t border-zinc-100 px-4 py-2.5 bg-zinc-50/60">
               <Link
                 href="/dashboard/notifications"
                 onClick={() => setOpen(false)}
-                className="block text-center text-xs font-bold text-slate-700 hover:text-slate-900 transition-colors"
+                className="block text-center text-xs font-bold text-zinc-700 hover:text-zinc-900 transition-colors"
               >
                 Manage all notifications →
               </Link>

@@ -22,7 +22,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-xs font-extrabold text-foreground tracking-tight"
+            className="block text-sm font-medium text-foreground"
           >
             {label}
           </label>
@@ -36,13 +36,13 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
           <input
             id={inputId}
             ref={ref}
-            type={showPassword ? "text military" : "password"}
+            type={showPassword ? "text" : "password"}
             disabled={disabled}
             className={cn(
-              "w-full h-11 rounded-xl border bg-card pl-10 pr-11 text-xs font-medium text-foreground placeholder:text-muted-foreground/60 transition-all focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 disabled:cursor-not-allowed disabled:opacity-50",
+              "w-full h-11 rounded-lg border bg-card pl-10 pr-11 text-base sm:text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:cursor-not-allowed disabled:opacity-50",
               error
-                ? "border-coral/80 focus:ring-coral/30 focus:border-coral bg-coral-50/10"
-                : "border-border/80 hover:border-border",
+                ? "border-destructive focus:ring-destructive/20 focus:border-destructive"
+                : "border-input hover:border-[#A1A1AA]",
               className
             )}
             {...props}
@@ -65,11 +65,11 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
         </div>
 
         {error ? (
-          <p className="text-[11px] font-bold text-coral flex items-center gap-1 animate-in fade-in-50">
-            <span>•</span> {error}
+          <p className="text-xs font-medium text-destructive">
+            {error}
           </p>
         ) : helperText ? (
-          <p className="text-[11px] text-muted-foreground font-medium">{helperText}</p>
+          <p className="text-xs text-muted-foreground">{helperText}</p>
         ) : null}
       </div>
     );

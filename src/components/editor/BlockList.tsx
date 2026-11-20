@@ -59,7 +59,7 @@ export function BlockList({
   return (
     <div className="space-y-3.5">
       <div className="flex items-center justify-between px-1">
-        <span className="text-xs font-black uppercase tracking-wider text-muted-foreground">
+        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
           Page Blocks ({blocks.length})
         </span>
         <span className="text-[11px] font-bold text-muted-foreground">

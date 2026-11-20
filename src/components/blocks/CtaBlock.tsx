@@ -26,7 +26,7 @@ export function CtaBlock({ block }: CtaBlockProps) {
   }
 
   if (style === "secondary") {
-    btnClasses += "bg-slate-800 text-white hover:bg-slate-700 border border-slate-700";
+    btnClasses += "bg-zinc-800 text-white hover:bg-zinc-700 border border-zinc-700";
   } else if (style === "outline") {
     btnClasses += "border-2 border-[var(--lf-accent,#6366f1)] text-white hover:bg-[var(--lf-accent,#6366f1)] hover:text-white bg-transparent";
   } else if (style === "gradient") {
@@ -36,14 +36,14 @@ export function CtaBlock({ block }: CtaBlockProps) {
   }
 
   return (
-    <div className="w-full rounded-[var(--lf-radius,0.75rem)] border border-indigo-900/40 bg-gradient-to-b from-slate-900 via-slate-900/90 to-slate-950 p-5 text-center shadow-xl space-y-3.5">
+    <div className="w-full rounded-[var(--lf-radius,0.75rem)] border border-indigo-900/40 bg-gradient-to-b from-zinc-900 via-zinc-900/90 to-zinc-950 p-5 text-center shadow-xl space-y-3.5">
       <div className="space-y-1">
         <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-950/80 px-2.5 py-0.5 text-[11px] font-semibold text-indigo-300 border border-indigo-800/40">
           <Sparkles className="h-3 w-3" />
           <span>Featured Offer</span>
         </div>
         <h3
-          className="text-base font-extrabold tracking-tight text-white"
+          className="text-base font-semibold tracking-tight text-white"
         >
           {config.title}
         </h3>

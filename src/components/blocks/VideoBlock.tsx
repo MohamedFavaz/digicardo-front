@@ -24,7 +24,7 @@ export function VideoBlock({ block }: VideoBlockProps) {
         </h3>
       )}
 
-      <div className="relative aspect-video w-full overflow-hidden rounded-[var(--lf-radius,0.75rem)] border border-slate-800 bg-black shadow-md">
+      <div className="relative aspect-video w-full overflow-hidden rounded-[var(--lf-radius,0.75rem)] border border-zinc-800 bg-black shadow-md">
         <iframe
           src={embedUrl}
           title={config.title || "Video Player"}

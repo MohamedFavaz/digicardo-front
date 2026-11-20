@@ -42,11 +42,17 @@ describe("Template Registry", () => {
     expect(fallbackForInvalid.id).toBe(DEFAULT_TEMPLATE_ID);
   });
 
-  it("retrieves only the vcard template in the catalog", () => {
-    const templates = getAllTemplates();
-    expect(templates.length).toBe(1);
+  it("lists exactly the approved templates (must match backend TemplateService::APPROVED_TEMPLATES)", () => {
+    const ids = getAllTemplates().map((t) => t.id).sort();
+    expect(ids).toEqual(["botanical", "motion", "poster", "showcase", "vcard"]);
+  });
 
-    const ids = templates.map((t) => t.id);
-    expect(ids).toContain("vcard");
+  it("ships no placeholder content in template defaults", () => {
+    for (const template of getAllTemplates()) {
+      const opts = (template.default_theme.custom_options ?? {}) as Record<string, unknown>;
+      for (const key of ["social_links", "content_links", "document_block", "drive_block", "trust_badges"]) {
+        expect(opts[key], `${template.id}.${key}`).toBeUndefined();
+      }
+    }
   });
 });

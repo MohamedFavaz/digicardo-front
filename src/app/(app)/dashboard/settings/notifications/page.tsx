@@ -159,13 +159,13 @@ export default function NotificationSettingsPage() {
       )}
 
       {/* ── Main Preferences Card ── */}
-      <div className="rounded-[36px] border border-border/80 bg-card p-6 sm:p-8 shadow-card space-y-6">
+      <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-card space-y-6">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-brand-50 border border-brand-200/80 text-brand-600 flex items-center justify-center shadow-2xs">
             <Bell className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-base font-black text-foreground">
+            <h2 className="text-base font-bold text-foreground">
               Communication Channels
             </h2>
             <p className="text-xs text-muted-foreground font-medium">
@@ -212,12 +212,12 @@ export default function NotificationSettingsPage() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <label
                           htmlFor={`pref-${pref.key}`}
-                          className="text-xs font-black text-foreground cursor-pointer"
+                          className="text-xs font-bold text-foreground cursor-pointer"
                         >
                           {pref.label}
                         </label>
                         {pref.locked && (
-                          <span className="inline-flex items-center gap-1 rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[10px] font-black uppercase text-rose-600">
+                          <span className="inline-flex items-center gap-1 rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[10px] font-bold uppercase text-rose-600">
                             <ShieldCheck className="h-3 w-3" />
                             Required
                           </span>
@@ -233,7 +233,7 @@ export default function NotificationSettingsPage() {
                   {/* Switch Toggle Button */}
                   <div className="flex-shrink-0 pt-1">
                     {isBusy ? (
-                      <div className="h-6 w-11 rounded-full bg-muted animate-pulse" />
+                      <div className="skeleton h-6 w-11 rounded-full" />
                     ) : (
                       <button
                         id={`pref-${pref.key}`}

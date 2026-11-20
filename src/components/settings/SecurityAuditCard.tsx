@@ -3,6 +3,7 @@
 import * as React from "react";
 import { History, Clock } from "lucide-react";
 import type { AccountSecurityEvent } from "@/types/security";
+import { SettingsSection } from "./SettingsSection";
 
 function timeAgo(isoString: string | null): string {
   if (!isoString) return "Unknown";
@@ -24,58 +25,33 @@ export interface SecurityAuditCardProps {
 
 export function SecurityAuditCard({ events, isLoading }: SecurityAuditCardProps) {
   return (
-    <div className="rounded-xl border border-border bg-white p-6 space-y-5">
-      {/* Header */}
-      <div className="flex items-center gap-2.5">
-        <div className="w-7 h-7 rounded-md bg-amber-50 text-amber-600 flex items-center justify-center">
-          <History className="w-3.5 h-3.5" />
-        </div>
-        <div>
-          <h2 className="text-sm font-semibold text-foreground">
-            Security Activity Audit Trail
-          </h2>
-          <p className="text-xs text-muted-foreground font-medium">
-            Recent authentication events and security actions recorded on your account.
-          </p>
-        </div>
-      </div>
-
-      {/* Events List */}
+    <SettingsSection icon={History} title="Recent activity" description="Sign-ins and security changes on your account. If something looks wrong, change your password.">
       {isLoading ? (
-        <div className="space-y-3 animate-pulse">
+        <div className="space-y-3" aria-busy="true">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="h-12 rounded-2xl bg-muted/40" />
+            <div key={i} className="skeleton h-11 rounded-xl" />
           ))}
         </div>
       ) : events.length === 0 ? (
-        <p className="text-xs text-muted-foreground font-medium">No recent security events recorded.</p>
+        <p className="text-sm text-muted-foreground">Nothing recorded yet.</p>
       ) : (
-        <ul className="divide-y divide-border/60" role="list">
+        <ol className="relative space-y-4 border-l border-border pl-5" role="list">
           {events.map((ev) => (
-            <li key={ev.id} className="flex items-start justify-between py-3 first:pt-0 last:pb-0">
-              <div className="flex items-start gap-3">
-                <div className="mt-1 h-2 w-2 rounded-full bg-brand-500 flex-shrink-0" />
-                <div className="space-y-0.5">
-                  <p className="text-xs font-bold text-foreground">{ev.description}</p>
-                  <p className="text-[11px] text-muted-foreground font-medium flex items-center gap-1.5">
-                    <Clock className="h-3 w-3 text-muted-foreground" />
-                    <span>
-                      {new Date(ev.created_at).toLocaleString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        hour: "numeric",
-                        minute: "2-digit",
-                        hour12: true,
-                      })}
-                    </span>
-                    <span className="text-muted-foreground font-mono">({timeAgo(ev.created_at)})</span>
-                  </p>
-                </div>
-              </div>
+            <li key={ev.id} className="relative">
+              <span className="absolute -left-[25px] top-1.5 h-2.5 w-2.5 rounded-full bg-primary ring-4 ring-card" aria-hidden="true" />
+              <p className="text-sm font-medium text-foreground">{ev.description}</p>
+              <p className="mt-0.5 flex items-center gap-1.5 text-[13px] text-muted-foreground">
+                <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+                <span>
+                  {new Date(ev.created_at).toLocaleString("en-IN", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+                </span>
+                <span aria-hidden="true">·</span>
+                <span>{timeAgo(ev.created_at)}</span>
+              </p>
             </li>
           ))}
-        </ul>
+        </ol>
       )}
-    </div>
+    </SettingsSection>
   );
 }

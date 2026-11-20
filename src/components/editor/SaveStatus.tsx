@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { CheckCircle2, AlertCircle, RefreshCw } from "lucide-react";
+import { AlertTriangle, Check, Loader2 } from "lucide-react";
 
 export type SaveState = "saved" | "saving" | "unsaved" | "error";
 
@@ -11,48 +11,47 @@ export interface SaveStatusProps {
   onRetry?: () => void;
 }
 
-export function SaveStatus({
-  status,
-  errorMessage,
-  onRetry,
-}: SaveStatusProps) {
-  switch (status) {
-    case "saving":
-      return (
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 border border-brand-200/80 text-brand-700 text-xs font-bold shadow-2xs animate-in fade-in-50">
-          <RefreshCw className="w-3.5 h-3.5 animate-spin text-brand-600" />
-          <span>Saving changes...</span>
-        </div>
-      );
-    case "unsaved":
-      return (
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber/30 text-amber-800 text-xs font-bold shadow-2xs">
-          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-          <span>Unsaved changes</span>
-        </div>
-      );
-    case "error":
-      return (
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-coral-50 border border-coral/30 text-coral text-xs font-bold shadow-2xs">
-          <AlertCircle className="w-3.5 h-3.5 text-coral" />
-          <span>{errorMessage || "Save failed"}</span>
-          {onRetry && (
-            <button
-              onClick={onRetry}
-              className="ml-1 underline hover:text-rose-700 font-extrabold cursor-pointer"
-            >
-              Retry
-            </button>
-          )}
-        </div>
-      );
-    case "saved":
-    default:
-      return (
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-xs font-bold shadow-2xs">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-          <span>All changes saved</span>
-        </div>
-      );
+/**
+ * Save status (design system v6): always an icon + words, never colour alone.
+ * Announced to screen readers via role="status".
+ */
+export function SaveStatus({ status, errorMessage, onRetry }: SaveStatusProps) {
+  if (status === "saving") {
+    return (
+      <span role="status" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#52525B]">
+        <Loader2 className="h-4 w-4 animate-spin text-primary" aria-hidden="true" />
+        Saving…
+      </span>
+    );
   }
+
+  if (status === "unsaved") {
+    return (
+      <span role="status" className="inline-flex items-center gap-1.5 text-sm font-medium text-warning">
+        <span className="h-2 w-2 rounded-full bg-warning" aria-hidden="true" />
+        Unsaved changes
+      </span>
+    );
+  }
+
+  if (status === "error") {
+    return (
+      <span role="status" className="inline-flex items-center gap-1.5 text-sm font-medium text-destructive">
+        <AlertTriangle className="h-4 w-4" aria-hidden="true" />
+        {errorMessage || "Couldn't save"}
+        {onRetry && (
+          <button type="button" onClick={onRetry} className="ml-1 font-semibold underline underline-offset-2">
+            Try again
+          </button>
+        )}
+      </span>
+    );
+  }
+
+  return (
+    <span role="status" className="inline-flex items-center gap-1.5 text-sm font-medium text-success">
+      <Check className="h-4 w-4" aria-hidden="true" />
+      All changes saved
+    </span>
+  );
 }

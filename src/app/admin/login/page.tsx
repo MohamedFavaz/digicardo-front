@@ -1,7 +1,6 @@
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
-// Admin login is now the same as the regular login page.
-// Admins are auto-redirected to /admin/dashboard after successful login.
-export default function AdminLoginRedirect() {
-  redirect("/login");
+// The admin sign-in page is hidden (secret ADMIN_LOGIN_PATH); this old address no longer exists.
+export default function OldAdminLoginPage() {
+  notFound();
 }

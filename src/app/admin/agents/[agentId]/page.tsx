@@ -23,6 +23,7 @@ import {
   Info,
 } from "lucide-react";
 import type { AgentUser } from "@/types/agent";
+import { AgentSitePanel } from "@/components/admin/AgentSitePanel";
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return "—";
@@ -37,7 +38,7 @@ function statusColor(status: string) {
     suspended: "bg-amber-50 text-amber-700 border-amber-200",
     banned: "bg-red-50 text-red-700 border-red-200",
   };
-  return map[status] || "bg-slate-50 text-slate-600 border-slate-200";
+  return map[status] || "bg-zinc-50 text-zinc-600 border-zinc-200";
 }
 
 export default function AgentDetailPage() {
@@ -185,8 +186,8 @@ export default function AgentDetailPage() {
   if (!agent) {
     return (
       <div className="p-6 lg:p-8 max-w-4xl mx-auto text-center py-32">
-        <AlertCircle className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-        <p className="text-sm font-bold text-slate-500">Agent not found</p>
+        <AlertCircle className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
+        <p className="text-sm font-semibold text-muted-foreground">Agent not found</p>
         <Link href="/admin/agents" className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:underline">
           <ArrowLeft className="w-3.5 h-3.5" /> Back to All Agents
         </Link>
@@ -202,38 +203,38 @@ export default function AgentDetailPage() {
     <div className="max-w-4xl space-y-6">
       {/* Header */}
       <div>
-        <Link href="/admin/agents" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-600 border border-slate-200/80 bg-white hover:text-black hover:bg-slate-50 transition-colors mb-4 shadow-2xs">
+        <Link href="/admin/agents" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-[#52525B] border border-border bg-card hover:text-black hover:bg-muted/50 transition-colors mb-4">
           <ArrowLeft className="w-3.5 h-3.5" /> Back to Agents
         </Link>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900">{agent.name}</h1>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60">
+              <h1 className="text-2xl font-semibold tracking-tight text-foreground">{agent.name}</h1>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-zinc-100 text-[#52525B] border border-border">
                 Agent Profile
               </span>
-              <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase border ${statusColor(agent.status)}`}>
+              <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize border ${statusColor(agent.status)}`}>
                 {agent.status}
               </span>
             </div>
-            <p className="text-slate-500 font-medium text-xs mt-1 leading-relaxed">
+            <p className="text-muted-foreground font-medium text-xs mt-1 leading-relaxed">
               Manage reseller quotas, commission structure, and status.
             </p>
           </div>
           <div className="flex items-center gap-2">
             {agent.status === "active" ? (
               <button onClick={handleDeactivate} disabled={actionLoading}
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-amber-200 bg-white text-xs font-semibold text-amber-700 hover:bg-amber-50 transition-all shadow-2xs disabled:opacity-50">
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-amber-200 bg-card text-xs font-semibold text-amber-700 hover:bg-amber-50 transition-all disabled:opacity-50">
                 {actionLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ToggleRight className="w-3.5 h-3.5" />} Deactivate
               </button>
             ) : (
               <button onClick={handleActivate} disabled={actionLoading}
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-emerald-200 bg-white text-xs font-semibold text-emerald-700 hover:bg-emerald-50 transition-all shadow-2xs disabled:opacity-50">
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-emerald-200 bg-card text-xs font-semibold text-emerald-700 hover:bg-emerald-50 transition-all disabled:opacity-50">
                 {actionLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ToggleLeft className="w-3.5 h-3.5" />} Activate
               </button>
             )}
             <button onClick={handleDelete} disabled={actionLoading}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-red-200 bg-white text-xs font-semibold text-red-700 hover:bg-red-50 transition-all shadow-2xs disabled:opacity-50">
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-red-200 bg-card text-xs font-semibold text-red-700 hover:bg-red-50 transition-all disabled:opacity-50">
               <Trash2 className="w-3.5 h-3.5" /> Delete
             </button>
           </div>
@@ -253,18 +254,18 @@ export default function AgentDetailPage() {
       )}
 
       {/* Agent Info Card */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs p-6">
+      <div className="bg-card rounded-2xl border border-border p-6">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white text-xl font-black flex-shrink-0 shadow-2xs">
+          <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center text-white text-xl font-semibold flex-shrink-0">
             {agent.name?.charAt(0)?.toUpperCase() || "A"}
           </div>
           <div>
-            <h2 className="text-base font-bold text-slate-900">{agent.name}</h2>
+            <h2 className="text-base font-semibold text-foreground">{agent.name}</h2>
             <div className="flex items-center gap-3 mt-1">
-              <span className="text-xs text-slate-500">{agent.email}</span>
-              {agent.mobile && <span className="text-xs text-slate-400">· {agent.mobile}</span>}
+              <span className="text-xs text-muted-foreground">{agent.email}</span>
+              {agent.mobile && <span className="text-xs text-muted-foreground">· {agent.mobile}</span>}
             </div>
-            <p className="text-[11px] text-slate-400 mt-1">Created: {formatDate(agent.created_at)}</p>
+            <p className="text-xs text-muted-foreground mt-1">Created: {formatDate(agent.created_at)}</p>
           </div>
         </div>
       </div>
@@ -272,104 +273,104 @@ export default function AgentDetailPage() {
       {/* Quota & Commission Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Quota Card */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs p-6">
+        <div className="bg-card rounded-2xl border border-border p-6">
           <div className="flex items-center gap-2 mb-4">
-            <CreditCard className="w-4 h-4 text-slate-700" />
-            <h2 className="text-sm font-bold text-slate-900">Card Quota</h2>
+            <CreditCard className="w-4 h-4 text-[#52525B]" />
+            <h2 className="text-sm font-semibold text-foreground">Card Quota</h2>
           </div>
           <div className="text-center mb-4">
-            <p className="text-3xl font-bold text-slate-900">{quota?.cards_used ?? 0}<span className="text-lg text-slate-400 font-semibold"> / {quota?.card_limit ?? 0}</span></p>
-            <p className="text-[10px] text-slate-400 font-bold uppercase mt-1">Cards Used</p>
+            <p className="text-3xl font-semibold text-foreground">{quota?.cards_used ?? 0}<span className="text-lg text-muted-foreground font-semibold"> / {quota?.card_limit ?? 0}</span></p>
+            <p className="text-xs text-muted-foreground font-semibold capitalize mt-1">Cards Used</p>
           </div>
-          <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden mb-2">
+          <div className="w-full h-2.5 bg-zinc-100 rounded-full overflow-hidden mb-2">
             <div className={`h-full rounded-full transition-all ${usedPct >= 90 ? "bg-red-500" : usedPct >= 70 ? "bg-amber-500" : "bg-emerald-500"}`}
               style={{ width: `${Math.min(usedPct, 100)}%` }} />
           </div>
-          <div className="flex items-center justify-between text-[11px] font-semibold">
-            <span className="text-slate-400">{usedPct}% used</span>
+          <div className="flex items-center justify-between text-xs font-semibold">
+            <span className="text-muted-foreground">{usedPct}% used</span>
             <span className="text-emerald-600">{(quota?.card_limit ?? 0) - (quota?.cards_used ?? 0)} remaining</span>
           </div>
         </div>
 
         {/* Commission Card */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs p-6">
+        <div className="bg-card rounded-2xl border border-border p-6">
           <div className="flex items-center gap-2 mb-4">
-            <DollarSign className="w-4 h-4 text-slate-700" />
-            <h2 className="text-sm font-bold text-slate-900">Commission Config</h2>
+            <DollarSign className="w-4 h-4 text-[#52525B]" />
+            <h2 className="text-sm font-semibold text-foreground">Commission Config</h2>
           </div>
           <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
-              <span className="text-xs font-semibold text-slate-700">Card Price</span>
-              <span className="text-sm font-bold text-slate-900">₹{config?.card_price?.toLocaleString() ?? "0"}</span>
+            <div className="flex items-center justify-between p-3 rounded-xl bg-muted/50 border border-border">
+              <span className="text-xs font-semibold text-[#52525B]">Card Price</span>
+              <span className="text-sm font-semibold text-foreground">₹{config?.card_price?.toLocaleString() ?? "0"}</span>
             </div>
             <div className="flex items-center justify-between p-3 rounded-xl bg-amber-50 border border-amber-200/60">
               <span className="text-xs font-semibold text-amber-700">Agent Commission</span>
-              <span className="text-sm font-bold text-amber-700">₹{config?.agent_commission?.toLocaleString() ?? "0"}</span>
+              <span className="text-sm font-semibold text-amber-700">₹{config?.agent_commission?.toLocaleString() ?? "0"}</span>
             </div>
             <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-50 border border-emerald-200/60">
               <span className="text-xs font-semibold text-emerald-700">Admin Profit</span>
-              <span className="text-sm font-bold text-emerald-700">₹{config?.admin_profit?.toLocaleString() ?? "0"}</span>
+              <span className="text-sm font-semibold text-emerald-700">₹{config?.admin_profit?.toLocaleString() ?? "0"}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Edit Form */}
-      <form onSubmit={handleSave} className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs p-6 space-y-5">
-        <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
-          <Shield className="w-4 h-4 text-slate-700" />
-          <h2 className="text-sm font-bold text-slate-900">Edit Agent</h2>
+      <form onSubmit={handleSave} className="bg-card rounded-2xl border border-border p-6 space-y-5">
+        <div className="flex items-center gap-2 pb-3 border-b border-border">
+          <Shield className="w-4 h-4 text-[#52525B]" />
+          <h2 className="text-sm font-semibold text-foreground">Edit Agent</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="flex items-center gap-1.5 text-[11px] font-bold text-slate-600 mb-1.5"><User className="w-3.5 h-3.5 text-slate-400" /> Name</label>
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#52525B] mb-1.5"><User className="w-3.5 h-3.5 text-muted-foreground" /> Name</label>
             <input type="text" value={form.name} onChange={(e) => updateField("name", e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:border-slate-400" />
+              className="w-full px-4 py-2.5 rounded-xl border border-border bg-card text-xs font-medium text-foreground focus:outline-none focus:border-zinc-400" />
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-[11px] font-bold text-slate-600 mb-1.5"><Mail className="w-3.5 h-3.5 text-slate-400" /> Email</label>
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#52525B] mb-1.5"><Mail className="w-3.5 h-3.5 text-muted-foreground" /> Email</label>
             <input type="email" value={form.email} onChange={(e) => updateField("email", e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:border-slate-400" />
+              className="w-full px-4 py-2.5 rounded-xl border border-border bg-card text-xs font-medium text-foreground focus:outline-none focus:border-zinc-400" />
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-[11px] font-bold text-slate-600 mb-1.5"><Phone className="w-3.5 h-3.5 text-slate-400" /> Mobile</label>
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#52525B] mb-1.5"><Phone className="w-3.5 h-3.5 text-muted-foreground" /> Mobile</label>
             <input type="tel" value={form.mobile} onChange={(e) => updateField("mobile", e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:border-slate-400" />
+              className="w-full px-4 py-2.5 rounded-xl border border-border bg-card text-xs font-medium text-foreground focus:outline-none focus:border-zinc-400" />
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-[11px] font-bold text-slate-600 mb-1.5"><Lock className="w-3.5 h-3.5 text-slate-400" /> New Password</label>
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#52525B] mb-1.5"><Lock className="w-3.5 h-3.5 text-muted-foreground" /> New Password</label>
             <div className="relative">
               <input type={showPassword ? "text" : "password"} value={form.password} onChange={(e) => updateField("password", e.target.value)} placeholder="Leave blank to keep current"
-                className="w-full px-4 py-2.5 pr-10 rounded-xl border border-slate-200 bg-white text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-400" />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                className="w-full px-4 py-2.5 pr-10 rounded-xl border border-border bg-card text-xs font-medium text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-zinc-400" />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-[#52525B]">
                 {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
               </button>
             </div>
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-[11px] font-bold text-slate-600 mb-1.5"><Shield className="w-3.5 h-3.5 text-slate-400" /> Status</label>
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#52525B] mb-1.5"><Shield className="w-3.5 h-3.5 text-muted-foreground" /> Status</label>
             <select value={form.status} onChange={(e) => updateField("status", e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 focus:outline-none focus:border-slate-400">
+              className="w-full px-4 py-2.5 rounded-xl border border-border bg-card text-xs font-semibold text-[#52525B] focus:outline-none focus:border-zinc-400">
               <option value="active">Active</option>
               <option value="suspended">Suspended</option>
               <option value="banned">Banned</option>
             </select>
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-[11px] font-bold text-slate-600 mb-1.5"><CreditCard className="w-3.5 h-3.5 text-slate-400" /> Card Limit</label>
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#52525B] mb-1.5"><CreditCard className="w-3.5 h-3.5 text-muted-foreground" /> Card Limit</label>
             <input type="number" value={form.card_limit} onChange={(e) => updateField("card_limit", e.target.value)} min="0" max="100000"
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:border-slate-400" />
+              className="w-full px-4 py-2.5 rounded-xl border border-border bg-card text-xs font-medium text-foreground focus:outline-none focus:border-zinc-400" />
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-[11px] font-bold text-slate-600 mb-1.5"><DollarSign className="w-3.5 h-3.5 text-slate-400" /> Card Price (₹)</label>
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-[#52525B] mb-1.5"><DollarSign className="w-3.5 h-3.5 text-muted-foreground" /> Card Price (₹)</label>
             <input type="number" value={form.card_price} onChange={(e) => updateField("card_price", e.target.value)} min="0" step="1"
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:border-slate-400" />
+              className="w-full px-4 py-2.5 rounded-xl border border-border bg-card text-xs font-medium text-foreground focus:outline-none focus:border-zinc-400" />
           </div>
           <div>
-            <label className="flex items-center gap-1.5 text-[11px] font-bold text-amber-600 mb-1.5"><DollarSign className="w-3.5 h-3.5 text-amber-500" /> Agent Commission (₹)</label>
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-amber-600 mb-1.5"><DollarSign className="w-3.5 h-3.5 text-amber-500" /> Agent Commission (₹)</label>
             <input type="number" value={form.agent_commission} onChange={(e) => updateField("agent_commission", e.target.value)} min="0" step="1"
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:border-slate-400" />
+              className="w-full px-4 py-2.5 rounded-xl border border-border bg-card text-xs font-medium text-foreground focus:outline-none focus:border-zinc-400" />
           </div>
         </div>
 
@@ -381,12 +382,15 @@ export default function AgentDetailPage() {
 
         <div className="flex items-center gap-3 justify-end pt-2">
           <button type="submit" disabled={saving}
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white text-xs font-bold rounded-full hover:bg-black shadow-xs transition-all disabled:opacity-50">
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90 shadow-xs transition-all disabled:opacity-50">
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             Save Changes
           </button>
         </div>
       </form>
+
+      {/* Agent domain + landing page (cards at domain/username when a domain is live). */}
+      <AgentSitePanel agentId={agent.id} />
     </div>
   );
 }

@@ -28,6 +28,9 @@ export const ThemeTokensSchema = z.object({
   // custom_options is a freeform JSON bag — accept any value (object, array, primitives).
   // We use z.any() here to avoid stripping VCard fields (products, banner_images, social_urls, etc.)
   custom_options: z.any().optional(),
+  template_style: z.record(z.union([z.string().max(64), z.boolean()])).optional(),
+  preset: z.string().max(40).optional(),
+  hide_branding: z.boolean().optional(),
 });
 
 export type ValidatedThemeTokens = z.infer<typeof ThemeTokensSchema>;

@@ -3,6 +3,12 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import SeoDashboardPage from "@/app/(app)/dashboard/seo/page";
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), prefetch: vi.fn() }),
+  usePathname: () => "/dashboard/seo",
+  useSearchParams: () => new URLSearchParams(),
+}));
+
 vi.mock("@/lib/api/seo", () => ({
   seoApi: {
     get: vi.fn().mockResolvedValue({

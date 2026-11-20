@@ -3,61 +3,42 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { User, Bell } from "lucide-react";
+import { Bell, CreditCard, Globe, Search, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+export const SETTINGS_TABS = [
+  { href: "/dashboard/settings/account", label: "Account", icon: User, match: ["/dashboard/settings/account", "/dashboard/settings"] },
+  { href: "/dashboard/settings/notifications", label: "Notifications", icon: Bell, match: ["/dashboard/settings/notifications"] },
+  { href: "/dashboard/seo", label: "Search & sharing", icon: Search, match: ["/dashboard/seo"] },
+  { href: "/dashboard/domains", label: "Custom domain", icon: Globe, match: ["/dashboard/domains"] },
+  { href: "/dashboard/billing", label: "Plan & billing", icon: CreditCard, match: ["/dashboard/billing"] },
+];
+
+/** One Settings area with tabs (plan §3.4); the page title is in the top bar. */
 export function SettingsHeader() {
-  const pathname = usePathname();
-  const isAccount = pathname.includes("/settings/account") || pathname === "/dashboard/settings";
-  const isNotifications = pathname.includes("/settings/notifications");
-
+  const pathname = usePathname() ?? "";
   return (
-    <div className="pb-6 border-b border-border flex flex-col md:flex-row md:items-center justify-between gap-4">
-      {/* Title & Section Tag */}
-      <div className="space-y-1">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-          <span>Account &amp; Preferences</span>
-          <span>·</span>
-          <span>Security &amp; Privacy</span>
-        </div>
-
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Settings &amp; Security
-        </h1>
-
-        <p className="text-xs text-muted-foreground max-w-xl">
-          Manage your personal account credentials, active sessions, and communication preferences.
-        </p>
-      </div>
-
-      {/* Segmented Navigation Tab Switcher */}
-      <div className="w-full sm:w-auto grid grid-cols-2 sm:inline-flex items-center p-1 rounded-2xl bg-muted/60 border border-border/80 text-xs font-bold self-start md:self-auto select-none shadow-2xs">
-        <Link
-          href="/dashboard/settings/account"
-          className={cn(
-            "px-3.5 py-2 rounded-xl flex items-center justify-center gap-2 transition-all text-center",
-            isAccount
-              ? "bg-card text-brand-600 dark:text-brand-300 shadow-xs font-black border border-brand-200 dark:border-brand-800"
-              : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          <User className="w-3.5 h-3.5" />
-          <span className="truncate">Account &amp; Security</span>
-        </Link>
-
-        <Link
-          href="/dashboard/settings/notifications"
-          className={cn(
-            "px-3.5 py-2 rounded-xl flex items-center justify-center gap-2 transition-all text-center",
-            isNotifications
-              ? "bg-card text-brand-600 dark:text-brand-300 shadow-xs font-black border border-brand-200 dark:border-brand-800"
-              : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          <Bell className="w-3.5 h-3.5" />
-          <span className="truncate">Notifications</span>
-        </Link>
-      </div>
-    </div>
+    <nav aria-label="Settings" className="-mx-4 overflow-x-auto border-b border-border px-4 [scrollbar-width:none] sm:mx-0 sm:px-0">
+      <ul className="flex min-w-max gap-1">
+        {SETTINGS_TABS.map(({ href, label, icon: Icon, match }) => {
+          const active = match.some((m) => pathname === m || (m !== "/dashboard/settings" && pathname.startsWith(`${m}/`)));
+          return (
+            <li key={href}>
+              <Link
+                href={href}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "inline-flex h-11 items-center gap-1.5 border-b-2 px-3 text-sm transition-colors",
+                  active ? "border-primary font-semibold text-foreground" : "border-transparent font-medium text-[#52525B] hover:text-foreground"
+                )}
+              >
+                <Icon className="h-4 w-4" aria-hidden="true" />
+                {label}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
 }

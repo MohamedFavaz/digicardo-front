@@ -64,7 +64,7 @@ export function BlockEditor({
       className="p-5 rounded-2xl bg-muted/40 border border-border/80 space-y-4 animate-in fade-in-50"
     >
       {error && (
-        <div className="rounded-xl border border-coral/30 bg-coral-50/20 p-3 text-xs text-coral font-bold flex items-start gap-2">
+        <div className="rounded-xl border border-[#F5C2C2] bg-[#FDECEC] p-3 text-xs text-destructive font-bold flex items-start gap-2">
           <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
@@ -76,7 +76,7 @@ export function BlockEditor({
       {block.type === "link" && (
         <>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Link Title</label>
+            <label className="block text-xs font-semibold text-foreground">Link Title</label>
             <Input
               type="text"
               placeholder="e.g. My Online Store"
@@ -86,7 +86,7 @@ export function BlockEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Destination URL</label>
+            <label className="block text-xs font-semibold text-foreground">Destination URL</label>
             <Input
               type="url"
               placeholder="https://..."
@@ -102,7 +102,7 @@ export function BlockEditor({
       {block.type === "heading" && (
         <>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Heading Text</label>
+            <label className="block text-xs font-semibold text-foreground">Heading Text</label>
             <Input
               type="text"
               placeholder="Section Title"
@@ -112,7 +112,7 @@ export function BlockEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Level</label>
+            <label className="block text-xs font-semibold text-foreground">Level</label>
             <div className="flex items-center gap-2">
               {(["h1", "h2", "h3"] as const).map((lvl) => (
                 <button
@@ -120,7 +120,7 @@ export function BlockEditor({
                   type="button"
                   onClick={() => updateField("level", lvl)}
                   className={cn(
-                    "px-4 py-1.5 rounded-xl text-xs font-extrabold border transition-all uppercase",
+                    "px-4 py-1.5 rounded-xl text-xs font-semibold border transition-all uppercase",
                     config.level === lvl
                       ? "bg-brand-600 text-white border-brand-600"
                       : "bg-card border-border text-muted-foreground hover:text-foreground"
@@ -138,7 +138,7 @@ export function BlockEditor({
       {block.type === "text" && (
         <>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Content</label>
+            <label className="block text-xs font-semibold text-foreground">Content</label>
             <textarea
               rows={3}
               placeholder="Write a message or announcement..."
@@ -149,7 +149,7 @@ export function BlockEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Text Alignment</label>
+            <label className="block text-xs font-semibold text-foreground">Text Alignment</label>
             <div className="flex items-center gap-2">
               {(["left", "center", "right"] as const).map((align) => (
                 <button
@@ -157,7 +157,7 @@ export function BlockEditor({
                   type="button"
                   onClick={() => updateField("align", align)}
                   className={cn(
-                    "px-3.5 py-1.5 rounded-xl text-xs font-extrabold border transition-all capitalize",
+                    "px-3.5 py-1.5 rounded-xl text-xs font-semibold border transition-all capitalize",
                     config.align === align
                       ? "bg-brand-600 text-white border-brand-600"
                       : "bg-card border-border text-muted-foreground hover:text-foreground"
@@ -174,7 +174,7 @@ export function BlockEditor({
       {/* 4. Divider */}
       {block.type === "divider" && (
         <div className="space-y-1.5">
-          <label className="block text-xs font-extrabold text-foreground">Divider Style</label>
+          <label className="block text-xs font-semibold text-foreground">Divider Style</label>
           <div className="flex items-center gap-2">
             {(["line", "dots", "space"] as const).map((style) => (
               <button
@@ -182,7 +182,7 @@ export function BlockEditor({
                 type="button"
                 onClick={() => updateField("style", style)}
                 className={cn(
-                  "px-4 py-1.5 rounded-xl text-xs font-extrabold border transition-all capitalize",
+                  "px-4 py-1.5 rounded-xl text-xs font-semibold border transition-all capitalize",
                   config.style === style
                     ? "bg-brand-600 text-white border-brand-600"
                     : "bg-card border-border text-muted-foreground hover:text-foreground"
@@ -199,7 +199,7 @@ export function BlockEditor({
       {block.type === "social" && (
         <>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Platform</label>
+            <label className="block text-xs font-semibold text-foreground">Platform</label>
             <select
               value={String(config.platform || "instagram")}
               onChange={(e) => updateField("platform", e.target.value)}
@@ -216,7 +216,7 @@ export function BlockEditor({
             </select>
           </div>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Profile URL</label>
+            <label className="block text-xs font-semibold text-foreground">Profile URL</label>
             <Input
               type="url"
               placeholder="https://..."
@@ -232,7 +232,7 @@ export function BlockEditor({
       {block.type === "video" && (
         <>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Provider</label>
+            <label className="block text-xs font-semibold text-foreground">Provider</label>
             <div className="flex items-center gap-2">
               {(["youtube", "vimeo"] as const).map((prov) => (
                 <button
@@ -240,7 +240,7 @@ export function BlockEditor({
                   type="button"
                   onClick={() => updateField("provider", prov)}
                   className={cn(
-                    "px-4 py-1.5 rounded-xl text-xs font-extrabold border transition-all capitalize",
+                    "px-4 py-1.5 rounded-xl text-xs font-semibold border transition-all capitalize",
                     config.provider === prov
                       ? "bg-brand-600 text-white border-brand-600"
                       : "bg-card border-border text-muted-foreground hover:text-foreground"
@@ -252,7 +252,7 @@ export function BlockEditor({
             </div>
           </div>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Video Title</label>
+            <label className="block text-xs font-semibold text-foreground">Video Title</label>
             <Input
               type="text"
               placeholder="My latest project walkthrough"
@@ -261,7 +261,7 @@ export function BlockEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Video URL</label>
+            <label className="block text-xs font-semibold text-foreground">Video URL</label>
             <Input
               type="url"
               placeholder="https://youtube.com/watch?v=..."
@@ -277,7 +277,7 @@ export function BlockEditor({
       {block.type === "music" && (
         <>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Platform</label>
+            <label className="block text-xs font-semibold text-foreground">Platform</label>
             <div className="flex items-center gap-2">
               {(["spotify", "apple_music", "soundcloud"] as const).map((prov) => (
                 <button
@@ -285,7 +285,7 @@ export function BlockEditor({
                   type="button"
                   onClick={() => updateField("provider", prov)}
                   className={cn(
-                    "px-3 py-1.5 rounded-xl text-xs font-extrabold border transition-all capitalize",
+                    "px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all capitalize",
                     config.provider === prov
                       ? "bg-brand-600 text-white border-brand-600"
                       : "bg-card border-border text-muted-foreground hover:text-foreground"
@@ -297,7 +297,7 @@ export function BlockEditor({
             </div>
           </div>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Track / Album URL</label>
+            <label className="block text-xs font-semibold text-foreground">Track / Album URL</label>
             <Input
               type="url"
               placeholder="https://open.spotify.com/track/..."
@@ -313,7 +313,7 @@ export function BlockEditor({
       {block.type === "contact" && (
         <>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Form Title</label>
+            <label className="block text-xs font-semibold text-foreground">Form Title</label>
             <Input
               type="text"
               placeholder="Get in touch"
@@ -323,7 +323,7 @@ export function BlockEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Description</label>
+            <label className="block text-xs font-semibold text-foreground">Description</label>
             <Input
               type="text"
               placeholder="Send me a direct message."
@@ -332,7 +332,7 @@ export function BlockEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Submit Button Text</label>
+            <label className="block text-xs font-semibold text-foreground">Submit Button Text</label>
             <Input
               type="text"
               placeholder="Send Message"
@@ -347,7 +347,7 @@ export function BlockEditor({
       {block.type === "booking" && (
         <>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Booking Title</label>
+            <label className="block text-xs font-semibold text-foreground">Booking Title</label>
             <Input
               type="text"
               placeholder="Book a 1-on-1 Consultation"
@@ -356,7 +356,7 @@ export function BlockEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Calendly / Cal.com URL</label>
+            <label className="block text-xs font-semibold text-foreground">Calendly / Cal.com URL</label>
             <Input
               type="url"
               placeholder="https://calendly.com/yourname"
@@ -372,7 +372,7 @@ export function BlockEditor({
       {block.type === "cta" && (
         <>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">CTA Headline</label>
+            <label className="block text-xs font-semibold text-foreground">CTA Headline</label>
             <Input
               type="text"
               placeholder="Join My Inner Circle"
@@ -382,7 +382,7 @@ export function BlockEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Description</label>
+            <label className="block text-xs font-semibold text-foreground">Description</label>
             <Input
               type="text"
               placeholder="Exclusive weekly insights directly to your inbox."
@@ -391,7 +391,7 @@ export function BlockEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Button Label</label>
+            <label className="block text-xs font-semibold text-foreground">Button Label</label>
             <Input
               type="text"
               placeholder="Sign Up Free"
@@ -401,7 +401,7 @@ export function BlockEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Target URL</label>
+            <label className="block text-xs font-semibold text-foreground">Target URL</label>
             <Input
               type="url"
               placeholder="https://..."
@@ -417,7 +417,7 @@ export function BlockEditor({
       {block.type === "faq" && (
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <label className="block text-xs font-extrabold text-foreground">Section Title</label>
+            <label className="block text-xs font-semibold text-foreground">Section Title</label>
             <Input
               type="text"
               placeholder="Frequently Asked Questions"
@@ -427,7 +427,7 @@ export function BlockEditor({
           </div>
 
           <div className="space-y-2">
-            <label className="block text-xs font-extrabold text-foreground">Questions &amp; Answers</label>
+            <label className="block text-xs font-semibold text-foreground">Questions &amp; Answers</label>
             {Array.isArray(config.items) &&
               (config.items as FaqItem[]).map((item, idx) => (
                 <div key={item.id || idx} className="p-3 rounded-xl bg-card border border-border/80 space-y-2">
@@ -495,7 +495,7 @@ export function BlockEditor({
             if (typeof val === "boolean" || typeof val === "object") return null;
             return (
               <div key={key} className="space-y-1">
-                <label className="block text-xs font-extrabold text-foreground capitalize">
+                <label className="block text-xs font-semibold text-foreground capitalize">
                   {key.replace("_", " ")}
                 </label>
                 <Input
@@ -527,7 +527,7 @@ export function BlockEditor({
           variant="pill"
           size="sm"
           disabled={isSaving}
-          className="bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs px-5 shadow-cta gap-1.5"
+          className="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs px-5 shadow-cta gap-1.5"
         >
           {isSaving ? (
             <>

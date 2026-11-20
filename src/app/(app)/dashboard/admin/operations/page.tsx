@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
 export default function LegacyAdminOperationsPage() {
-  redirect("/admin/dashboard");
+  redirect("/admin/system");
   return null;
 }

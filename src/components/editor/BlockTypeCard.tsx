@@ -23,7 +23,7 @@ export function BlockTypeCard({ metadata, onSelect }: BlockTypeCardProps) {
           <Icon className="w-5 h-5" />
         </div>
         <div className="min-w-0">
-          <div className="text-xs font-black text-foreground group-hover:text-brand-600 transition-colors truncate">
+          <div className="text-xs font-bold text-foreground group-hover:text-brand-600 transition-colors truncate">
             {metadata.label}
           </div>
           <div className="text-[11px] text-muted-foreground font-medium truncate mt-0.5">

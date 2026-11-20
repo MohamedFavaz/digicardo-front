@@ -15,16 +15,16 @@ export function NotificationsHeader({
   onMarkAllRead,
 }: NotificationsHeaderProps) {
   return (
-    <div className="rounded-[36px] bg-gradient-to-br from-card via-card to-brand-50/30 border border-border/80 p-6 sm:p-8 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className="rounded-2xl bg-gradient-to-br from-card via-card to-brand-50/30 border border-border/80 p-6 sm:p-8 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-6">
       {/* Title & Badge */}
       <div className="space-y-2">
         <div className="flex items-center gap-2.5 flex-wrap">
-          <span className="text-xs font-black tracking-wider uppercase text-brand-600">
+          <span className="text-xs font-bold tracking-wider uppercase text-brand-600">
             ACTIVITY &amp; AUDIENCE
           </span>
           <span className="w-1 h-1 rounded-full bg-border" />
           {unreadCount > 0 ? (
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-black bg-brand-50 text-brand-700 border border-brand-200">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-brand-50 text-brand-700 border border-brand-200">
               <BellRing className="w-3 h-3 text-brand-600 animate-pulse" />
               <span>{unreadCount} Unread Alerts</span>
             </span>
@@ -35,7 +35,7 @@ export function NotificationsHeader({
           )}
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
           Notifications Center 🔔
         </h1>
 
@@ -53,7 +53,7 @@ export function NotificationsHeader({
             variant="pill"
             size="sm"
             onClick={onMarkAllRead}
-            className="h-10 px-5 gap-1.5 bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs shadow-cta"
+            className="h-10 px-5 gap-1.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs shadow-cta"
           >
             <CheckCheck className="w-3.5 h-3.5" />
             <span>Mark All Read</span>

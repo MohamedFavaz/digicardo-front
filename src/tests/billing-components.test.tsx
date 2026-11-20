@@ -39,7 +39,7 @@ describe("Billing UI Components", () => {
         unit="domains"
       />
     );
-    expect(limitHtml).toContain("Limit reached. Upgrade to increase capacity.");
+    expect(limitHtml).toContain("Capacity limit reached. Upgrade plan to increase.");
 
     // Unlimited
     const unlimitedHtml = renderToStaticMarkup(

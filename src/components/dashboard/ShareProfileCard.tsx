@@ -28,13 +28,13 @@ export function ShareProfileCard({ username = "username" }: ShareProfileCardProp
   };
 
   return (
-    <div className="rounded-[28px] sm:rounded-[32px] border border-border/80 bg-card p-4 sm:p-6 shadow-card space-y-4 select-none">
+    <div className="rounded-2xl rounded-2xl border border-border/80 bg-card p-4 sm:p-6 shadow-card space-y-4 select-none">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800 text-blue-600 flex items-center justify-center shadow-2xs">
             <Share2 className="w-4 h-4" />
           </div>
-          <h3 className="text-sm font-black text-foreground">Share Profile</h3>
+          <h3 className="text-sm font-bold text-foreground">Share Profile</h3>
         </div>
 
         <span className="text-[10px] font-mono uppercase font-bold text-muted-foreground px-2 py-0.5 rounded-full bg-muted/60 border border-border/60">

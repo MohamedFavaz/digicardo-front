@@ -1,23 +1,24 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Users,
-  Link2,
-  CreditCard,
-  AlertTriangle,
-  Calendar,
-  Clock,
-  TrendingUp,
-  ShieldCheck,
-  UserPlus,
-  Inbox,
-  ArrowUpRight,
-  CheckCircle2,
   AlertCircle,
-  Activity,
-  History
+  ArrowRight,
+  CheckCircle2,
+  Clock,
+  CreditCard,
+  History,
+  IdCard,
+  Inbox,
+  Sparkles,
+  TrendingUp,
+  UserCog,
+  UserPlus,
+  Users,
+  type LucideIcon,
 } from "lucide-react";
+import { ButtonLink, ConsolePage, EmptyState, PageHeader, Panel, StatCard, StatusPill } from "@/components/console/ui";
 
 interface ExpiringUser {
   id: string;
@@ -48,14 +49,26 @@ interface Sales {
   month?: { total: number; count: number };
 }
 
-function formatTime(isoStr?: string) {
-  if (!isoStr) return "—";
-  const d = new Date(isoStr);
-  if (isNaN(d.getTime())) return "—";
-  const hours = String(d.getHours()).padStart(2, "0");
-  const mins = String(d.getMinutes()).padStart(2, "0");
-  return `${hours}:${mins}`;
+const money = (n?: number) => `₹${Math.round(n ?? 0).toLocaleString("en-IN")}`;
+
+function timeAgo(iso?: string) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  const mins = Math.round((Date.now() - d.getTime()) / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins} min ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `${hours} h ago`;
+  return d.toLocaleDateString(undefined, { day: "numeric", month: "short" });
 }
+
+const QUICK_ACTIONS: { label: string; text: string; href: string; icon: LucideIcon }[] = [
+  { label: "Add a user", text: "Create a customer account and card", href: "/admin/admin-panel", icon: UserPlus },
+  { label: "Add an agent", text: "Give a partner their own portal", href: "/admin/agents/create", icon: UserCog },
+  { label: "Edit plans", text: "Validity periods and prices", href: "/admin/plans", icon: Sparkles },
+  { label: "See all cards", text: "Every live card and its owner", href: "/admin/my-links", icon: IdCard },
+];
 
 export default function AdminDashboardPage() {
   const [overview, setOverview] = useState<Overview | null>(null);
@@ -63,264 +76,224 @@ export default function AdminDashboardPage() {
   const [expired, setExpired] = useState<ExpiringUser[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [sales, setSales] = useState<Sales | null>(null);
+  const [pending, setPending] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const get = (url: string) => fetch(url, { credentials: "include" }).then((r) => r.json()).catch(() => null);
     Promise.all([
-      fetch("/api/bff/v1/admin/overview", { credentials: "include" }).then(r => r.json()),
-      fetch("/api/bff/v1/admin/users/expiring", { credentials: "include" }).then(r => r.json()),
-      fetch("/api/bff/v1/admin/users/expired", { credentials: "include" }).then(r => r.json()),
-      fetch("/api/bff/v1/admin/sales/overview", { credentials: "include" }).then(r => r.json()),
-      fetch("/api/bff/v1/admin/audit-logs?per_page=8", { credentials: "include" }).then(r => r.json()),
+      get("/api/bff/v1/admin/overview"),
+      get("/api/bff/v1/admin/users/expiring"),
+      get("/api/bff/v1/admin/users/expired"),
+      get("/api/bff/v1/admin/sales/overview"),
+      get("/api/bff/v1/admin/audit-logs?per_page=8"),
+      get("/api/bff/v1/admin/access-requests?status=pending&per_page=1"),
     ])
-      .then(([ov, exp, expiredD, salesD, audit]) => {
-        setOverview(ov?.data);
+      .then(([ov, exp, expiredD, salesD, audit, requests]) => {
+        setOverview(ov?.data ?? null);
         setExpiring(exp?.data?.users || []);
         setExpired(expiredD?.data?.users || []);
-        setSales(salesD?.data);
+        setSales(salesD?.data ?? null);
         setAuditLogs(audit?.data?.items || []);
+        setPending(requests?.data?.pagination?.total || 0);
       })
       .finally(() => setLoading(false));
   }, []);
 
-  const metrics = overview?.metrics;
-  const totalUsers = metrics?.users?.total ?? 0;
-  const activeUsers = metrics?.users?.active ?? 0;
-  const suspendedUsers = metrics?.users?.suspended ?? 0;
-  const totalProfiles = metrics?.profiles?.total ?? 0;
-  const currency = "₹";
+  const users = overview?.metrics?.users;
+  const totalProfiles = overview?.metrics?.profiles?.total ?? 0;
+
+  const todos = [
+    pending > 0 && {
+      key: "requests",
+      icon: Inbox,
+      tone: "primary" as const,
+      title: `${pending} access request${pending === 1 ? "" : "s"} waiting`,
+      text: "People asking for an account. Approve or decline them.",
+      href: "/admin/access-requests",
+      cta: "Review",
+    },
+    expired.length > 0 && {
+      key: "expired",
+      icon: AlertCircle,
+      tone: "danger" as const,
+      title: `${expired.length} account${expired.length === 1 ? " has" : "s have"} expired`,
+      text: "Their cards are offline until you renew them.",
+      href: "/admin/my-links?filter=expired",
+      cta: "Renew",
+    },
+    expiring.length > 0 && {
+      key: "expiring",
+      icon: Clock,
+      tone: "warning" as const,
+      title: `${expiring.length} account${expiring.length === 1 ? "" : "s"} expire this week`,
+      text: "Renew them before their cards go offline.",
+      href: "/admin/my-links?filter=expiring",
+      cta: "View",
+    },
+  ].filter(Boolean) as {
+    key: string;
+    icon: LucideIcon;
+    tone: "primary" | "danger" | "warning";
+    title: string;
+    text: string;
+    href: string;
+    cta: string;
+  }[];
+
+  const toneIcon = { primary: "bg-primary/10 text-primary", danger: "bg-[#FDECEC] text-destructive", warning: "bg-[#FEF3C7] text-[#92400E]" };
 
   return (
-    <div suppressHydrationWarning className="p-6 lg:p-8 max-w-[1400px] mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Admin Dashboard</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Online
-            </span>
-          </div>
-          <p className="text-slate-500 text-xs mt-1 leading-relaxed font-medium">
-            Platform metrics, user accounts, and system status overview.
-          </p>
-        </div>
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <Link
-            href="/admin/access-requests"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white text-slate-800 text-xs font-bold border border-slate-300 hover:bg-slate-50 transition-all shadow-2xs active:scale-95 cursor-pointer"
-          >
-            <Inbox className="w-3.5 h-3.5 text-slate-600" />
-            <span>Access Requests</span>
-          </Link>
-          <Link
-            href="/admin/admin-panel"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 text-white text-xs font-bold hover:bg-black transition-all shadow-xs active:scale-95 cursor-pointer"
-          >
-            <UserPlus className="w-3.5 h-3.5" />
-            <span>Provision User</span>
-          </Link>
-        </div>
+    <ConsolePage>
+      <PageHeader
+        title="Overview"
+        description="Here's what's happening on Digicardo today."
+        actions={
+          <>
+            <ButtonLink href="/admin/access-requests" variant="secondary" icon={Inbox}>
+              Access requests
+            </ButtonLink>
+            <ButtonLink href="/admin/admin-panel" icon={UserPlus}>
+              Add user
+            </ButtonLink>
+          </>
+        }
+      />
+
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <StatCard
+          label="Users"
+          icon={Users}
+          loading={loading}
+          value={users?.total ?? 0}
+          hint={
+            <>
+              {users?.active ?? 0} active{users?.suspended ? ` · ${users.suspended} suspended` : ""}
+            </>
+          }
+          href="/admin/admin-panel"
+        />
+        <StatCard label="Live cards" icon={IdCard} loading={loading} value={totalProfiles} hint="Public card pages" href="/admin/my-links" />
+        <StatCard
+          label="Revenue today"
+          icon={CreditCard}
+          loading={loading}
+          value={money(sales?.today?.total)}
+          hint={`${sales?.today?.count ?? 0} order${sales?.today?.count === 1 ? "" : "s"}`}
+          href="/admin/accounts"
+        />
+        <StatCard
+          label="Revenue this month"
+          icon={TrendingUp}
+          loading={loading}
+          value={money(sales?.month?.total)}
+          hint={`${sales?.month?.count ?? 0} order${sales?.month?.count === 1 ? "" : "s"}`}
+          href="/admin/accounts"
+        />
       </div>
 
-      {/* Urgent Alerts (Expiring / Expired) */}
-      {(expiring.length > 0 || expired.length > 0) && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {expired.length > 0 && (
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-red-50/80 border border-red-200 shadow-2xs">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0">
-                  <AlertCircle className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-red-800">
-                    {expired.length} Account{expired.length > 1 ? "s" : ""} Expired
-                  </p>
-                  <p className="text-[11px] text-red-600">Validity ended. Profiles are inactive.</p>
-                </div>
-              </div>
-              <Link
-                href="/admin/my-links?filter=expired"
-                className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-all whitespace-nowrap shadow-2xs"
-              >
-                View Expired
-              </Link>
-            </div>
-          )}
-
-          {expiring.length > 0 && (
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-amber-50/80 border border-amber-200 shadow-2xs">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-amber-900">
-                    {expiring.length} Expiring Soon
-                  </p>
-                  <p className="text-[11px] text-amber-700">Expires within 7 days.</p>
-                </div>
-              </div>
-              <Link
-                href="/admin/my-links?filter=expiring"
-                className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-semibold transition-all whitespace-nowrap shadow-2xs"
-              >
-                View Expiring
-              </Link>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* KPI Stat Cards (JunoMind Style) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total Users */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs hover:shadow-xs transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Platform Users</span>
-            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
-              <Users className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-3">
-            <span className="text-2xl font-bold text-slate-900">{loading ? "…" : totalUsers}</span>
-            <p className="text-[11px] text-emerald-600 font-semibold mt-1 flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3" />
-              <span>{activeUsers} active</span>
-              {suspendedUsers > 0 && <span className="text-slate-400 font-normal">({suspendedUsers} suspended)</span>}
-            </p>
-          </div>
-        </div>
-
-        {/* Total Bio Profiles */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs hover:shadow-xs transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Public Profiles</span>
-            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
-              <Link2 className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-3">
-            <span className="text-2xl font-bold text-slate-900">{loading ? "…" : totalProfiles}</span>
-            <p className="text-[11px] text-slate-500 font-medium mt-1">Live smart bio profiles</p>
-          </div>
-        </div>
-
-        {/* Today's Sales */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs hover:shadow-xs transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Today&apos;s Revenue</span>
-            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
-              <CreditCard className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-3">
-            <span className="text-2xl font-bold text-slate-900">
-              {loading ? "…" : `${currency}${(sales?.today?.total ?? 0).toFixed(0)}`}
-            </span>
-            <p className="text-[11px] text-slate-500 font-medium mt-1">
-              {sales?.today?.count ?? 0} order{sales?.today?.count === 1 ? "" : "s"} today
-            </p>
-          </div>
-        </div>
-
-        {/* Month Sales */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs hover:shadow-xs transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Monthly Revenue</span>
-            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
-              <TrendingUp className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-3">
-            <span className="text-2xl font-bold text-slate-900">
-              {loading ? "…" : `${currency}${(sales?.month?.total ?? 0).toFixed(0)}`}
-            </span>
-            <p className="text-[11px] text-slate-500 font-medium mt-1">
-              {sales?.month?.count ?? 0} orders this month
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Panels Grid (Inside Square White Cards) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Expiring Soon Watchlist (6 cols) */}
-        <div className="lg:col-span-6 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/40">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-amber-500" />
-              <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Expiring in 7 Days</h2>
-            </div>
-            <Link
-              href="/admin/my-links?filter=expiring"
-              className="text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
-            >
-              View all →
-            </Link>
-          </div>
-
-          <div className="divide-y divide-slate-100 max-h-72 overflow-y-auto">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="space-y-6 lg:col-span-7">
+          <Panel title="Needs your attention" description="Things to deal with, most urgent first.">
             {loading ? (
-              <div className="p-6 text-xs text-slate-400">Loading expiring users…</div>
+              <div className="space-y-3 p-5">
+                {[0, 1].map((i) => (
+                  <div key={i} className="skeleton h-14 rounded-xl" />
+                ))}
+              </div>
+            ) : todos.length === 0 ? (
+              <EmptyState icon={CheckCircle2} title="You're all caught up" text="No pending requests and no accounts expiring this week." />
+            ) : (
+              <ul className="divide-y divide-border">
+                {todos.map((t) => (
+                  <li key={t.key} className="flex items-center gap-4 px-5 py-4">
+                    <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${toneIcon[t.tone]}`}>
+                      <t.icon className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[15px] font-semibold text-foreground">{t.title}</p>
+                      <p className="text-sm text-muted-foreground">{t.text}</p>
+                    </div>
+                    <ButtonLink href={t.href} variant="secondary" className="h-9 px-3">
+                      {t.cta}
+                    </ButtonLink>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Panel>
+
+          <Panel
+            title="Expiring this week"
+            action={
+              <Link href="/admin/my-links?filter=expiring" className="text-sm font-medium text-primary hover:underline">
+                View all
+              </Link>
+            }
+          >
+            {loading ? (
+              <div className="p-5 text-sm text-muted-foreground">Loading…</div>
             ) : expiring.length === 0 ? (
-              <div className="p-8 text-center text-xs text-slate-400">
-                <CheckCircle2 className="w-6 h-6 text-emerald-500 mx-auto mb-2" />
-                <p className="font-semibold text-slate-700">All accounts healthy</p>
-                <p className="text-[11px] text-slate-400 mt-0.5">No accounts expiring in the next 7 days.</p>
-              </div>
+              <EmptyState icon={CheckCircle2} title="Nothing expiring" text="No accounts expire in the next 7 days." />
             ) : (
-              expiring.map(u => (
-                <div key={u.id} className="p-3.5 flex items-center justify-between hover:bg-slate-50/80 transition-colors">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold text-slate-800 truncate">{u.name}</p>
-                    <p className="text-[11px] text-slate-400 truncate">{u.email}</p>
-                  </div>
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
-                    {u.days_remaining}d remaining
-                  </span>
-                </div>
-              ))
+              <ul className="max-h-80 divide-y divide-border overflow-y-auto">
+                {expiring.map((u) => (
+                  <li key={u.id} className="flex items-center justify-between gap-3 px-5 py-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-foreground">{u.name}</p>
+                      <p className="truncate text-sm text-muted-foreground">{u.email}</p>
+                    </div>
+                    <StatusPill tone={u.days_remaining <= 2 ? "danger" : "warning"}>
+                      {u.days_remaining === 0 ? "Today" : `${u.days_remaining} day${u.days_remaining === 1 ? "" : "s"} left`}
+                    </StatusPill>
+                  </li>
+                ))}
+              </ul>
             )}
-          </div>
+          </Panel>
         </div>
 
-        {/* Live Admin Audit & Security Log (6 cols) */}
-        <div className="lg:col-span-6 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/40">
-            <div className="flex items-center gap-2">
-              <History className="w-4 h-4 text-slate-700" />
-              <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Recent Admin Activity</h2>
-            </div>
-            <span className="text-[11px] font-semibold text-slate-400">Audit Trail</span>
-          </div>
+        <div className="space-y-6 lg:col-span-5">
+          <Panel title="Quick actions">
+            <ul className="divide-y divide-border">
+              {QUICK_ACTIONS.map((a) => (
+                <li key={a.href}>
+                  <Link href={a.href} prefetch={false} className="group flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-muted/60">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
+                      <a.icon className="h-4 w-4" aria-hidden="true" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-semibold text-foreground">{a.label}</span>
+                      <span className="block truncate text-sm text-muted-foreground">{a.text}</span>
+                    </span>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Panel>
 
-          <div className="divide-y divide-slate-100 max-h-72 overflow-y-auto">
+          <Panel title="Recent activity" icon={History}>
             {loading ? (
-              <div className="p-6 text-xs text-slate-400">Loading audit history…</div>
+              <div className="p-5 text-sm text-muted-foreground">Loading…</div>
             ) : auditLogs.length === 0 ? (
-              <div className="p-8 text-center text-xs text-slate-400">No recent logs recorded.</div>
+              <EmptyState title="No activity yet" text="Admin actions such as approvals and plan changes show up here." />
             ) : (
-              auditLogs.map(log => (
-                <div key={log.id} className="p-3.5 flex items-center justify-between hover:bg-slate-50/80 transition-colors">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold text-slate-800 capitalize">
-                      {log.action.replace(/_/g, " ")}
-                    </p>
-                    <p className="text-[11px] text-slate-400">
-                      By {log.actor?.name || "System Admin"}
-                    </p>
-                  </div>
-                  <span className="text-[10px] text-slate-400 whitespace-nowrap pl-3">
-                    {formatTime(log.created_at)}
-                  </span>
-                </div>
-              ))
+              <ul className="max-h-80 divide-y divide-border overflow-y-auto">
+                {auditLogs.map((log) => (
+                  <li key={log.id} className="flex items-center justify-between gap-3 px-5 py-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-foreground first-letter:uppercase">{log.action.replace(/[_.]/g, " ")}</p>
+                      <p className="truncate text-sm text-muted-foreground">by {log.actor?.name || "System"}</p>
+                    </div>
+                    <span className="shrink-0 text-xs text-muted-foreground">{timeAgo(log.created_at)}</span>
+                  </li>
+                ))}
+              </ul>
             )}
-          </div>
+          </Panel>
         </div>
       </div>
-    </div>
+    </ConsolePage>
   );
 }

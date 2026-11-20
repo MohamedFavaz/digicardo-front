@@ -56,7 +56,7 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="mb-8 text-center">
@@ -65,13 +65,13 @@ export default function VerifyEmailPage() {
           </Link>
         </div>
 
-        <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-2xl shadow-black/50">
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8 shadow-2xl shadow-black/50">
           {/* Verifying state */}
           {verifyStatus === 'verifying' && (
             <div className="text-center py-6">
               <Loader2 className="mx-auto h-10 w-10 text-indigo-400 animate-spin" />
-              <h1 className="mt-4 text-lg font-bold text-slate-100">Verifying your email…</h1>
-              <p className="mt-1 text-sm text-slate-500">Just a moment, please.</p>
+              <h1 className="mt-4 text-lg font-bold text-zinc-100">Verifying your email…</h1>
+              <p className="mt-1 text-sm text-zinc-500">Just a moment, please.</p>
             </div>
           )}
 
@@ -81,8 +81,8 @@ export default function VerifyEmailPage() {
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-900/50 border border-emerald-800">
                 <CheckCircle2 className="h-7 w-7 text-emerald-400" />
               </div>
-              <h1 className="text-xl font-bold text-slate-100">Email verified!</h1>
-              <p className="mt-2 text-sm text-slate-400">Your email address has been successfully verified.</p>
+              <h1 className="text-xl font-bold text-zinc-100">Email verified!</h1>
+              <p className="mt-2 text-sm text-zinc-400">Your email address has been successfully verified.</p>
               <Link
                 href="/dashboard"
                 className="mt-6 inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-500"
@@ -98,8 +98,8 @@ export default function VerifyEmailPage() {
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-red-900/50 border border-red-800">
                 <XCircle className="h-7 w-7 text-red-400" />
               </div>
-              <h1 className="text-xl font-bold text-slate-100">Verification failed</h1>
-              <p className="mt-2 text-sm text-slate-400">
+              <h1 className="text-xl font-bold text-zinc-100">Verification failed</h1>
+              <p className="mt-2 text-sm text-zinc-400">
                 {errorMessage?.includes('expired')
                   ? 'This verification link has expired. Please request a new one.'
                   : 'This verification link is invalid. Please request a new one.'}
@@ -122,11 +122,11 @@ export default function VerifyEmailPage() {
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-900/50 border border-indigo-800">
                 <Mail className="h-7 w-7 text-indigo-400" />
               </div>
-              <h1 className="text-xl font-bold text-slate-100">Verify your email</h1>
-              <p className="mt-2 text-sm text-slate-400 leading-relaxed">
+              <h1 className="text-xl font-bold text-zinc-100">Verify your email</h1>
+              <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
                 We sent a verification link to your email address. Click the link in that email to verify your account.
               </p>
-              <p className="mt-3 text-xs text-slate-500">
+              <p className="mt-3 text-xs text-zinc-500">
                 Check your spam folder if you don&apos;t see it in your inbox.
               </p>
 
@@ -141,7 +141,7 @@ export default function VerifyEmailPage() {
                     id="resend-verification-idle-button"
                     onClick={handleResend}
                     disabled={resendStatus === 'sending'}
-                    className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-700 hover:text-white disabled:opacity-50"
+                    className="inline-flex items-center gap-2 rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-700 hover:text-white disabled:opacity-50"
                   >
                     {resendStatus === 'sending' ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -156,8 +156,8 @@ export default function VerifyEmailPage() {
                 )}
               </div>
 
-              <div className="mt-6 pt-4 border-t border-slate-800">
-                <Link href="/login" className="text-sm text-slate-500 hover:text-slate-300 transition-colors">
+              <div className="mt-6 pt-4 border-t border-zinc-800">
+                <Link href="/login" className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
                   Back to login
                 </Link>
               </div>

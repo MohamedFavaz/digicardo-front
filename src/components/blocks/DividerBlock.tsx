@@ -11,9 +11,9 @@ export function DividerBlock({ config }: DividerBlockProps) {
   if (style === "dots") {
     return (
       <div className="my-3 flex w-full items-center justify-center gap-1.5 py-1">
-        <span className="h-1 w-1 rounded-full bg-slate-700" />
-        <span className="h-1 w-1 rounded-full bg-slate-700" />
-        <span className="h-1 w-1 rounded-full bg-slate-700" />
+        <span className="h-1 w-1 rounded-full bg-zinc-700" />
+        <span className="h-1 w-1 rounded-full bg-zinc-700" />
+        <span className="h-1 w-1 rounded-full bg-zinc-700" />
       </div>
     );
   }
@@ -24,7 +24,7 @@ export function DividerBlock({ config }: DividerBlockProps) {
 
   return (
     <div className="my-3 flex w-full items-center py-1">
-      <div className="w-full border-t border-slate-800/80" />
+      <div className="w-full border-t border-zinc-800/80" />
     </div>
   );
 }

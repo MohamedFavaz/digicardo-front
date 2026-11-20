@@ -28,7 +28,7 @@ export default function GlobalError({
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-6 text-center">
       <div className="max-w-md space-y-4 rounded-2xl border bg-card p-8 shadow-card">
-        <div className="mx-auto w-12 h-12 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center font-black text-xl">
+        <div className="mx-auto w-12 h-12 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center font-bold text-xl">
           !
         </div>
         <h2 className="text-xl font-bold tracking-tight text-foreground">

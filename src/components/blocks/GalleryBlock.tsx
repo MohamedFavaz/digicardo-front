@@ -44,7 +44,7 @@ export function GalleryBlock({ block }: GalleryBlockProps) {
               key={img.id || idx}
               type="button"
               onClick={() => openLightbox(idx)}
-              className="group relative aspect-square w-full overflow-hidden rounded-[var(--lf-radius,0.5rem)] border border-slate-800 bg-slate-950 focus:outline-none focus:ring-2 focus:ring-[var(--lf-accent)]"
+              className="group relative aspect-square w-full overflow-hidden rounded-[var(--lf-radius,0.5rem)] border border-zinc-800 bg-zinc-950 focus:outline-none focus:ring-2 focus:ring-[var(--lf-accent)]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -69,7 +69,7 @@ export function GalleryBlock({ block }: GalleryBlockProps) {
               key={img.id || idx}
               type="button"
               onClick={() => openLightbox(idx)}
-              className="group relative w-full overflow-hidden rounded-[var(--lf-radius,0.5rem)] border border-slate-800 bg-slate-950 focus:outline-none focus:ring-2 focus:ring-[var(--lf-accent)]"
+              className="group relative w-full overflow-hidden rounded-[var(--lf-radius,0.5rem)] border border-zinc-800 bg-zinc-950 focus:outline-none focus:ring-2 focus:ring-[var(--lf-accent)]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -91,7 +91,7 @@ export function GalleryBlock({ block }: GalleryBlockProps) {
               key={img.id || idx}
               type="button"
               onClick={() => openLightbox(idx)}
-              className="group relative h-48 w-44 shrink-0 snap-center overflow-hidden rounded-[var(--lf-radius,0.5rem)] border border-slate-800 bg-slate-950 focus:outline-none focus:ring-2 focus:ring-[var(--lf-accent)]"
+              className="group relative h-48 w-44 shrink-0 snap-center overflow-hidden rounded-[var(--lf-radius,0.5rem)] border border-zinc-800 bg-zinc-950 focus:outline-none focus:ring-2 focus:ring-[var(--lf-accent)]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img

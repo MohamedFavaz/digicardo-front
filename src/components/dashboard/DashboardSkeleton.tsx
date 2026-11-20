@@ -62,7 +62,7 @@ export function DashboardSkeleton() {
         <div className="lg:col-span-5 space-y-5">
           <div className="rounded-xl border border-border bg-white p-5 space-y-4">
             <Skeleton className="h-4 w-28 rounded" />
-            <div className="w-full max-w-[260px] mx-auto h-[380px] rounded-3xl border-4 border-slate-900 bg-muted/20 p-4 space-y-3">
+            <div className="w-full max-w-[260px] mx-auto h-[380px] rounded-2xl border-4 border-zinc-900 bg-muted/20 p-4 space-y-3">
               <Skeleton className="h-12 w-12 rounded-full mx-auto" />
               <Skeleton className="h-3.5 w-24 rounded mx-auto" />
               <div className="space-y-2 pt-2">

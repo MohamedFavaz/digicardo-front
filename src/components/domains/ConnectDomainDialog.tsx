@@ -45,7 +45,7 @@ export function ConnectDomainDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in-50">
-      <div className="relative w-full max-w-lg rounded-[36px] border border-border/80 bg-card p-6 sm:p-8 shadow-float space-y-6 animate-in zoom-in-95">
+      <div className="relative w-full max-w-lg rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-float space-y-6 animate-in zoom-in-95">
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -53,7 +53,7 @@ export function ConnectDomainDialog({
               <Globe className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-black text-foreground">
+              <h3 className="text-lg font-bold text-foreground">
                 Connect Custom Domain
               </h3>
               <p className="text-xs text-muted-foreground font-medium">
@@ -74,7 +74,7 @@ export function ConnectDomainDialog({
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label className="block text-xs font-black uppercase tracking-wider text-foreground">
+            <label className="block text-xs font-bold uppercase tracking-wider text-foreground">
               Domain Name
             </label>
             <Input
@@ -119,7 +119,7 @@ export function ConnectDomainDialog({
               variant="pill"
               size="sm"
               disabled={isSubmitting || !domainInput.trim()}
-              className="h-10 px-6 gap-2 bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs shadow-cta"
+              className="h-10 px-6 gap-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs shadow-cta"
             >
               {isSubmitting ? (
                 <>

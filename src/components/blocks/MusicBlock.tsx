@@ -28,7 +28,7 @@ export function MusicBlock({ block }: MusicBlockProps) {
         </h3>
       )}
 
-      <div className={`w-full overflow-hidden rounded-[var(--lf-radius,0.75rem)] border border-slate-800 bg-slate-950 shadow-md ${heightClass}`}>
+      <div className={`w-full overflow-hidden rounded-[var(--lf-radius,0.75rem)] border border-zinc-800 bg-zinc-950 shadow-md ${heightClass}`}>
         <iframe
           src={embedUrl}
           title={config.title || "Audio Player"}

@@ -2,277 +2,169 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/hooks/use-auth";
-import { profileApi } from "@/lib/api/profile";
-import type { Profile } from "@/types/profile";
-import { Button } from "@/components/ui/button";
-import {
-  QrCode,
-  Radio,
-  ExternalLink,
-  Copy,
-  Check,
-  Sparkles,
-  Share2,
-  Sliders,
-  Smartphone,
-} from "lucide-react";
-import { QRPreview } from "@/components/qr/QRPreview";
-import { QRCustomizer, type QRCardTemplate } from "@/components/qr/QRCustomizer";
-import { QRSkeleton } from "@/components/qr/QRSkeleton";
-import { NFCCardPreview, type NFCFontStyle } from "@/components/nfc/NFCCardPreview";
-import { NFCTemplatePicker } from "@/components/nfc/NFCTemplatePicker";
-import { NFCSetupGuide } from "@/components/nfc/NFCSetupGuide";
-import { NFCTestCard } from "@/components/nfc/NFCTestCard";
+import { Check, Copy, Download, ExternalLink, Mail, MessageSquare, Nfc, Printer, Share2 } from "lucide-react";
+import { useShellProfile } from "@/lib/hooks/use-shell-profile";
+import { cardPublicUrl } from "@/lib/content/resolve";
+import { encodeQr, qrPath } from "@/lib/qr/encoder";
+import { CardQr, downloadQrPng } from "@/templates/shared/CardQr";
+import { SocialIcon } from "@/templates/shared/SocialIcon";
 import { cn } from "@/lib/utils";
 
-export default function QrAndNfcDashboardPage() {
-  const router = useRouter();
-  const { isLoading: isAuthLoading, isAuthenticated } = useAuth();
-  const [profile, setProfile] = React.useState<Profile | null>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
+const QR_COLOURS = [
+  { id: "black", label: "Black", value: "#18181B" },
+  { id: "violet", label: "Violet", value: "#5B3FE4" },
+  { id: "teal", label: "Teal", value: "#0F766E" },
+  { id: "navy", label: "Navy", value: "#1E3A8A" },
+];
 
-  // Active Tab: 'qr' or 'nfc'
-  const [activeTab, setActiveTab] = React.useState<"qr" | "nfc">("qr");
+function downloadQrSvg(value: string, color: string, fileName: string) {
+  const matrix = encodeQr(value, "M");
+  const n = matrix.length + 8;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges"><rect width="${n}" height="${n}" fill="#fff"/><path fill="${color}" d="${qrPath(matrix, 4)}"/></svg>`;
+  const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${fileName}-qr.svg`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
-  // Mobile View Tab: 'design' or 'preview'
-  const [mobileView, setMobileView] = React.useState<"design" | "preview">("design");
+function Card({ title, description, children, className }: { title: string; description?: string; children: React.ReactNode; className?: string }) {
+  return (
+    <section className={cn("rounded-xl border border-border bg-card p-5 sm:p-6", className)}>
+      <h2 className="text-base font-semibold text-foreground">{title}</h2>
+      {description && <p className="mt-0.5 text-[13px] text-muted-foreground">{description}</p>}
+      <div className="mt-4">{children}</div>
+    </section>
+  );
+}
 
-  // QR Customization State
-  const [qrCardTemplate, setQrCardTemplate] = React.useState<QRCardTemplate>("standee");
-  const [qrFgColor, setQrFgColor] = React.useState("#0f172a");
-  const [qrBgColor, setQrBgColor] = React.useState("#ffffff");
-  const [qrDotStyle, setQrDotStyle] = React.useState<"square" | "rounded" | "dots">("rounded");
-  const [qrCenterLogo, setQrCenterLogo] = React.useState<"badge" | "none">("badge");
-
-  // NFC Customization State (Default to vibrant 'holographic-neon')
-  const [nfcThemeId, setNfcThemeId] = React.useState("holographic-neon");
-  const [nfcFontStyle, setNfcFontStyle] = React.useState<NFCFontStyle>("modern");
-
-  // Copy status
+/** Share: link, one-tap sending, a QR code that scans, and NFC (plan §3.4). */
+export default function SharePage() {
+  const { profile, isLoading } = useShellProfile();
+  const [origin, setOrigin] = React.useState<string>();
   const [copied, setCopied] = React.useState(false);
+  const [colour, setColour] = React.useState(QR_COLOURS[0].value);
+  const [canNativeShare, setCanNativeShare] = React.useState(false);
 
   React.useEffect(() => {
-    if (!isAuthLoading && !isAuthenticated) {
-      router.push("/login?returnUrl=/dashboard/qr");
-      return;
-    }
+    setOrigin(window.location.origin);
+    setCanNativeShare(typeof navigator.share === "function");
+  }, []);
 
-    if (isAuthenticated) {
-      profileApi
-        .getProfile()
-        .then((p) => {
-          setProfile(p);
-        })
-        .catch(() => {})
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
-  }, [isAuthLoading, isAuthenticated, router]);
+  if (isLoading || !profile) {
+    return (
+      <div className="grid gap-5 lg:grid-cols-2" aria-busy="true">
+        <div className="skeleton h-48 rounded-xl" />
+        <div className="skeleton h-80 rounded-xl lg:row-span-2" />
+        <div className="skeleton h-40 rounded-xl" />
+      </div>
+    );
+  }
 
-  const username = profile?.username || "demo";
-  const publicUrl = typeof window !== "undefined"
-    ? `${window.location.origin}/${username}`
-    : `https://digicardo.app/${username}`;
-
-  const handleCopyLink = async () => {
+  const url = cardPublicUrl(profile, origin);
+  const name = profile.display_name || profile.username;
+  const message = `Here's my digital card: ${url}`;
+  const copy = async () => {
     try {
-      await navigator.clipboard.writeText(publicUrl);
+      await navigator.clipboard.writeText(url);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      window.setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Ignore
+      // The link stays visible and selectable.
     }
   };
 
-  if (isAuthLoading || isLoading) {
-    return <QRSkeleton />;
-  }
+  const sendOptions = [
+    { label: "WhatsApp", href: `https://wa.me/?text=${encodeURIComponent(message)}`, icon: <SocialIcon platform="whatsapp" className="h-5 w-5" /> },
+    { label: "Email", href: `mailto:?subject=${encodeURIComponent(name)}&body=${encodeURIComponent(message)}`, icon: <Mail className="h-5 w-5" aria-hidden="true" /> },
+    { label: "Text message", href: `sms:?&body=${encodeURIComponent(message)}`, icon: <MessageSquare className="h-5 w-5" aria-hidden="true" /> },
+    { label: "LinkedIn", href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, icon: <SocialIcon platform="linkedin" className="h-5 w-5" /> },
+  ];
 
   return (
-    <div className="space-y-8 animate-in fade-in-50 duration-300 max-w-7xl mx-auto">
-      
-      {/* ── Studio Header ── */}
-      <div className="relative rounded-[28px] sm:rounded-[36px] border border-border/80 bg-gradient-to-br from-card via-card to-brand-50/20 dark:to-brand-950/10 p-5 sm:p-8 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-hidden">
-        
-        {/* Ambient Top Glow */}
-        <div className="absolute top-0 right-1/4 w-72 h-32 bg-brand-500/10 blur-3xl pointer-events-none" />
-
-        <div className="space-y-2 z-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs font-bold shadow-2xs">
-            <Share2 className="w-3.5 h-3.5 text-brand-600" />
-            <span>Instant Physical &amp; Digital Sharing</span>
-            <span>·</span>
-            <span className="font-mono text-muted-foreground font-semibold">
-              digicardo.app/{username}
-            </span>
+    <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="space-y-5">
+        <Card title="Your card link" description="Anyone with this link can open your card.">
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <div className="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-input bg-background px-3">
+              <span className="h-2 w-2 shrink-0 rounded-full bg-success" aria-hidden="true" />
+              <span className="truncate py-2.5 text-[15px] font-medium text-foreground">{url.replace(/^https?:\/\//, "")}</span>
+            </div>
+            <div className="flex gap-2">
+              <button type="button" onClick={copy} className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground hover:bg-[#4A32C0] sm:flex-none">
+                {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
+                {copied ? "Copied" : "Copy link"}
+              </button>
+              <Link href={`/${profile.username}`} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center justify-center gap-1.5 rounded-lg border border-input bg-card px-4 text-sm font-semibold hover:bg-muted">
+                Open <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
+            </div>
           </div>
+        </Card>
 
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
-            QR Code &amp; NFC Smart Card Studio
-          </h1>
+        <Card title="Send it" description="Opens the app with your link ready to send.">
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+            {sendOptions.map((o) => (
+              <a key={o.label} href={o.href} target={o.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="flex h-[76px] flex-col items-center justify-center gap-1.5 rounded-xl border border-border text-[13px] font-semibold text-foreground transition-colors hover:border-[#D4D4D8] hover:bg-muted">
+                {o.icon}
+                {o.label}
+              </a>
+            ))}
+          </div>
+          {canNativeShare && (
+            <button type="button" onClick={() => void navigator.share({ title: name, url }).catch(() => undefined)} className="mt-3 inline-flex h-10 items-center gap-1.5 rounded-lg border border-input px-3.5 text-sm font-semibold hover:bg-muted">
+              <Share2 className="h-4 w-4" aria-hidden="true" /> More apps
+            </button>
+          )}
+        </Card>
 
-          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-medium">
-            Turn your online profile into high-converting physical touchpoints. Design luxury contactless NFC smart cards (seamless internal antenna) and high-resolution scannable QR card displays.
+        <Card title="Tap to share with NFC" description="Put your link on an NFC card or sticker — phones open your card with a tap.">
+          <ol className="space-y-3 text-sm text-foreground">
+            {[
+              "Get a blank NFC card or sticker (NTAG213 or NTAG215 works).",
+              "Install a free app such as “NFC Tools” on your phone.",
+              "Choose Write → Add a record → URL, paste your card link, then hold the card to your phone.",
+            ].map((step, i) => (
+              <li key={step} className="flex gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#EFECFD] text-xs font-bold text-[#3D2AAD]">{i + 1}</span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+          <div className="mt-4 flex items-center gap-2 rounded-lg bg-muted px-3 py-2.5 text-[13px] text-muted-foreground">
+            <Nfc className="h-4 w-4 shrink-0" aria-hidden="true" />
+            Your link never changes, so a card you write today keeps working when you edit your details.
+          </div>
+        </Card>
+      </div>
+
+      <Card title="QR code" description="Scan with any phone camera to open your card." className="lg:sticky lg:top-24">
+        <div className="flex flex-col items-center gap-4">
+          <div className="rounded-2xl border border-border bg-white p-4">
+            <CardQr value={url} size={220} color={colour} label={`QR code for ${url}`} />
+          </div>
+          <div role="radiogroup" aria-label="QR colour" className="flex gap-2">
+            {QR_COLOURS.map((c) => (
+              <button key={c.id} type="button" role="radio" aria-checked={colour === c.value} aria-label={c.label} onClick={() => setColour(c.value)} className={cn("h-8 w-8 rounded-full border-2", colour === c.value ? "border-foreground" : "border-transparent")}>
+                <span className="block h-full w-full rounded-full border-2 border-white" style={{ background: c.value }} />
+              </button>
+            ))}
+          </div>
+          <div className="grid w-full grid-cols-2 gap-2">
+            <button type="button" onClick={() => downloadQrPng(url, profile.username, colour)} className="inline-flex h-11 items-center justify-center gap-1.5 rounded-lg bg-[#18181B] text-sm font-semibold text-white hover:bg-black">
+              <Download className="h-4 w-4" aria-hidden="true" /> PNG
+            </button>
+            <button type="button" onClick={() => downloadQrSvg(url, colour, profile.username)} className="inline-flex h-11 items-center justify-center gap-1.5 rounded-lg border border-input text-sm font-semibold hover:bg-muted">
+              <Download className="h-4 w-4" aria-hidden="true" /> SVG (for print)
+            </button>
+          </div>
+          <p className="flex items-start gap-2 text-[13px] text-muted-foreground">
+            <Printer className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+            Print at least 2 cm wide. Keep a white border around the code.
           </p>
         </div>
-
-        {/* Tab Switcher & Quick Actions */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-shrink-0 z-10">
-          {/* Segmented Switcher */}
-          <div className="inline-flex items-center p-1.5 rounded-2xl bg-muted/70 border border-border/80 shadow-inner">
-            <button
-              type="button"
-              onClick={() => setActiveTab("qr")}
-              className={cn(
-                "px-4 py-2 rounded-xl flex items-center gap-2 transition-all select-none text-xs font-black",
-                activeTab === "qr"
-                  ? "bg-card text-foreground shadow-sm ring-1 ring-border/80"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <QrCode className="w-4 h-4 text-brand-600" />
-              <span>QR Code</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab("nfc")}
-              className={cn(
-                "px-4 py-2 rounded-xl flex items-center gap-2 transition-all select-none text-xs font-black",
-                activeTab === "nfc"
-                  ? "bg-card text-foreground shadow-sm ring-1 ring-border/80"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Radio className="w-4 h-4 text-brand-600" />
-              <span>NFC Card</span>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleCopyLink}
-              className="rounded-xl text-xs font-bold gap-1.5 h-10 px-3.5 border-border/80 bg-card hover:bg-muted shadow-2xs"
-            >
-              {copied ? (
-                <Check className="w-3.5 h-3.5 text-emerald-600" />
-              ) : (
-                <Copy className="w-3.5 h-3.5 text-muted-foreground" />
-              )}
-              <span>{copied ? "Copied" : "Copy Link"}</span>
-            </Button>
-
-            <Link href={`/${username}`} target="_blank" rel="noreferrer">
-              <Button
-                variant="outline"
-                size="sm"
-                className="rounded-xl text-xs font-bold gap-1.5 h-10 px-3.5 border-border/80 bg-card hover:bg-muted shadow-2xs"
-              >
-                <span>Live Profile</span>
-                <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Mobile View Toggle Segmented Control (Hidden on lg) ── */}
-      <div className="flex lg:hidden p-1.5 rounded-2xl bg-muted/60 border border-border/80 text-xs font-bold shadow-2xs">
-        <button
-          type="button"
-          onClick={() => setMobileView("design")}
-          className={cn(
-            "flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all select-none",
-            mobileView === "design"
-              ? "bg-card text-brand-600 shadow-xs border border-brand-200 dark:border-brand-800"
-              : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          <Sliders className="w-3.5 h-3.5" />
-          <span>{activeTab === "qr" ? "Customize QR" : "NFC Themes & Guide"}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setMobileView("preview")}
-          className={cn(
-            "flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all select-none",
-            mobileView === "preview"
-              ? "bg-card text-brand-600 shadow-xs border border-brand-200 dark:border-brand-800"
-              : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          <Smartphone className="w-3.5 h-3.5" />
-          <span>Live Card Preview</span>
-        </button>
-      </div>
-
-      {/* ── Main Studio Workspace: QR or NFC ── */}
-      {activeTab === "qr" ? (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-in fade-in-50">
-          {/* Left Column: QR Customizer (7 cols) */}
-          <div className={cn("lg:col-span-7", mobileView === "preview" && "hidden lg:block")}>
-            <QRCustomizer
-              cardTemplate={qrCardTemplate}
-              fgColor={qrFgColor}
-              bgColor={qrBgColor}
-              dotStyle={qrDotStyle}
-              centerLogo={qrCenterLogo}
-              onChangeCardTemplate={setQrCardTemplate}
-              onChangeColors={(fg, bg) => {
-                setQrFgColor(fg);
-                setQrBgColor(bg);
-              }}
-              onChangeDotStyle={setQrDotStyle}
-              onChangeCenterLogo={setQrCenterLogo}
-            />
-          </div>
-
-          {/* Right Column: QR Preview (5 cols) */}
-          <div className={cn("lg:col-span-5", mobileView === "design" && "hidden lg:block")}>
-            <QRPreview
-              profile={profile}
-              cardTemplate={qrCardTemplate}
-              fgColor={qrFgColor}
-              bgColor={qrBgColor}
-              dotStyle={qrDotStyle}
-              centerLogo={qrCenterLogo}
-            />
-          </div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-in fade-in-50">
-          {/* Left Column: NFC Config & Guides (7 cols) */}
-          <div className={cn("lg:col-span-7 space-y-6", mobileView === "preview" && "hidden lg:block")}>
-            <NFCTemplatePicker
-              selectedThemeId={nfcThemeId}
-              onSelectTheme={setNfcThemeId}
-              fontStyle={nfcFontStyle}
-              onSelectFontStyle={setNfcFontStyle}
-            />
-
-            <NFCSetupGuide username={username} />
-
-            <NFCTestCard username={username} />
-          </div>
-
-          {/* Right Column: NFC Card Preview (5 cols) */}
-          <div className={cn("lg:col-span-5", mobileView === "design" && "hidden lg:block")}>
-            <NFCCardPreview
-              profile={profile}
-              selectedThemeId={nfcThemeId}
-              fontStyle={nfcFontStyle}
-            />
-          </div>
-        </div>
-      )}
-
+      </Card>
     </div>
   );
 }

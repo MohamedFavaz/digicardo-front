@@ -60,6 +60,17 @@ async function handleProxy(
     }
   });
 
+  // "Back to admin / agent panel" is submitted as a full-page form POST (see lib/auth/switch-account):
+  // the navigation cancels the page's other in-flight API calls, whose responses would otherwise
+  // re-set the old session cookie after the switch. Upstream still answers JSON; we redirect below.
+  const isAccountSwitchNavigation =
+    pathSegments.join("/") === "auth/stop-impersonation" &&
+    request.method === "POST" &&
+    (request.headers.get("sec-fetch-mode") === "navigate" || (request.headers.get("accept") || "").includes("text/html"));
+  if (isAccountSwitchNavigation) {
+    forwardHeaders.set("accept", "application/json");
+  }
+
   if (!forwardHeaders.has("accept")) {
     forwardHeaders.set("accept", "application/json");
   }
@@ -162,6 +173,25 @@ async function handleProxy(
       rawSetCookies.forEach((cookie) => {
         response.headers.append("set-cookie", rewriteUpstreamCookie(cookie));
       });
+      return response;
+    }
+
+    if (isAccountSwitchNavigation) {
+      // Go where the backend says (only same-site paths), carrying the restored session cookie.
+      let target = responseStatus === 401 ? "/login" : "/dashboard";
+      try {
+        const data = await upstreamResponse.json();
+        const next = data?.data?.redirect_url;
+        if (upstreamResponse.ok && typeof next === "string" && /^\/(?![/\\])/.test(next)) target = next;
+      } catch {
+        // keep the fallback
+      }
+      const response = NextResponse.redirect(new URL(target, request.nextUrl.origin), 303);
+      rawSetCookies.forEach((cookie) => {
+        response.headers.append("set-cookie", rewriteUpstreamCookie(cookie));
+      });
+      // Raw header on purpose: response.cookies.set() rewrites Set-Cookie and would drop the session cookie above.
+      response.headers.append("set-cookie", "digicardo_impersonating=; Path=/; Max-Age=0; SameSite=Lax");
       return response;
     }
 

@@ -19,8 +19,11 @@ export const metadata: Metadata = {
   description: "Create your digital business card and link profile in minutes. Share your contact info, vCard data, social links, and physical NFC smart card — all from one stunning page.",
   keywords: ["digicardo", "digital business card", "nfc smart card", "link in bio", "vcard", "smart profile", "digital identity"],
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
+    icon: [
+      { url: "/logo.svg", type: "image/svg+xml" },
+      { url: "/logo.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: "/apple-touch-icon.png",
   },
   openGraph: {
     title: "Digicardo — The Modern Digital Business Card & Smart Profile Platform",

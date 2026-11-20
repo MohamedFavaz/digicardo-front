@@ -40,7 +40,7 @@ export function CurrentPlanCard({
     : null;
 
   return (
-    <div className="rounded-[36px] border border-border/80 bg-card p-6 sm:p-8 shadow-card space-y-6 select-none">
+    <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-card space-y-6 select-none">
 
       {/* Cancellation Banner Alert if scheduled */}
       {isCanceled && (
@@ -48,7 +48,7 @@ export function CurrentPlanCard({
           <div className="flex items-center gap-3">
             <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
             <div>
-              <h4 className="text-xs font-black">
+              <h4 className="text-xs font-bold">
                 Subscription Scheduled for Cancellation
               </h4>
               <p className="text-[11px] text-amber-800 font-medium mt-0.5">
@@ -75,16 +75,16 @@ export function CurrentPlanCard({
         {/* Left: Active Tier */}
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider font-extrabold text-muted-foreground">
+            <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-muted-foreground">
               ACTIVE TIER
             </span>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200/80">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
               <CheckCircle2 className="w-3 h-3 text-emerald-600" />
               <span>{subscription?.status ? subscription.status.toUpperCase() : "ACTIVE"}</span>
             </span>
           </div>
 
-          <h2 className="text-xl sm:text-2xl font-black text-foreground">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground">
             {planName}
           </h2>
 
@@ -99,7 +99,7 @@ export function CurrentPlanCard({
             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-mono">
               Billing Interval
             </span>
-            <span className="block text-xs font-black text-foreground capitalize">
+            <span className="block text-xs font-bold text-foreground capitalize">
               {subscription?.billing_interval || "Free Forever"}
             </span>
           </div>
@@ -109,7 +109,7 @@ export function CurrentPlanCard({
               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider font-mono">
                 {isCanceled ? "Access Ends On" : "Next Renewal Date"}
               </span>
-              <div className="flex items-center gap-1 text-xs font-black text-foreground">
+              <div className="flex items-center gap-1 text-xs font-bold text-foreground">
                 <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
                 <span>{formattedPeriodEnd}</span>
               </div>

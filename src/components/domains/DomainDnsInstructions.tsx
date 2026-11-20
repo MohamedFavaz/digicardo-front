@@ -27,7 +27,7 @@ export function DomainDnsInstructions({
     <div className="rounded-2xl border border-brand-200/80 bg-brand-50/40 p-4 sm:p-5 space-y-3.5">
       <div className="flex items-center gap-2">
         <Server className="w-4 h-4 text-brand-600 flex-shrink-0" />
-        <h4 className="text-xs font-black text-foreground uppercase tracking-wider">
+        <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">
           DNS Verification Instructions
         </h4>
       </div>
@@ -43,7 +43,7 @@ export function DomainDnsInstructions({
             Type
           </span>
           <div className="flex items-center justify-between">
-            <span className="font-mono text-xs font-black text-brand-700">
+            <span className="font-mono text-xs font-bold text-brand-700">
               {dnsRecordType || "TXT"}
             </span>
             <Button
@@ -68,7 +68,7 @@ export function DomainDnsInstructions({
             Host / Name
           </span>
           <div className="flex items-center justify-between">
-            <span className="font-mono text-xs font-black text-brand-700 truncate mr-1">
+            <span className="font-mono text-xs font-bold text-brand-700 truncate mr-1">
               {dnsRecordName || "@"}
             </span>
             <Button
@@ -93,7 +93,7 @@ export function DomainDnsInstructions({
             Value / Content
           </span>
           <div className="flex items-center justify-between">
-            <span className="font-mono text-xs font-black text-brand-700 truncate mr-1">
+            <span className="font-mono text-xs font-bold text-brand-700 truncate mr-1">
               {dnsRecordValue || "Digicardo-verify=..."}
             </span>
             <Button

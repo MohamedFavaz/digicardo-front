@@ -64,7 +64,7 @@ export function MetricCardsGrid({ overview }: MetricCardsGridProps) {
           <Link
             key={item.title}
             href={item.href}
-            className="group rounded-[24px] sm:rounded-[28px] border border-border/80 bg-card p-4 sm:p-6 shadow-card hover:shadow-soft hover:-translate-y-1 transition-all duration-300 relative overflow-hidden block select-none cursor-pointer"
+            className="group rounded-2xl rounded-2xl border border-border/80 bg-card p-4 sm:p-6 shadow-card hover:shadow-soft hover:-translate-y-1 transition-all duration-300 relative overflow-hidden block select-none cursor-pointer"
           >
             {/* Ambient Corner Glow */}
             <div
@@ -89,7 +89,7 @@ export function MetricCardsGrid({ overview }: MetricCardsGridProps) {
             </div>
 
             <div className="pt-3 z-10 relative">
-              <div className="text-2xl sm:text-3xl font-black text-foreground tracking-tight leading-none">
+              <div className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight leading-none">
                 {item.value}
               </div>
 
@@ -97,7 +97,7 @@ export function MetricCardsGrid({ overview }: MetricCardsGridProps) {
                 <div className="flex items-center gap-1.5 text-xs font-bold">
                   <span
                     className={cn(
-                      "inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-extrabold border shadow-2xs",
+                      "inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-semibold border shadow-2xs",
                       item.positive
                         ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                         : "bg-muted/80 text-muted-foreground border-border/70"

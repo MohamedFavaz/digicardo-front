@@ -31,7 +31,7 @@ export function AdminMetricCard({
   return (
     <div
       className={cn(
-        "rounded-[32px] border border-border/80 bg-card p-6 shadow-card flex flex-col justify-between space-y-4 select-none hover:shadow-hover transition-all duration-300",
+        "rounded-2xl border border-border/80 bg-card p-6 shadow-card flex flex-col justify-between space-y-4 select-none hover:shadow-hover transition-all duration-300",
         className
       )}
     >
@@ -51,7 +51,7 @@ export function AdminMetricCard({
           </div>
         </div>
 
-        <div className="text-3xl font-black tracking-tight text-foreground">
+        <div className="text-3xl font-bold tracking-tight text-foreground">
           {value}
         </div>
 

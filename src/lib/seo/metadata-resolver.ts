@@ -11,16 +11,15 @@ export function resolveProfileMetadata(profile: PublicProfile): ResolvedMetadata
   const username = profile.username;
   const displayName = profile.display_name?.trim() || null;
   const bio = profile.bio?.trim() || null;
+  // Cards on an agent's own domain are white-label: the agent's brand (or nothing) instead of Digicardo.
+  const brand = profile.agent_domain ? profile.agent_brand?.name?.trim() || null : "Digicardo";
+  const suffix = brand ? ` — ${brand}` : "";
 
   // 1. Title Fallback: seo_title -> display_name -> username
-  const title =
-    profile.seo_title?.trim() ||
-    (displayName ? `${displayName} (@${username}) — Digicardo` : `@${username} — Digicardo`);
+  const title = profile.seo_title?.trim() || (displayName ? `${displayName} (@${username})${suffix}` : `@${username}${suffix}`);
 
   // 2. Description Fallback: seo_description -> bio -> default copy
-  const defaultDescription = displayName
-    ? `Find all contact details and links from ${displayName} on Digicardo.`
-    : `Find all contact details and links from @${username} on Digicardo.`;
+  const defaultDescription = `Find all contact details and links from ${displayName ?? `@${username}`}${brand ? ` on ${brand}` : ""}.`;
 
   const description = profile.seo_description?.trim() || bio || defaultDescription;
 
@@ -45,10 +44,12 @@ export function resolveProfileMetadata(profile: PublicProfile): ResolvedMetadata
     profile.cover_url ||
     `${BASE_APP_URL}/api/og/${encodeURIComponent(username)}`;
 
-  // 6. Canonical Public URL: primary custom domain vs standard Digicardo.app/username
+  // 6. Canonical Public URL: the owner's custom domain, else the agent's domain, else Digicardo.app/username
   const canonicalUrl = profile.primary_custom_domain
     ? `https://${profile.primary_custom_domain.replace(/\/+$/, "")}/`
-    : `${BASE_APP_URL}/${encodeURIComponent(username)}`;
+    : profile.agent_domain
+      ? `https://${profile.agent_domain}/${encodeURIComponent(username)}`
+      : `${BASE_APP_URL}/${encodeURIComponent(username)}`;
 
   // 7. Keywords
   const keywords = Array.isArray(profile.seo_keywords)

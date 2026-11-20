@@ -31,11 +31,11 @@ export function FaqBlock({ block }: FaqBlockProps) {
         </h3>
       )}
 
-      <div className="divide-y divide-slate-800 rounded-[var(--lf-radius,0.75rem)] border border-slate-800 bg-slate-900/80 shadow-md">
+      <div className="divide-y divide-zinc-800 rounded-[var(--lf-radius,0.75rem)] border border-zinc-800 bg-zinc-900/80 shadow-md">
         {config.items.map((item) => {
           const isOpen = !!openItems[item.id];
           return (
-            <div key={item.id} className="transition-colors hover:bg-slate-800/40">
+            <div key={item.id} className="transition-colors hover:bg-zinc-800/40">
               <button
                 type="button"
                 onClick={() => toggleItem(item.id)}
@@ -44,14 +44,14 @@ export function FaqBlock({ block }: FaqBlockProps) {
               >
                 <span>{item.question}</span>
                 <ChevronDown
-                  className={`h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 ${
+                  className={`h-4 w-4 shrink-0 text-zinc-400 transition-transform duration-200 ${
                     isOpen ? "rotate-180 text-[var(--lf-accent,#6366f1)]" : ""
                   }`}
                 />
               </button>
 
               {isOpen && (
-                <div className="px-4 pb-3.5 pt-1 text-xs leading-relaxed text-slate-300">
+                <div className="px-4 pb-3.5 pt-1 text-xs leading-relaxed text-zinc-300">
                   <p className="whitespace-pre-line">{item.answer}</p>
                 </div>
               )}

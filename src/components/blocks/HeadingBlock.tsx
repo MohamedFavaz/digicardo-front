@@ -18,7 +18,7 @@ export function HeadingBlock({ config }: HeadingBlockProps) {
 
   if (level === "h3") {
     return (
-      <h3 className="w-full pt-2 pb-1 text-center text-base font-semibold tracking-wide text-slate-300">
+      <h3 className="w-full pt-2 pb-1 text-center text-base font-semibold tracking-wide text-zinc-300">
         {config.text}
       </h3>
     );

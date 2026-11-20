@@ -111,13 +111,13 @@ export function QRCustomizer({
     <div className="space-y-6">
 
       {/* ── Section 1: Presentation Card Template ── */}
-      <div className="rounded-[36px] border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-5">
+      <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-5">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/80 text-amber-600 dark:text-amber-400 flex items-center justify-center shadow-2xs">
             <LayoutTemplate className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="font-black text-base text-foreground">
+            <h3 className="font-bold text-base text-foreground">
               QR Card Template
             </h3>
             <p className="text-xs text-muted-foreground font-medium">
@@ -148,7 +148,7 @@ export function QRCustomizer({
                       {getTemplateIcon(tmpl.id)}
                     </div>
                     <div>
-                      <span className="text-xs font-black text-foreground group-hover:text-brand-600 transition-colors block">
+                      <span className="text-xs font-bold text-foreground group-hover:text-brand-600 transition-colors block">
                         {tmpl.name}
                       </span>
                       <span className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
@@ -175,13 +175,13 @@ export function QRCustomizer({
       </div>
       
       {/* ── Section 2: Color Palette ── */}
-      <div className="rounded-[36px] border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-5">
+      <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-5">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-2xl bg-brand-50 dark:bg-brand-950/40 border border-brand-200/80 dark:border-brand-800/80 text-brand-600 dark:text-brand-400 flex items-center justify-center shadow-2xs">
             <Palette className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="font-black text-base text-foreground">
+            <h3 className="font-bold text-base text-foreground">
               QR Color Palette
             </h3>
             <p className="text-xs text-muted-foreground font-medium">
@@ -210,7 +210,7 @@ export function QRCustomizer({
                 )}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-foreground group-hover:text-brand-600 transition-colors truncate">
+                  <span className="text-xs font-bold text-foreground group-hover:text-brand-600 transition-colors truncate">
                     {preset.name}
                   </span>
                   {isSelected && (
@@ -240,7 +240,7 @@ export function QRCustomizer({
           <button
             type="button"
             onClick={() => setShowCustomColors(!showCustomColors)}
-            className="flex items-center justify-between w-full py-1 text-xs font-extrabold text-brand-600 hover:text-brand-700 transition-colors"
+            className="flex items-center justify-between w-full py-1 text-xs font-semibold text-brand-600 hover:text-brand-700 transition-colors"
           >
             <span>{showCustomColors ? "Hide Custom Hex Pickers" : "Customize Exact Hex Colors →"}</span>
             {showCustomColors ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -249,7 +249,7 @@ export function QRCustomizer({
           {showCustomColors && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 animate-in fade-in-50">
               <div className="p-3 rounded-2xl bg-muted/40 border border-border/80 space-y-1.5">
-                <label className="block text-xs font-extrabold text-foreground">
+                <label className="block text-xs font-semibold text-foreground">
                   Foreground Pattern Color
                 </label>
                 <div className="flex items-center gap-2">
@@ -269,7 +269,7 @@ export function QRCustomizer({
               </div>
 
               <div className="p-3 rounded-2xl bg-muted/40 border border-border/80 space-y-1.5">
-                <label className="block text-xs font-extrabold text-foreground">
+                <label className="block text-xs font-semibold text-foreground">
                   Background Color
                 </label>
                 <div className="flex items-center gap-2">
@@ -293,13 +293,13 @@ export function QRCustomizer({
       </div>
 
       {/* ── Section 3: Module Pattern Style ── */}
-      <div className="rounded-[36px] border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-5">
+      <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-5">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-2xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200/80 dark:border-sky-800/80 text-sky-600 dark:text-sky-400 flex items-center justify-center shadow-2xs">
             <Layers className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="font-black text-base text-foreground">
+            <h3 className="font-bold text-base text-foreground">
               Module Pattern Style
             </h3>
             <p className="text-xs text-muted-foreground font-medium">
@@ -328,7 +328,7 @@ export function QRCustomizer({
                 )}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-foreground group-hover:text-brand-600 transition-colors">
+                  <span className="text-xs font-bold text-foreground group-hover:text-brand-600 transition-colors">
                     {opt.label}
                   </span>
                   {isSelected && (
@@ -345,13 +345,13 @@ export function QRCustomizer({
       </div>
 
       {/* ── Section 4: Center Badge & Avatar ── */}
-      <div className="rounded-[36px] border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-5">
+      <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-5">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200/80 dark:border-purple-800/80 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-2xs">
             <ImageIcon className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="font-black text-base text-foreground">
+            <h3 className="font-bold text-base text-foreground">
               Center Icon &amp; Logo
             </h3>
             <p className="text-xs text-muted-foreground font-medium">
@@ -379,7 +379,7 @@ export function QRCustomizer({
                 )}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-foreground group-hover:text-brand-600 transition-colors">
+                  <span className="text-xs font-bold text-foreground group-hover:text-brand-600 transition-colors">
                     {opt.label}
                   </span>
                   {isSelected && (

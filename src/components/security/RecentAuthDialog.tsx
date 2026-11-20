@@ -62,11 +62,11 @@ export function RecentAuthDialog({
       aria-labelledby="recent-auth-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
     >
-      <div className="relative w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl shadow-black/60 ring-1 ring-white/10">
+      <div className="relative w-full max-w-md rounded-2xl border border-zinc-700 bg-zinc-900 p-6 shadow-2xl shadow-black/60 ring-1 ring-white/10">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors"
+          className="absolute right-4 top-4 rounded-lg p-1 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 transition-colors"
           aria-label="Close"
         >
           <X className="h-4 w-4" />
@@ -78,10 +78,10 @@ export function RecentAuthDialog({
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div>
-            <h2 id="recent-auth-title" className="text-base font-bold text-slate-100">
+            <h2 id="recent-auth-title" className="text-base font-bold text-zinc-100">
               {title}
             </h2>
-            <p className="text-xs text-slate-400 leading-snug">{description}</p>
+            <p className="text-xs text-zinc-400 leading-snug">{description}</p>
           </div>
         </div>
 
@@ -95,7 +95,7 @@ export function RecentAuthDialog({
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="recent-auth-password" className="mb-1.5 block text-xs font-medium text-slate-300">
+            <label htmlFor="recent-auth-password" className="mb-1.5 block text-xs font-medium text-zinc-300">
               Current Password
             </label>
             <div className="relative">
@@ -108,12 +108,12 @@ export function RecentAuthDialog({
                 placeholder="Enter your current password"
                 autoFocus
                 required
-                className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 pr-10 text-sm text-slate-100 placeholder-slate-500 outline-none transition-colors focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2.5 pr-10 text-sm text-zinc-100 placeholder-zinc-500 outline-none transition-colors focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
                 tabIndex={-1}
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -125,7 +125,7 @@ export function RecentAuthDialog({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+              className="rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-2 text-xs font-medium text-zinc-300 hover:bg-zinc-700 hover:text-white transition-colors"
             >
               Cancel
             </button>

@@ -234,12 +234,9 @@ export default function AdminValidityPlansPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Validity Plans</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60">
-              Pricing & Durations
-            </span>
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">Plans</h1>
           </div>
-          <p className="text-slate-500 text-xs mt-1 leading-relaxed font-medium">
+          <p className="mt-1 text-[15px] text-muted-foreground">
             Manage subscription durations, pricing, and active status across the platform.
           </p>
         </div>
@@ -247,7 +244,7 @@ export default function AdminValidityPlansPage() {
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs flex items-center gap-2 transition-all shadow-xs active:scale-95 cursor-pointer"
+            className="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-white font-semibold text-sm flex items-center gap-2 transition-all shadow-xs cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>New Plan</span>
@@ -255,7 +252,7 @@ export default function AdminValidityPlansPage() {
           <button
             onClick={fetchPlans}
             disabled={loading}
-            className="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-black hover:bg-slate-50 flex items-center justify-center transition-all disabled:opacity-50 cursor-pointer shadow-2xs active:scale-95"
+            className="w-9 h-9 rounded-full bg-card border border-border text-[#52525B] hover:text-black hover:bg-muted/50 flex items-center justify-center transition-all disabled:opacity-50 cursor-pointer"
             title="Refresh plans"
           >
             <RotateCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
@@ -265,46 +262,46 @@ export default function AdminValidityPlansPage() {
 
       {/* ── Summary Cards ── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs">
+        <div className="bg-card border border-border rounded-2xl p-5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Total Plans</span>
-            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
+            <span className="text-xs font-semibold text-muted-foreground">Total Plans</span>
+            <div className="w-8 h-8 rounded-xl bg-zinc-100 text-[#52525B] flex items-center justify-center">
               <Layers className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-slate-900 mt-2">{plans.length}</div>
-          <p className="text-[11px] text-slate-400 font-medium mt-0.5">Configured tiers</p>
+          <div className="text-2xl font-semibold text-foreground mt-2">{plans.length}</div>
+          <p className="text-xs text-muted-foreground font-medium mt-0.5">Configured tiers</p>
         </div>
 
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs">
+        <div className="bg-card border border-border rounded-2xl p-5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Active Plans</span>
+            <span className="text-xs font-semibold text-muted-foreground">Active Plans</span>
             <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-slate-900 mt-2">{activePlansCount}</div>
-          <p className="text-[11px] text-slate-400 font-medium mt-0.5">Ready for provisioning</p>
+          <div className="text-2xl font-semibold text-foreground mt-2">{activePlansCount}</div>
+          <p className="text-xs text-muted-foreground font-medium mt-0.5">Ready for provisioning</p>
         </div>
 
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs">
+        <div className="bg-card border border-border rounded-2xl p-5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Quick Links</span>
-            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
+            <span className="text-xs font-semibold text-muted-foreground">Quick Links</span>
+            <div className="w-8 h-8 rounded-xl bg-zinc-100 text-[#52525B] flex items-center justify-center">
               <CreditCard className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-center gap-3 mt-3">
             <Link
               href="/admin/settings"
-              className="text-xs font-semibold text-slate-700 hover:text-black flex items-center gap-1 hover:underline"
+              className="text-xs font-semibold text-[#52525B] hover:text-black flex items-center gap-1 hover:underline"
             >
               Settings <ArrowRight className="w-3 h-3" />
             </Link>
-            <span className="text-slate-300">·</span>
+            <span className="text-zinc-300">·</span>
             <Link
               href="/admin/admin-panel"
-              className="text-xs font-semibold text-slate-700 hover:text-black flex items-center gap-1 hover:underline"
+              className="text-xs font-semibold text-[#52525B] hover:text-black flex items-center gap-1 hover:underline"
             >
               Provision User <ArrowRight className="w-3 h-3" />
             </Link>
@@ -313,44 +310,44 @@ export default function AdminValidityPlansPage() {
       </div>
 
       {/* ── Plans Table & Editor ── */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
-        <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between">
+      <div className="bg-card border border-border rounded-2xl overflow-hidden">
+        <div className="p-5 sm:p-6 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-2xl bg-zinc-100 text-[#52525B] flex items-center justify-center">
               <Sparkles className="w-4.5 h-4.5" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-900">Plan Tiers</h2>
-              <p className="text-[11px] text-slate-400">Durations, prices, and status</p>
+              <h2 className="text-sm font-semibold text-foreground">Plan Tiers</h2>
+              <p className="text-xs text-muted-foreground">Durations, prices, and status</p>
             </div>
           </div>
-          <span className="text-xs font-bold text-slate-400">{plans.length} plans</span>
+          <span className="text-xs font-semibold text-muted-foreground">{plans.length} plans</span>
         </div>
 
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-border">
           {loading ? (
             [1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="p-5 flex items-center gap-4">
-                <div className="h-10 w-10 bg-slate-100 rounded-2xl animate-pulse" />
+                <div className="h-10 w-10 bg-zinc-100 rounded-2xl animate-pulse" />
                 <div className="space-y-1.5 flex-1">
-                  <div className="h-4 w-32 bg-slate-100 rounded-lg animate-pulse" />
-                  <div className="h-3 w-24 bg-slate-100 rounded-lg animate-pulse" />
+                  <div className="h-4 w-32 bg-zinc-100 rounded-lg animate-pulse" />
+                  <div className="h-3 w-24 bg-zinc-100 rounded-lg animate-pulse" />
                 </div>
-                <div className="h-9 w-48 bg-slate-100 rounded-2xl animate-pulse" />
+                <div className="h-9 w-48 bg-zinc-100 rounded-2xl animate-pulse" />
               </div>
             ))
           ) : plans.length === 0 ? (
             <div className="p-12 text-center space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-zinc-100 text-muted-foreground mx-auto flex items-center justify-center">
                 <Calendar className="w-6 h-6" />
               </div>
-              <p className="text-sm font-bold text-slate-700">No plans found</p>
-              <p className="text-xs text-slate-400 max-w-sm mx-auto">
+              <p className="text-sm font-semibold text-[#52525B]">No plans found</p>
+              <p className="text-xs text-muted-foreground max-w-sm mx-auto">
                 Create a custom plan or restore platform defaults.
               </p>
               <button
                 onClick={fetchPlans}
-                className="px-4 py-2 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs transition-all shadow-xs"
+                className="px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-all shadow-xs"
               >
                 Reload Defaults
               </button>
@@ -368,12 +365,12 @@ export default function AdminValidityPlansPage() {
               return (
                 <div
                   key={plan.id}
-                  className={`p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/70 transition-colors ${!plan.is_active ? "opacity-60 bg-slate-50/40" : ""
+                  className={`p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-muted/50 transition-colors ${!plan.is_active ? "opacity-60 bg-muted/50" : ""
                     }`}
                 >
                   {/* Left: Badge & Plan Info */}
                   <div className="flex items-center gap-3.5">
-                    <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 font-bold text-sm flex items-center justify-center flex-shrink-0 shadow-2xs border border-slate-200/60">
+                    <div className="w-12 h-12 rounded-2xl bg-zinc-100 text-[#52525B] font-semibold text-sm flex items-center justify-center flex-shrink-0 border border-border">
                       {plan.months >= 12
                         ? `${plan.months / 12}Y`
                         : `${plan.months}M`}
@@ -381,17 +378,17 @@ export default function AdminValidityPlansPage() {
 
                     <div>
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-bold text-slate-900">{plan.name}</p>
+                        <p className="text-sm font-semibold text-foreground">{plan.name}</p>
                         <span
-                          className={`px-3 py-1 rounded-full text-[11px] font-bold border ${plan.is_active
+                          className={`px-3 py-1 rounded-full text-xs font-semibold border ${plan.is_active
                             ? "bg-emerald-50 text-emerald-700 border-emerald-200/60"
-                            : "bg-slate-100 text-slate-500 border-slate-200"
+                            : "bg-zinc-100 text-muted-foreground border-border"
                             }`}
                         >
                           {plan.is_active ? "Active" : "Disabled"}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400 font-medium">
+                      <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground font-medium">
                         <Clock className="w-3.5 h-3.5" />
                         <span>
                           {plan.months} Month{plan.months > 1 ? "s" : ""} · {Math.round(plan.months * 30.5)} days
@@ -407,8 +404,8 @@ export default function AdminValidityPlansPage() {
                       type="button"
                       onClick={() => handleToggleActive(plan)}
                       disabled={isSaving}
-                      className={`h-8 px-3.5 rounded-full border text-xs font-semibold transition-all shadow-2xs flex items-center gap-1.5 ${plan.is_active
-                        ? "border-slate-200 bg-white hover:bg-slate-50 text-slate-700"
+                      className={`h-8 px-3.5 rounded-full border text-xs font-semibold transition-all flex items-center gap-1.5 ${plan.is_active
+                        ? "border-border bg-card hover:bg-muted/50 text-[#52525B]"
                         : "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
                         }`}
                       title="Toggle active status"
@@ -425,7 +422,7 @@ export default function AdminValidityPlansPage() {
                           [plan.id]: { ...edit, symbol: e.target.value },
                         }))
                       }
-                      className="h-8 px-2.5 rounded-full border border-slate-200 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-slate-400"
+                      className="h-8 px-2.5 rounded-full border border-border text-xs font-semibold text-[#52525B] bg-card focus:outline-none focus:border-zinc-400"
                     >
                       {CURRENCY_OPTIONS.map((c) => (
                         <option key={c} value={c}>
@@ -446,7 +443,7 @@ export default function AdminValidityPlansPage() {
                             [plan.id]: { ...edit, price: e.target.value },
                           }))
                         }
-                        className="w-28 h-8 px-3 rounded-full border border-slate-200 text-xs font-bold text-slate-800 text-right focus:outline-none focus:border-slate-400"
+                        className="w-28 h-8 px-3 rounded-full border border-border text-xs font-semibold text-[#52525B] text-right focus:outline-none focus:border-zinc-400"
                         placeholder="Price"
                       />
                     </div>
@@ -455,7 +452,7 @@ export default function AdminValidityPlansPage() {
                     <button
                       onClick={() => handleSavePrice(plan.id)}
                       disabled={isSaving}
-                      className="h-8 px-4 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all disabled:opacity-50 flex items-center gap-1.5 shadow-xs"
+                      className="h-8 px-4 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm font-semibold transition-all disabled:opacity-50 flex items-center gap-1.5 shadow-xs"
                     >
                       <Save className="w-3.5 h-3.5" />
                       <span>{isSaving ? "Saving…" : "Save"}</span>
@@ -465,7 +462,7 @@ export default function AdminValidityPlansPage() {
                     <button
                       onClick={() => handleDeletePlan(plan.id)}
                       disabled={isDeleting}
-                      className="w-8 h-8 rounded-full border border-slate-200 hover:border-red-200 hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center transition-all disabled:opacity-50 shadow-2xs"
+                      className="w-8 h-8 rounded-full border border-border hover:border-red-200 hover:bg-red-50 text-muted-foreground hover:text-red-600 flex items-center justify-center transition-all disabled:opacity-50"
                       title="Delete plan"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -474,7 +471,7 @@ export default function AdminValidityPlansPage() {
                     {/* Feedback label */}
                     {msg && (
                       <span
-                        className={`text-[11px] font-bold ml-1 ${msg.ok ? "text-emerald-600" : "text-red-500"
+                        className={`text-xs font-semibold ml-1 ${msg.ok ? "text-emerald-600" : "text-red-500"
                           }`}
                       >
                         {msg.text}
@@ -491,20 +488,20 @@ export default function AdminValidityPlansPage() {
       {/* ── Create New Plan Modal ── */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
+          <div className="bg-card rounded-2xl p-6 sm:p-7 max-w-md w-full shadow-2xl border border-border animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-border pb-4 mb-5">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
                   <Plus className="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">Add Plan</h3>
-                  <p className="text-xs text-slate-400">Set duration and pricing</p>
+                  <h3 className="text-base font-semibold text-foreground">Add Plan</h3>
+                  <p className="text-xs text-muted-foreground">Set duration and pricing</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="w-8 h-8 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center text-sm font-bold"
+                className="w-8 h-8 rounded-xl text-muted-foreground hover:text-[#52525B] hover:bg-zinc-100 flex items-center justify-center text-sm font-semibold"
               >
                 ✕
               </button>
@@ -512,21 +509,21 @@ export default function AdminValidityPlansPage() {
 
             <form onSubmit={handleCreatePlan} className="space-y-4">
               {createError && (
-                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold flex items-center gap-2">
+                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 flex-shrink-0" />
                   <span>{createError}</span>
                 </div>
               )}
 
               {createSuccess && (
-                <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center gap-2">
+                <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
                   <span>{createSuccess}</span>
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-[#52525B] mb-1.5">
                   Plan Name
                 </label>
                 <input
@@ -535,13 +532,13 @@ export default function AdminValidityPlansPage() {
                   value={newPlan.name}
                   onChange={(e) => setNewPlan((p) => ({ ...p, name: e.target.value }))}
                   placeholder="e.g. 1 Year Premium"
-                  className="w-full h-10 px-3 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-indigo-500"
+                  className="w-full h-10 px-3 rounded-xl border border-border text-xs font-semibold text-[#52525B] focus:outline-none focus:border-indigo-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-semibold text-[#52525B] mb-1.5">
                     Duration (Months)
                   </label>
                   <input
@@ -551,18 +548,18 @@ export default function AdminValidityPlansPage() {
                     required
                     value={newPlan.months}
                     onChange={(e) => setNewPlan((p) => ({ ...p, months: e.target.value }))}
-                    className="w-full h-10 px-3 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-indigo-500"
+                    className="w-full h-10 px-3 rounded-xl border border-border text-xs font-semibold text-[#52525B] focus:outline-none focus:border-indigo-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-semibold text-[#52525B] mb-1.5">
                     Currency
                   </label>
                   <select
                     value={newPlan.currency_symbol}
                     onChange={(e) => setNewPlan((p) => ({ ...p, currency_symbol: e.target.value }))}
-                    className="w-full h-10 px-3 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 bg-white focus:outline-none focus:border-indigo-500"
+                    className="w-full h-10 px-3 rounded-xl border border-border text-xs font-semibold text-[#52525B] bg-card focus:outline-none focus:border-indigo-500"
                   >
                     {CURRENCY_OPTIONS.map((c) => (
                       <option key={c} value={c}>
@@ -574,7 +571,7 @@ export default function AdminValidityPlansPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-semibold text-[#52525B] mb-1.5">
                   Price
                 </label>
                 <input
@@ -585,7 +582,7 @@ export default function AdminValidityPlansPage() {
                   value={newPlan.price}
                   onChange={(e) => setNewPlan((p) => ({ ...p, price: e.target.value }))}
                   placeholder="e.g. 799"
-                  className="w-full h-10 px-3 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-indigo-500"
+                  className="w-full h-10 px-3 rounded-xl border border-border text-xs font-semibold text-[#52525B] focus:outline-none focus:border-indigo-500"
                 />
               </div>
 
@@ -593,14 +590,14 @@ export default function AdminValidityPlansPage() {
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-5 h-10 rounded-full border border-slate-200 text-slate-700 font-semibold text-xs hover:bg-slate-50 transition-all cursor-pointer"
+                  className="px-5 h-10 rounded-full border border-border text-[#52525B] font-semibold text-xs hover:bg-muted/50 transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={createLoading}
-                  className="px-6 h-10 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs transition-all disabled:opacity-50 flex items-center gap-2 shadow-xs cursor-pointer active:scale-95"
+                  className="px-6 h-10 rounded-lg bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-all disabled:opacity-50 flex items-center gap-2 shadow-xs cursor-pointer"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>{createLoading ? "Creating…" : "Save Plan"}</span>

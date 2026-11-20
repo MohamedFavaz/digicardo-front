@@ -15,7 +15,7 @@ export function ImageBlock({ block }: ImageBlockProps) {
   }
 
   const imageElement = (
-    <div className="group relative w-full overflow-hidden rounded-[var(--lf-radius,0.75rem)] border border-slate-800/40 bg-slate-900/30 shadow-sm transition-all hover:shadow-md">
+    <div className="group relative w-full overflow-hidden rounded-[var(--lf-radius,0.75rem)] border border-zinc-800/40 bg-zinc-900/30 shadow-sm transition-all hover:shadow-md">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={imageUrl}

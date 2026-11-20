@@ -1,355 +1,118 @@
 "use client";
-import { useEffect, useState, FormEvent } from "react";
+
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
-import {
-  Settings,
-  Key,
-  CreditCard,
-  CheckCircle2,
-  AlertCircle,
-  Eye,
-  EyeOff,
-  Save,
-  ShieldCheck,
-  Calendar,
-  Lock,
-  Sparkles
-} from "lucide-react";
+import { Activity, AlertCircle, ArrowUpRight, CheckCircle2, Eye, EyeOff, History, Key, Loader2, Megaphone, Sparkles, type LucideIcon } from "lucide-react";
+import { ConsolePage, PageHeader, Panel } from "@/components/console/ui";
 
-interface Plan {
-  id: string;
-  name: string;
-  months: number;
-  price: number;
-  currency_symbol: string;
-  formatted_price: string;
-  is_active: boolean;
-}
+const SHORTCUTS: { title: string; text: string; href: string; icon: LucideIcon }[] = [
+  { title: "Plans & prices", text: "Card plans, prices and currency", href: "/admin/plans", icon: Sparkles },
+  { title: "Messages", text: "Notify users and agents", href: "/admin/messages", icon: Megaphone },
+  { title: "Activity log", text: "Who did what, and when", href: "/admin/activity", icon: History },
+  { title: "System health", text: "Database, jobs, scheduler", href: "/admin/system", icon: Activity },
+];
 
+const input =
+  "block h-11 w-full rounded-xl border border-input bg-card px-3.5 text-[15px] text-foreground outline-none placeholder:text-[#A1A1AA] focus:border-primary focus:ring-2 focus:ring-primary/20";
+
+/** Admin: your own sign-in details. (Plan prices live on Plans & prices.) */
 export default function AdminSettingsPage() {
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [editPrices, setEditPrices] = useState<Record<string, { price: string; symbol: string }>>({});
-  const [planSaving, setPlanSaving] = useState<string | null>(null);
-  const [planMsg, setPlanMsg] = useState<Record<string, { ok: boolean; text: string }>>({});
-  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({ current_password: "", password: "", password_confirmation: "" });
+  const [show, setShow] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
-  const [pwForm, setPwForm] = useState({ current_password: "", password: "", password_confirmation: "" });
-  const [pwSaving, setPwSaving] = useState(false);
-  const [pwMsg, setPwMsg] = useState<{ ok: boolean; text: string } | null>(null);
-  const [showPw, setShowPw] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/bff/v1/admin/validity-plans", { credentials: "include" })
-      .then(r => r.json())
-      .then(json => {
-        const p: Plan[] = json?.data?.plans || [];
-        setPlans(p);
-        const init: Record<string, { price: string; symbol: string }> = {};
-        p.forEach(plan => {
-          init[plan.id] = { price: String(plan.price), symbol: plan.currency_symbol || "₹" };
-        });
-        setEditPrices(init);
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  async function savePlanPrice(planId: string) {
-    setPlanSaving(planId);
-    setPlanMsg(m => ({ ...m, [planId]: { ok: false, text: "" } }));
-    const { price, symbol } = editPrices[planId] || {};
-    try {
-      const res = await fetch(`/api/bff/v1/admin/validity-plans/${planId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ price: parseFloat(price), currency_symbol: symbol }),
-      });
-      const json = await res.json();
-      setPlanMsg(m => ({
-        ...m,
-        [planId]: res.ok
-          ? { ok: true, text: "Price updated!" }
-          : { ok: false, text: json?.error?.message || "Failed to save." },
-      }));
-      if (res.ok) {
-        setPlans(prev =>
-          prev.map(p => (p.id === planId ? { ...p, price: parseFloat(price), currency_symbol: symbol } : p))
-        );
-      }
-    } catch {
-      setPlanMsg(m => ({ ...m, [planId]: { ok: false, text: "Network error." } }));
-    } finally {
-      setPlanSaving(null);
-    }
-  }
-
-  async function handleChangePassword(e: FormEvent) {
+  async function changePassword(e: FormEvent) {
     e.preventDefault();
-    setPwMsg(null);
-    if (pwForm.password !== pwForm.password_confirmation) {
-      setPwMsg({ ok: false, text: "New passwords do not match." });
-      return;
-    }
-    if (pwForm.password.length < 8) {
-      setPwMsg({ ok: false, text: "New password must be at least 8 characters." });
-      return;
-    }
-    setPwSaving(true);
+    setMsg(null);
+    if (form.password !== form.password_confirmation) return setMsg({ ok: false, text: "The new passwords don't match." });
+    if (form.password.length < 8) return setMsg({ ok: false, text: "Use at least 8 characters." });
+    setSaving(true);
     try {
       const res = await fetch("/api/bff/v1/admin/settings/password", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
         credentials: "include",
-        body: JSON.stringify(pwForm),
+        body: JSON.stringify(form),
       });
-      const json = await res.json();
+      const json = await res.json().catch(() => null);
       if (res.ok) {
-        setPwMsg({ ok: true, text: "Admin password updated successfully!" });
-        setPwForm({ current_password: "", password: "", password_confirmation: "" });
+        setMsg({ ok: true, text: "Password changed." });
+        setForm({ current_password: "", password: "", password_confirmation: "" });
       } else {
-        setPwMsg({ ok: false, text: json?.error?.message || "Failed to update password." });
+        const details = json?.error?.details as Record<string, string[]> | undefined;
+        setMsg({ ok: false, text: (details && Object.values(details).flat()[0]) || json?.error?.message || "Couldn't change the password." });
       }
     } catch {
-      setPwMsg({ ok: false, text: "Network error. Please try again." });
+      setMsg({ ok: false, text: "Network error. Please try again." });
     } finally {
-      setPwSaving(false);
+      setSaving(false);
     }
   }
 
-  const CURRENCY_OPTIONS = ["₹", "$", "€", "£", "AED", "SAR"];
-
   return (
-    <div suppressHydrationWarning className="p-6 lg:p-8 max-w-[1200px] mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Settings</h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200/60">
-              Configuration
-            </span>
-          </div>
-          <p className="text-slate-500 text-xs mt-1 leading-relaxed font-medium">
-            Manage validity pricing, currencies, and admin credentials.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/admin/plans"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all shadow-xs cursor-pointer active:scale-95"
-          >
-            <CreditCard className="w-4 h-4" />
-            <span>Validity Plans</span>
-          </Link>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Validity Plan Pricing (7 cols) */}
-        <div className="lg:col-span-7 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
-          <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
-                <CreditCard className="w-4 h-4" />
-              </div>
-              <div>
-                <h2 className="text-sm font-bold text-slate-900">Plan Pricing</h2>
-                <p className="text-[11px] text-slate-400">Pricing per duration tier</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-semibold text-slate-400">{plans.length} Plans</span>
-              <Link
-                href="/admin/plans"
-                className="text-xs font-semibold text-slate-700 hover:text-black flex items-center gap-1 hover:underline"
-              >
-                Manage Plans &rarr;
-              </Link>
-            </div>
-          </div>
-
-          <div className="divide-y divide-slate-100">
-            {loading ? (
-              [1, 2, 3, 4].map(i => (
-                <div key={i} className="p-4 flex items-center gap-4">
-                  <div className="h-8 w-24 bg-slate-100 rounded-xl animate-pulse" />
-                  <div className="h-8 w-32 bg-slate-100 rounded-xl animate-pulse ml-auto" />
-                </div>
-              ))
-            ) : plans.length === 0 ? (
-              <div className="p-8 text-center text-xs text-slate-400">
-                No validity plans found.
-              </div>
-            ) : (
-              plans.map(plan => {
-                const edit = editPrices[plan.id] || { price: String(plan.price), symbol: plan.currency_symbol };
-                const msg = planMsg[plan.id];
-                const isSaving = planSaving === plan.id;
-
-                return (
-                  <div key={plan.id} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/50 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/60 text-slate-800 font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-2xs">
-                        {plan.months >= 12 ? `${plan.months / 12}Y` : `${plan.months}M`}
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-slate-900">{plan.name} Plan</p>
-                        <p className="text-[11px] text-slate-400">Valid for {plan.months} calendar month{plan.months > 1 ? "s" : ""}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 self-end sm:self-auto">
-                      {/* Currency selector */}
-                      <select
-                        value={edit.symbol}
-                        onChange={e =>
-                          setEditPrices(prev => ({
-                            ...prev,
-                            [plan.id]: { ...edit, symbol: e.target.value },
-                          }))
-                        }
-                        className="h-8 px-2.5 rounded-full border border-slate-200 text-xs font-bold text-slate-700 bg-white focus:outline-none focus:border-slate-400"
-                      >
-                        {CURRENCY_OPTIONS.map(c => (
-                          <option key={c} value={c}>
-                            {c}
-                          </option>
-                        ))}
-                      </select>
-
-                      {/* Price input */}
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={edit.price}
-                        onChange={e =>
-                          setEditPrices(prev => ({
-                            ...prev,
-                            [plan.id]: { ...edit, price: e.target.value },
-                          }))
-                        }
-                        className="w-24 h-8 px-3 rounded-full border border-slate-200 text-xs font-bold text-slate-800 text-right focus:outline-none focus:border-slate-400"
-                      />
-
-                      {/* Save button */}
-                      <button
-                        onClick={() => savePlanPrice(plan.id)}
-                        disabled={isSaving}
-                        className="h-8 px-4 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all disabled:opacity-50 flex items-center gap-1 shadow-xs"
-                      >
-                        <Save className="w-3 h-3" />
-                        <span>{isSaving ? "…" : "Save"}</span>
-                      </button>
-
-                      {msg && (
-                        <span
-                          className={`text-[11px] font-bold ${msg.ok ? "text-emerald-600" : "text-red-500"
-                            }`}
-                        >
-                          {msg.text}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })
+    <ConsolePage>
+      <PageHeader title="Settings" description="Your admin sign-in details." />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <Panel title="Password" icon={Key} description="Use a long password you don't use anywhere else.">
+          <form onSubmit={changePassword} className="space-y-4 p-5">
+            {msg && (
+              <p role={msg.ok ? "status" : "alert"} className={`flex items-center gap-2 rounded-xl border p-3 text-sm ${msg.ok ? "border-[#BFE6CD] bg-[#E7F6EC] text-[#1E7B43]" : "border-[#F5C2C2] bg-[#FDECEC] text-[#991B1B]"}`}>
+                {msg.ok ? <CheckCircle2 className="h-4 w-4" aria-hidden="true" /> : <AlertCircle className="h-4 w-4" aria-hidden="true" />} {msg.text}
+              </p>
             )}
-          </div>
-        </div>
-
-        {/* Security & Password (5 cols) */}
-        <div className="lg:col-span-5 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
-          <div className="p-5 border-b border-slate-100 flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
-              <Lock className="w-4 h-4" />
-            </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-900">Admin Security</h2>
-              <p className="text-[11px] text-slate-400">Update master administrator credentials</p>
-            </div>
-          </div>
-
-          <form onSubmit={handleChangePassword} className="p-5 space-y-4">
-            {pwMsg && (
-              <div
-                className={`p-3 rounded-xl text-xs font-semibold flex items-center gap-2 ${pwMsg.ok
-                  ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
-                  : "bg-red-50 text-red-700 border border-red-200"
-                  }`}
-              >
-                {pwMsg.ok ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
-                <span>{pwMsg.text}</span>
-              </div>
-            )}
-
-            {/* Current Password */}
-            <div className="space-y-1">
-              <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
-                Current Password *
+              <label htmlFor="cur-pw" className="mb-1.5 block text-sm font-medium">
+                Current password
               </label>
               <div className="relative">
-                <input
-                  type={showPw ? "text" : "password"}
-                  value={pwForm.current_password}
-                  onChange={e => setPwForm(p => ({ ...p, current_password: e.target.value }))}
-                  required
-                  placeholder="••••••••"
-                  className="w-full h-9 px-3 pr-10 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                >
-                  {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                <input id="cur-pw" type={show ? "text" : "password"} autoComplete="current-password" required value={form.current_password} onChange={(e) => setForm({ ...form, current_password: e.target.value })} className={`${input} pr-12`} />
+                <button type="button" onClick={() => setShow(!show)} aria-label={show ? "Hide passwords" : "Show passwords"} className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted">
+                  {show ? <EyeOff className="h-4 w-4" aria-hidden="true" /> : <Eye className="h-4 w-4" aria-hidden="true" />}
                 </button>
               </div>
             </div>
-
-            {/* New Password */}
-            <div className="space-y-1">
-              <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
-                New Password *
-              </label>
-              <input
-                type={showPw ? "text" : "password"}
-                value={pwForm.password}
-                onChange={e => setPwForm(p => ({ ...p, password: e.target.value }))}
-                required
-                minLength={8}
-                placeholder="At least 8 characters"
-                className="w-full h-9 px-3 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all"
-              />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label htmlFor="new-pw" className="mb-1.5 block text-sm font-medium">
+                  New password
+                </label>
+                <input id="new-pw" type={show ? "text" : "password"} autoComplete="new-password" required minLength={8} placeholder="At least 8 characters" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={input} />
+              </div>
+              <div>
+                <label htmlFor="new-pw2" className="mb-1.5 block text-sm font-medium">
+                  Repeat new password
+                </label>
+                <input id="new-pw2" type={show ? "text" : "password"} autoComplete="new-password" required value={form.password_confirmation} onChange={(e) => setForm({ ...form, password_confirmation: e.target.value })} className={input} />
+              </div>
             </div>
-
-            {/* Confirm New Password */}
-            <div className="space-y-1">
-              <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
-                Confirm New Password *
-              </label>
-              <input
-                type={showPw ? "text" : "password"}
-                value={pwForm.password_confirmation}
-                onChange={e => setPwForm(p => ({ ...p, password_confirmation: e.target.value }))}
-                required
-                placeholder="Repeat new password"
-                className="w-full h-9 px-3 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-slate-400 transition-all"
-              />
-            </div>
-
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={pwSaving}
-                className="w-full h-10 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition-all disabled:opacity-50 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
-              >
-                <Key className="w-4 h-4" />
-                <span>{pwSaving ? "Updating Password…" : "Update Admin Password"}</span>
+            <div className="flex justify-end border-t border-border pt-4">
+              <button type="submit" disabled={saving} className="inline-flex h-11 items-center gap-2 rounded-full bg-[#343C22] px-5 text-sm font-medium text-white hover:bg-[#4B5634] disabled:opacity-60">
+                {saving && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />} Change password
               </button>
             </div>
           </form>
-        </div>
+        </Panel>
+
+        <Panel title="Where to find things" description="Platform settings live in their own pages.">
+          <ul className="divide-y divide-border">
+            {SHORTCUTS.map(({ title, text, href, icon: Icon }) => (
+              <li key={href}>
+                <Link href={href} className="flex items-center gap-3 px-5 py-3.5 hover:bg-white">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#EEF2E4] text-[#343C22]">
+                    <Icon className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-sm font-medium text-foreground">{title}</span>
+                    <span className="block text-xs text-muted-foreground">{text}</span>
+                  </span>
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Panel>
       </div>
-    </div>
+    </ConsolePage>
   );
 }

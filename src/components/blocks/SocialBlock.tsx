@@ -66,7 +66,7 @@ export function SocialBlock({ config }: SocialBlockProps) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`Follow on ${getLabel()}`}
-      className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-800 bg-slate-900/90 px-4 py-2.5 text-xs font-semibold text-slate-200 shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-500/40 hover:bg-slate-800 hover:text-white hover:shadow-indigo-500/10 active:translate-y-0"
+      className="inline-flex items-center justify-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/90 px-4 py-2.5 text-xs font-semibold text-zinc-200 shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-500/40 hover:bg-zinc-800 hover:text-white hover:shadow-indigo-500/10 active:translate-y-0"
     >
       <span className="text-indigo-400">{getIcon()}</span>
       <span>{getLabel()}</span>

@@ -7,7 +7,7 @@ export function BillingSkeleton() {
   return (
     <div className="space-y-8 animate-in fade-in-50 duration-300">
       {/* Header Skeleton */}
-      <div className="rounded-[36px] border border-border/80 bg-card p-6 sm:p-8 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <Skeleton className="h-6 w-28 rounded-full" />
@@ -20,7 +20,7 @@ export function BillingSkeleton() {
       </div>
 
       {/* Current Plan Card Skeleton */}
-      <div className="rounded-[36px] border border-border/80 bg-card p-6 sm:p-8 shadow-card flex flex-col md:flex-row justify-between gap-6">
+      <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-card flex flex-col md:flex-row justify-between gap-6">
         <div className="space-y-3 flex-1">
           <Skeleton className="h-5 w-24 rounded-full" />
           <Skeleton className="h-7 w-48 rounded-xl" />
@@ -32,7 +32,7 @@ export function BillingSkeleton() {
       {/* 3 Usage Meters Skeleton */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="rounded-[28px] border border-border/80 bg-card p-5 shadow-card space-y-3">
+          <div key={i} className="rounded-2xl border border-border/80 bg-card p-5 shadow-card space-y-3">
             <div className="flex justify-between">
               <Skeleton className="h-4 w-28 rounded-md" />
               <Skeleton className="h-4 w-16 rounded-md" />
@@ -51,7 +51,7 @@ export function BillingSkeleton() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="rounded-[32px] border border-border/80 bg-card p-6 shadow-card space-y-4">
+            <div key={i} className="rounded-2xl border border-border/80 bg-card p-6 shadow-card space-y-4">
               <Skeleton className="h-6 w-24 rounded-md" />
               <Skeleton className="h-10 w-32 rounded-xl" />
               <Skeleton className="h-32 w-full rounded-xl" />

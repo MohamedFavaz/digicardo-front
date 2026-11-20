@@ -17,7 +17,7 @@ export function WhatsAppBlock({ block }: WhatsAppBlockProps) {
       href={waUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative flex w-full items-center justify-between overflow-hidden rounded-[var(--lf-radius,0.75rem)] border border-emerald-900/40 bg-emerald-950/20 px-4 py-3.5 text-center font-medium text-slate-100 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-500/60 hover:bg-emerald-950/40 active:translate-y-0"
+      className="group relative flex w-full items-center justify-between overflow-hidden rounded-[var(--lf-radius,0.75rem)] border border-emerald-900/40 bg-emerald-950/20 px-4 py-3.5 text-center font-medium text-zinc-100 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-500/60 hover:bg-emerald-950/40 active:translate-y-0"
     >
       <div className="flex items-center gap-3.5 truncate">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white transition-colors group-hover:bg-emerald-500">

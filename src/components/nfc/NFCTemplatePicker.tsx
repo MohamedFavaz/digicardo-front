@@ -49,7 +49,7 @@ export function NFCTemplatePicker({
     <div className="space-y-6">
       
       {/* ── Section 1: Full-Color Visual Finishes ── */}
-      <div className="rounded-[36px] border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-6">
+      <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -58,10 +58,10 @@ export function NFCTemplatePicker({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-black text-base text-foreground">
+                <h3 className="font-bold text-base text-foreground">
                   NFC Full-Color Finishes
                 </h3>
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-[10px] font-extrabold">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-[10px] font-semibold">
                   <ShieldCheck className="w-3 h-3" />
                   <span>Internal Antenna (No Chip)</span>
                 </span>
@@ -92,7 +92,7 @@ export function NFCTemplatePicker({
                 <div className="flex items-center justify-between w-full">
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-black text-foreground group-hover:text-brand-600 transition-colors block">
+                      <span className="text-xs font-bold text-foreground group-hover:text-brand-600 transition-colors block">
                         {theme.name}
                       </span>
                     </div>
@@ -131,10 +131,10 @@ export function NFCTemplatePicker({
 
                   {/* Monogram Emblem */}
                   <div className="flex items-center gap-1.5 z-10">
-                    <div className="w-5 h-5 rounded-md bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center font-black text-[9px] text-white shadow-2xs">
+                    <div className="w-5 h-5 rounded-md bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center font-bold text-[9px] text-white shadow-2xs">
                       <Sparkles className="w-2.5 h-2.5 text-white" />
                     </div>
-                    <span className={cn("text-[9px] font-mono font-black tracking-widest uppercase drop-shadow-xs", theme.textColor)}>
+                    <span className={cn("text-[9px] font-mono font-bold tracking-widest uppercase drop-shadow-xs", theme.textColor)}>
                       {theme.badgeLabel}
                     </span>
                   </div>
@@ -154,13 +154,13 @@ export function NFCTemplatePicker({
       </div>
 
       {/* ── Section 2: Attractive Typography Styles ── */}
-      <div className="rounded-[36px] border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-5">
+      <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-5">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-2xs">
             <Type className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="font-black text-base text-foreground">
+            <h3 className="font-bold text-base text-foreground">
               Cardholder Typography
             </h3>
             <p className="text-xs text-muted-foreground font-medium">
@@ -185,7 +185,7 @@ export function NFCTemplatePicker({
                 )}
               >
                 <div className="flex items-center justify-between w-full">
-                  <span className="text-xs font-black text-foreground group-hover:text-brand-600 transition-colors">
+                  <span className="text-xs font-bold text-foreground group-hover:text-brand-600 transition-colors">
                     {opt.label}
                   </span>
                   {isSelected ? (
@@ -202,10 +202,10 @@ export function NFCTemplatePicker({
                   <span
                     className={cn(
                       "text-base truncate block",
-                      opt.id === "serif" && "font-serif italic font-black text-foreground text-lg",
-                      opt.id === "modern" && "font-sans font-black tracking-widest text-foreground",
-                      opt.id === "cyber" && "font-mono font-black tracking-widest text-foreground text-sm",
-                      opt.id === "cinematic" && "font-sans font-extrabold italic tracking-wider text-foreground"
+                      opt.id === "serif" && "font-serif italic font-bold text-foreground text-lg",
+                      opt.id === "modern" && "font-sans font-bold tracking-widest text-foreground",
+                      opt.id === "cyber" && "font-mono font-bold tracking-widest text-foreground text-sm",
+                      opt.id === "cinematic" && "font-sans font-semibold italic tracking-wider text-foreground"
                     )}
                   >
                     {opt.preview}

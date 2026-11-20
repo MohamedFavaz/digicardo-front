@@ -101,7 +101,7 @@ export function CreateUserModal({
       aria-labelledby="create-user-dialog-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in-50"
     >
-      <div className="relative w-full max-w-lg rounded-[36px] border border-border/80 bg-card p-6 sm:p-8 shadow-float space-y-5 animate-in zoom-in-95 select-none max-h-[90vh] overflow-y-auto">
+      <div className="relative w-full max-w-lg rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-float space-y-5 animate-in zoom-in-95 select-none max-h-[90vh] overflow-y-auto">
 
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
@@ -110,7 +110,7 @@ export function CreateUserModal({
               <UserPlus className="w-5 h-5" />
             </div>
             <div>
-              <h3 id="create-user-dialog-title" className="text-base font-black text-foreground">
+              <h3 id="create-user-dialog-title" className="text-base font-bold text-foreground">
                 Provision User Account
               </h3>
               <p className="text-xs text-muted-foreground font-medium">
@@ -138,7 +138,7 @@ export function CreateUserModal({
 
           {/* Full Name */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-black text-foreground">
+            <label className="block text-xs font-bold text-foreground">
               Full Name <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
@@ -156,7 +156,7 @@ export function CreateUserModal({
 
           {/* Email */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-black text-foreground">
+            <label className="block text-xs font-bold text-foreground">
               Email Address <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
@@ -174,7 +174,7 @@ export function CreateUserModal({
 
           {/* Username */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-black text-foreground">
+            <label className="block text-xs font-bold text-foreground">
               Assigned Username Handle <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
@@ -198,7 +198,7 @@ export function CreateUserModal({
           {/* Password with Generator */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-black text-foreground">
+              <label className="block text-xs font-bold text-foreground">
                 Initial Password <span className="text-rose-500">*</span>
               </label>
               <button
@@ -234,7 +234,7 @@ export function CreateUserModal({
           {/* Role & Status Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             <div className="space-y-1.5">
-              <label className="block text-xs font-black text-foreground">
+              <label className="block text-xs font-bold text-foreground">
                 System Role
               </label>
               <select
@@ -249,7 +249,7 @@ export function CreateUserModal({
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-black text-foreground">
+              <label className="block text-xs font-bold text-foreground">
                 Account Status
               </label>
               <select
@@ -282,7 +282,7 @@ export function CreateUserModal({
               type="submit"
               size="sm"
               disabled={submitting}
-              className="rounded-full text-xs font-black h-10 px-6 bg-brand-600 hover:bg-brand-700 text-white shadow-cta gap-1.5"
+              className="rounded-full text-xs font-bold h-10 px-6 bg-brand-600 hover:bg-brand-700 text-white shadow-cta gap-1.5"
             >
               {submitting ? (
                 <div className="w-3.5 h-3.5 rounded-full border-2 border-white/40 border-t-white animate-spin" />

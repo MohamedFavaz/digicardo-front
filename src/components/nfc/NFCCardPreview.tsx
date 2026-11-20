@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
+import { LogoMark } from "@/components/ui/DigicardoLogo";
 import {
   RotateCw,
   CheckCircle2,
@@ -171,7 +171,7 @@ export const NFC_CARD_THEMES: NFCCardTheme[] = [
     bgGradient: "from-[#090d14] via-[#101927] to-[#06090e]",
     surfaceTexture: "radial-gradient(ellipse at 20% 20%, rgba(16,185,129,0.2) 0%, transparent 60%)",
     textColor: "text-white",
-    subtextColor: "text-slate-400",
+    subtextColor: "text-zinc-400",
     accentText: "text-emerald-400",
     waveColor: "text-emerald-400",
     accentBadge: "bg-emerald-950/80 text-emerald-300 border-emerald-500/50",
@@ -238,30 +238,30 @@ export function NFCCardPreview({
   const getCardholderFontClass = () => {
     switch (fontStyle) {
       case "serif":
-        return "font-serif text-2xl font-black italic tracking-wide drop-shadow-[0_3px_8px_rgba(0,0,0,0.6)]";
+        return "font-serif text-2xl font-bold italic tracking-wide drop-shadow-[0_3px_8px_rgba(0,0,0,0.6)]";
       case "cyber":
-        return "font-mono text-lg font-black uppercase tracking-[0.25em] drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]";
+        return "font-mono text-lg font-bold uppercase tracking-[0.25em] drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]";
       case "cinematic":
-        return "font-sans text-xl font-black uppercase italic tracking-[0.16em] drop-shadow-[0_3px_8px_rgba(0,0,0,0.6)]";
+        return "font-sans text-xl font-bold uppercase italic tracking-[0.16em] drop-shadow-[0_3px_8px_rgba(0,0,0,0.6)]";
       case "modern":
       default:
-        return "font-sans text-xl font-black uppercase tracking-[0.18em] drop-shadow-[0_3px_8px_rgba(0,0,0,0.6)]";
+        return "font-sans text-xl font-bold uppercase tracking-[0.18em] drop-shadow-[0_3px_8px_rgba(0,0,0,0.6)]";
     }
   };
 
   return (
-    <div className="rounded-[36px] border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-6 flex flex-col items-center select-none sticky top-6">
+    <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-6 flex flex-col items-center select-none sticky top-6">
       
       {/* Top Header & Flip Toggle Bar */}
       <div className="w-full flex items-center justify-between gap-2 border-b border-border/60 pb-4">
         <div className="text-left">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[10px] font-mono uppercase tracking-wider font-extrabold text-brand-600">
+            <span className="text-[10px] font-mono uppercase tracking-wider font-semibold text-brand-600">
               SMART NFC HARDWARE
             </span>
           </div>
-          <h3 className="text-base font-black text-foreground">
+          <h3 className="text-base font-bold text-foreground">
             Full-Color Smart Card
           </h3>
         </div>
@@ -270,7 +270,7 @@ export function NFCCardPreview({
         <button
           type="button"
           onClick={() => setCardSide((prev) => (prev === "front" ? "back" : "front"))}
-          className="px-3.5 py-1.5 rounded-xl bg-muted/70 hover:bg-muted text-foreground text-xs font-extrabold flex items-center gap-2 border border-border/80 transition-all active:scale-95 shadow-2xs group"
+          className="px-3.5 py-1.5 rounded-xl bg-muted/70 hover:bg-muted text-foreground text-xs font-semibold flex items-center gap-2 border border-border/80 transition-all active:scale-95 shadow-2xs group"
           title="Flip between Front and Back"
         >
           <RotateCw className="w-3.5 h-3.5 text-brand-600 transition-transform duration-500 group-hover:rotate-180" />
@@ -284,7 +284,7 @@ export function NFCCardPreview({
           /* ── FRONT FACE: Saturated Full-Color Luxury with Attractive Typography (100% Chip & Image Free) ── */
           <div
             className={cn(
-              "relative w-full aspect-[1.586/1] rounded-[22px] sm:rounded-[24px] p-4 sm:p-6 border bg-gradient-to-br transition-all duration-500 flex flex-col justify-between overflow-hidden group select-none hover:scale-[1.03] hover:-rotate-0.5 animate-in fade-in-50 duration-300",
+              "relative w-full aspect-[1.586/1] rounded-2xl rounded-2xl p-4 sm:p-6 border bg-gradient-to-br transition-all duration-500 flex flex-col justify-between overflow-hidden group select-none hover:scale-[1.03] hover:-rotate-0.5 animate-in fade-in-50 duration-300",
               theme.bgGradient,
               theme.foilBorder
             )}
@@ -308,11 +308,9 @@ export function NFCCardPreview({
             <div className="flex items-center justify-between z-10">
               <div className="flex items-center gap-2 sm:gap-2.5">
                 {/* Geometric Insignia Crest */}
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white border border-white/30 p-1 flex items-center justify-center shadow-md flex-shrink-0">
-                  <Image src="/logo.png" alt="Digicardo" width={24} height={24} className="w-full h-full object-contain" />
-                </div>
+                <LogoMark size={28} />
                 <div className="text-left leading-none space-y-0.5">
-                  <span className={cn("text-[10px] sm:text-[11px] font-mono font-black tracking-[0.2em] sm:tracking-[0.25em] block drop-shadow-sm", theme.textColor)}>
+                  <span className={cn("text-[10px] sm:text-[11px] font-mono font-bold tracking-[0.2em] sm:tracking-[0.25em] block drop-shadow-sm", theme.textColor)}>
                     DIGICARDO
                   </span>
                   <span className={cn("text-[7px] sm:text-[8px] font-mono font-bold tracking-widest uppercase opacity-90 block", theme.subtextColor)}>
@@ -324,7 +322,7 @@ export function NFCCardPreview({
               {/* Universal Contactless Wave Symbol with animated pulse */}
               <div className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-black/25 backdrop-blur-md border border-white/25 shadow-2xs">
                 <Radio className={cn("w-3 h-3 sm:w-3.5 sm:h-3.5 animate-pulse", theme.waveColor)} />
-                <span className={cn("text-[8px] sm:text-[9px] font-mono font-black tracking-wider uppercase", theme.textColor)}>
+                <span className={cn("text-[8px] sm:text-[9px] font-mono font-bold tracking-wider uppercase", theme.textColor)}>
                   NFC TAP
                 </span>
               </div>
@@ -348,7 +346,7 @@ export function NFCCardPreview({
             {/* Bottom Row: Smart Specifications & URL */}
             <div className="flex items-center justify-between z-10 pt-1.5 sm:pt-2 border-t border-white/20">
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className={cn("px-2 sm:px-2.5 py-0.5 rounded-md text-[7px] sm:text-[8px] font-mono uppercase font-black border tracking-wider", theme.accentBadge)}>
+                <span className={cn("px-2 sm:px-2.5 py-0.5 rounded-md text-[7px] sm:text-[8px] font-mono uppercase font-bold border tracking-wider", theme.accentBadge)}>
                   {theme.badgeLabel}
                 </span>
                 <span className={cn("text-[8px] sm:text-[9px] font-mono uppercase tracking-wider font-bold opacity-90 hidden xs:inline-block drop-shadow-xs", theme.subtextColor)}>
@@ -368,7 +366,7 @@ export function NFCCardPreview({
           /* ── BACK FACE: Saturated Color Back with Scannable Precision Register Window & Magnetic Band ── */
           <div
             className={cn(
-              "relative w-full aspect-[1.586/1] rounded-[22px] sm:rounded-[24px] p-4 sm:p-6 border bg-gradient-to-br transition-all duration-500 flex flex-col justify-between overflow-hidden group select-none hover:scale-[1.03] hover:rotate-0.5 animate-in fade-in-50 duration-300",
+              "relative w-full aspect-[1.586/1] rounded-2xl rounded-2xl p-4 sm:p-6 border bg-gradient-to-br transition-all duration-500 flex flex-col justify-between overflow-hidden group select-none hover:scale-[1.03] hover:rotate-0.5 animate-in fade-in-50 duration-300",
               theme.bgGradient,
               theme.foilBorder
             )}

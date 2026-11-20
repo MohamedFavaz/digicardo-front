@@ -43,15 +43,15 @@ export function NFCSetupGuide({ username }: NFCSetupGuideProps) {
   ];
 
   return (
-    <div className="rounded-[36px] border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-5">
+    <div className="rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-card space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
-            <h3 className="font-black text-base text-foreground">
+            <h3 className="font-bold text-base text-foreground">
               How to Program Your Physical NFC Card
             </h3>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-[10px] font-extrabold">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-[10px] font-semibold">
               <CheckCircle2 className="w-2.5 h-2.5" />
               <span>Universal Standard</span>
             </span>
@@ -68,7 +68,7 @@ export function NFCSetupGuide({ username }: NFCSetupGuideProps) {
           <span className="block text-[10px] uppercase font-mono font-bold text-muted-foreground">
             Target Destination URL
           </span>
-          <span className="block font-mono text-xs font-black text-foreground truncate">
+          <span className="block font-mono text-xs font-bold text-foreground truncate">
             {publicUrl}
           </span>
         </div>
@@ -101,10 +101,10 @@ export function NFCSetupGuide({ username }: NFCSetupGuideProps) {
             key={step.num}
             className="p-4 rounded-2xl bg-muted/20 border border-border/70 space-y-1.5 select-none"
           >
-            <span className="font-mono text-xs font-black text-brand-600 block">
+            <span className="font-mono text-xs font-bold text-brand-600 block">
               STEP {step.num}
             </span>
-            <h4 className="text-xs font-black text-foreground">
+            <h4 className="text-xs font-bold text-foreground">
               {step.title}
             </h4>
             <p className="text-[11px] text-muted-foreground font-medium leading-relaxed">

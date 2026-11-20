@@ -33,6 +33,12 @@ export default function RequestAccessPage() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
+  // "Claim your card" on the home page passes the wanted username as ?handle=
+  React.useEffect(() => {
+    const handle = new URLSearchParams(window.location.search).get("handle");
+    if (handle) setDesiredHandle(handle.toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 30));
+  }, []);
+
   // Redirect if already authenticated
   React.useEffect(() => {
     if (isAuthenticated) {
@@ -93,7 +99,7 @@ export default function RequestAccessPage() {
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-lg font-black text-foreground">
+            <h3 className="text-lg font-bold text-foreground">
               Request Received!
             </h3>
             <p className="text-xs text-muted-foreground font-medium leading-relaxed max-w-sm mx-auto">
@@ -146,7 +152,7 @@ export default function RequestAccessPage() {
 
           {/* Full Name */}
           <div className="space-y-1.5">
-            <label htmlFor="req-name" className="block text-xs font-black text-foreground">
+            <label htmlFor="req-name" className="block text-xs font-bold text-foreground">
               Full Name <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
@@ -165,7 +171,7 @@ export default function RequestAccessPage() {
 
           {/* Work / Personal Email */}
           <div className="space-y-1.5">
-            <label htmlFor="req-email" className="block text-xs font-black text-foreground">
+            <label htmlFor="req-email" className="block text-xs font-bold text-foreground">
               Email Address <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
@@ -184,7 +190,7 @@ export default function RequestAccessPage() {
 
           {/* Mobile Number */}
           <div className="space-y-1.5">
-            <label htmlFor="req-phone" className="block text-xs font-black text-foreground">
+            <label htmlFor="req-phone" className="block text-xs font-bold text-foreground">
               Mobile Number <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
@@ -204,7 +210,7 @@ export default function RequestAccessPage() {
           {/* Desired Username & Organization Row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label htmlFor="req-handle" className="block text-xs font-black text-foreground">
+              <label htmlFor="req-handle" className="block text-xs font-bold text-foreground">
                 Desired Handle
               </label>
               <div className="relative">
@@ -223,7 +229,7 @@ export default function RequestAccessPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="req-org" className="block text-xs font-black text-foreground">
+              <label htmlFor="req-org" className="block text-xs font-bold text-foreground">
                 Organization / Brand
               </label>
               <div className="relative">
@@ -242,7 +248,7 @@ export default function RequestAccessPage() {
 
           {/* Purpose / Note */}
           <div className="space-y-1.5">
-            <label htmlFor="req-usecase" className="block text-xs font-black text-foreground">
+            <label htmlFor="req-usecase" className="block text-xs font-bold text-foreground">
               Intended Use Case (Optional)
             </label>
             <textarea

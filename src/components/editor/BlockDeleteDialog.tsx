@@ -29,17 +29,17 @@ export function BlockDeleteDialog({
     block.type;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in-50">
-      <div className="w-full max-w-md rounded-[32px] bg-card border border-border/80 p-6 sm:p-7 shadow-float space-y-5 animate-in zoom-in-95">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-sm animate-in fade-in-50">
+      <div className="w-full max-w-md rounded-2xl bg-card border border-border/80 p-6 sm:p-7 shadow-float space-y-5 animate-in zoom-in-95">
         
         {/* Header with Danger Icon */}
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-coral-50 border border-coral/20 text-coral flex items-center justify-center flex-shrink-0 shadow-2xs">
+          <div className="w-12 h-12 rounded-2xl bg-[#FDECEC] border border-[#F5C2C2] text-destructive flex items-center justify-center flex-shrink-0 shadow-2xs">
             <Trash2 className="w-6 h-6" />
           </div>
 
           <div className="space-y-1 flex-1">
-            <h3 className="font-black text-lg text-foreground">
+            <h3 className="font-bold text-lg text-foreground">
               Delete this block?
             </h3>
             <p className="text-xs text-muted-foreground font-medium leading-relaxed">
@@ -67,7 +67,7 @@ export function BlockDeleteDialog({
             size="sm"
             onClick={onConfirm}
             disabled={isDeleting}
-            className="bg-coral hover:bg-rose-600 text-white font-extrabold text-xs px-5 shadow-xs gap-1.5"
+            className="bg-[#FDECEC] hover:bg-rose-600 text-white font-semibold text-xs px-5 shadow-xs gap-1.5"
           >
             {isDeleting ? (
               <>

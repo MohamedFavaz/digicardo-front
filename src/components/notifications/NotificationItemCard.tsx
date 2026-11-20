@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Check, Trash2, ShieldCheck, CreditCard, Globe, Mail, Star } from "lucide-react";
-import type { Notification, NotificationCategory } from "@/types/notifications";
+import Link from "next/link";
+import { Check, Trash2, ShieldCheck, CreditCard, Globe, Mail, Star, Megaphone, ExternalLink } from "lucide-react";
+import type { MessageNotificationData, Notification, NotificationCategory } from "@/types/notifications";
 import { cn } from "@/lib/utils";
 
 function timeAgo(isoString: string): string {
@@ -27,6 +28,8 @@ function getCategoryIcon(cat: NotificationCategory) {
       return <Globe className="w-4 h-4 text-sky-600" />;
     case "contact":
       return <Mail className="w-4 h-4 text-amber-600" />;
+    case "message":
+      return <Megaphone className="w-4 h-4 text-[#5B3FE4]" />;
     case "system":
     default:
       return <Star className="w-4 h-4 text-brand-600" />;
@@ -45,11 +48,16 @@ export function NotificationItemCard({
   onRemove,
 }: NotificationItemCardProps) {
   const isUnread = !notification.is_read;
+  const msg = notification.category === "message" ? (notification.data as MessageNotificationData | null) : null;
+  const link = typeof msg?.link_url === "string" && msg.link_url ? msg.link_url : null;
+  const openLink = () => {
+    if (isUnread) onMarkRead(notification.id);
+  };
 
   return (
     <div
       className={cn(
-        "group relative flex items-start justify-between p-4 sm:p-5 rounded-[28px] border transition-all gap-4 select-none",
+        "group relative flex items-start justify-between p-4 sm:p-5 rounded-2xl border transition-all gap-4 select-none",
         isUnread
           ? "bg-card border-brand-200/90 shadow-xs ring-1 ring-brand-500/10"
           : "bg-card/70 border-border/70 shadow-2xs hover:bg-card hover:border-border"
@@ -65,7 +73,7 @@ export function NotificationItemCard({
           <div className="flex items-center gap-2 flex-wrap">
             <h4
               className={cn(
-                "text-xs sm:text-sm font-black leading-snug",
+                "text-xs sm:text-sm font-bold leading-snug",
                 isUnread ? "text-foreground" : "text-muted-foreground"
               )}
             >
@@ -77,9 +85,36 @@ export function NotificationItemCard({
             )}
           </div>
 
-          <p className="text-xs text-muted-foreground font-medium leading-relaxed">
+          {msg?.sender_name && (
+            <p className="text-[11px] font-semibold text-[#5B3FE4]">
+              From {msg.sender_name}
+            </p>
+          )}
+
+          <p className="text-xs text-muted-foreground font-medium leading-relaxed whitespace-pre-line break-words">
             {notification.body}
           </p>
+
+          {link &&
+            (link.startsWith("/") ? (
+              <Link
+                href={link}
+                onClick={openLink}
+                className="mt-1.5 inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-semibold text-white hover:bg-primary/90"
+              >
+                Open <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
+            ) : (
+              <a
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={openLink}
+                className="mt-1.5 inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-semibold text-white hover:bg-primary/90"
+              >
+                Open <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+              </a>
+            ))}
 
           <div className="flex items-center gap-2 pt-1">
             <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-muted/50 text-[10px] font-mono font-bold text-muted-foreground uppercase">

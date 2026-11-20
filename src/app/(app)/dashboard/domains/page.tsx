@@ -6,6 +6,7 @@ import type { ProfileDomain } from "@/types/domain";
 import { useEntitlements } from "@/lib/hooks/use-entitlements";
 import { UpgradeDialog } from "@/components/billing/UpgradeDialog";
 import { DomainsHeader } from "@/components/domains/DomainsHeader";
+import { SettingsHeader } from "@/components/settings/SettingsHeader";
 import { DomainCard } from "@/components/domains/DomainCard";
 import { ConnectDomainDialog } from "@/components/domains/ConnectDomainDialog";
 import { DisconnectDomainDialog } from "@/components/domains/DisconnectDomainDialog";
@@ -146,9 +147,10 @@ export default function DomainsDashboardPage() {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in-50 duration-300">
+    <div className="space-y-6">
       
       {/* ── Studio Header ── */}
+      <SettingsHeader />
       <DomainsHeader
         domainCount={domains.length}
         domainLimit={domainLimit ?? 0}

@@ -46,10 +46,10 @@ export const PlanBadge: React.FC<PlanBadgeProps> = ({
 
   return (
     <span
-      className={`inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 ${sizeClasses} ${className}`}
+      className={`inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 ${sizeClasses} ${className}`}
       data-testid="plan-badge-free"
     >
-      <Zap className={size === "sm" ? "w-3 h-3 text-slate-400" : "w-3.5 h-3.5 text-slate-400"} />
+      <Zap className={size === "sm" ? "w-3 h-3 text-zinc-400" : "w-3.5 h-3.5 text-zinc-400"} />
       <span>Free Plan</span>
     </span>
   );

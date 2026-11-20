@@ -31,7 +31,7 @@ export function CancelSubscriptionDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in-50">
-      <div className="relative w-full max-w-md rounded-[32px] border border-border/80 bg-card p-6 sm:p-7 shadow-float space-y-5 animate-in zoom-in-95">
+      <div className="relative w-full max-w-md rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-float space-y-5 animate-in zoom-in-95">
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -39,7 +39,7 @@ export function CancelSubscriptionDialog({
               <AlertTriangle className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-black text-foreground">
+              <h3 className="text-base font-bold text-foreground">
                 Cancel Subscription?
               </h3>
               <p className="text-xs text-muted-foreground font-medium">
@@ -80,7 +80,7 @@ export function CancelSubscriptionDialog({
             size="sm"
             onClick={onConfirm}
             disabled={isCanceling}
-            className="rounded-full text-xs font-black h-9 px-5 bg-rose-600 hover:bg-rose-700 text-white shadow-xs"
+            className="rounded-full text-xs font-bold h-9 px-5 bg-rose-600 hover:bg-rose-700 text-white shadow-xs"
           >
             {isCanceling ? (
               <div className="w-3.5 h-3.5 rounded-full border-2 border-white/40 border-t-white animate-spin mr-1.5" />

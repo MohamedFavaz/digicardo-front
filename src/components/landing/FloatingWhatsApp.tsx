@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { X, MessageCircle, Phone, ArrowUpRight } from "lucide-react";
+import { X, Phone, ArrowUpRight } from "lucide-react";
 
 export function FloatingWhatsApp() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -27,7 +27,7 @@ export function FloatingWhatsApp() {
     <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end">
       {/* Pop-up Card */}
       {isOpen && (
-        <div className="mb-3 w-[calc(100vw-2.5rem)] max-w-sm sm:w-88 bg-white rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200">
+        <div className="mb-3 w-[calc(100vw-2.5rem)] max-w-sm sm:w-88 bg-white rounded-2xl shadow-2xl border border-zinc-200/80 overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200">
           {/* Header */}
           <div className="bg-[#25D366] px-5 py-4 text-white flex items-center justify-between">
             <div className="flex items-center gap-2.5">
@@ -53,8 +53,8 @@ export function FloatingWhatsApp() {
           </div>
 
           {/* Body */}
-          <div className="p-4 space-y-3 bg-slate-50/50">
-            <p className="text-xs text-slate-600">
+          <div className="p-4 space-y-3 bg-zinc-50/50">
+            <p className="text-xs text-zinc-600">
               Need assistance or want to order custom NFC cards? Chat directly with our team:
             </p>
 
@@ -62,17 +62,17 @@ export function FloatingWhatsApp() {
               {contacts.map((contact, idx) => (
                 <div
                   key={idx}
-                  className="bg-white p-3 rounded-xl border border-slate-200/80 hover:border-emerald-500/50 shadow-2xs hover:shadow-sm transition-all"
+                  className="bg-white p-3 rounded-xl border border-zinc-200/80 hover:border-emerald-500/50 shadow-2xs hover:shadow-sm transition-all"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-xs font-bold text-slate-800">{contact.name}</div>
-                      <div className="text-xs font-semibold text-slate-900 mt-0.5">{contact.display}</div>
-                      <div className="text-[10px] text-slate-400">{contact.subtitle}</div>
+                      <div className="text-xs font-bold text-zinc-800">{contact.name}</div>
+                      <div className="text-xs font-semibold text-zinc-900 mt-0.5">{contact.display}</div>
+                      <div className="text-[10px] text-zinc-400">{contact.subtitle}</div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 mt-2.5 pt-2 border-t border-slate-100">
+                  <div className="flex items-center gap-2 mt-2.5 pt-2 border-t border-zinc-100">
                     <a
                       href={`https://wa.me/${contact.raw}?text=${encodeURIComponent("Hi Digicardo, I would like to chat about the digital visiting card.")}`}
                       target="_blank"
@@ -86,7 +86,7 @@ export function FloatingWhatsApp() {
                     </a>
                     <a
                       href={`tel:${contact.number}`}
-                      className="inline-flex items-center justify-center p-1.5 rounded-lg text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
+                      className="inline-flex items-center justify-center p-1.5 rounded-lg text-zinc-600 bg-zinc-100 hover:bg-zinc-200 transition-colors"
                       title={`Call ${contact.display}`}
                     >
                       <Phone className="w-3.5 h-3.5" />
@@ -99,22 +99,21 @@ export function FloatingWhatsApp() {
         </div>
       )}
 
-      {/* Main Trigger Button */}
+      {/* Main trigger: a round lime button like the floating social badges on the landing page. */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="group relative flex items-center gap-2.5 px-4 py-3 rounded-full text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95"
-        style={{
-          backgroundColor: "#25D366",
-        }}
-        aria-label="Contact us on WhatsApp"
+        aria-expanded={isOpen}
+        aria-label={isOpen ? "Close WhatsApp chat options" : "Chat with us on WhatsApp"}
+        className="group relative flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#1C1245] bg-[#DAF56B] text-[#25D366] shadow-[0_14px_30px_-10px_rgba(28,18,69,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-10px_rgba(28,18,69,0.6)] active:scale-95"
       >
-        <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-          <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-white border-2 border-[#25D366]" />
-        </span>
-        <WhatsAppIcon className="w-5 h-5 fill-current" />
-        <span className="text-xs sm:text-sm font-bold tracking-tight">WhatsApp Us</span>
+        {!isOpen && (
+          <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 flex h-3.5 w-3.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#5B3FE4] opacity-60" />
+            <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-[#DAF56B] bg-[#5B3FE4]" />
+          </span>
+        )}
+        {isOpen ? <X className="h-6 w-6 text-[#1C1245]" aria-hidden="true" /> : <WhatsAppIcon className="h-7 w-7 fill-current transition-transform group-hover:scale-110" />}
       </button>
     </div>
   );

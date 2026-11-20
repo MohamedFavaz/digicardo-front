@@ -1,4 +1,5 @@
 import type { ProfileBlock, PublicProfileBlock } from "./blocks";
+import type { CardContent } from "@/lib/zod/content";
 
 export const FONT_ALLOWLIST = [
   "inter",
@@ -283,6 +284,15 @@ export interface ThemeTokens {
   button_radius: ButtonRadius;
   button_style: ButtonStyle;
   animation: AnimationType;
+  /** Template-specific style values, validated against the template manifest (ADR-031). */
+  template_style?: Record<string, string | boolean>;
+  /** Id of the one-click colour preset last applied (manifest `presets`). */
+  preset?: string;
+  hide_branding?: boolean;
+  /**
+   * Legacy content + style bag. Card content moves to `Profile.content` (ADR-030); this stays
+   * readable until the cutover so un-migrated cards keep rendering.
+   */
   custom_options?: TemplateAppearanceOptions;
 }
 
@@ -296,6 +306,8 @@ export interface Profile {
   cover_url: string | null;
   template_id: string;
   theme_tokens: ThemeTokens | null;
+  /** Typed card content (ADR-030); null until the card is converted from legacy data. */
+  content?: CardContent | null;
   is_public: boolean;
   seo_title: string | null;
   seo_description: string | null;
@@ -305,6 +317,8 @@ export interface Profile {
   og_image_url?: string | null;
   indexable?: boolean;
   primary_custom_domain?: string | null;
+  /** Domain of the agent who made this card (card lives at https://{agent_domain}/{username}). */
+  agent_domain?: string | null;
   show_branding?: boolean;
   version: number;
   created_at: string;
@@ -328,6 +342,7 @@ export interface PublicProfile {
   cover_url?: string | null;
   template_id: string;
   theme_tokens?: ThemeTokens | null;
+  content?: CardContent | null;
   seo_title?: string | null;
   seo_description?: string | null;
   seo_keywords?: string[] | null;
@@ -336,6 +351,10 @@ export interface PublicProfile {
   og_image_url?: string | null;
   indexable?: boolean;
   primary_custom_domain?: string | null;
+  /** Domain of the agent who made this card (card lives at https://{agent_domain}/{username}). */
+  agent_domain?: string | null;
+  /** The agent's brand, shown instead of "Made with Digicardo". */
+  agent_brand?: { name: string; url: string } | null;
   show_branding?: boolean;
   created_at?: string;
   stats?: PublicProfileStats;

@@ -51,10 +51,10 @@ export default function AgentEarningsPage() {
   if (loading) return <div className="p-6 flex items-center justify-center py-32"><Loader2 className="w-6 h-6 text-emerald-500 animate-spin" /></div>;
 
   return (
-    <div className="p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
       <div>
-        <h1 className="text-xl font-black text-slate-900 tracking-tight">My Earnings</h1>
-        <p className="text-xs text-slate-500 mt-1">Commission and revenue summary</p>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Earnings</h1>
+        <p className="mt-1 text-[15px] text-muted-foreground">Commission and revenue summary</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -65,36 +65,36 @@ export default function AgentEarningsPage() {
           { label: "Pending", value: `₹${(earnings?.pending_commission || 0).toLocaleString()}`, icon: Clock, color: "text-amber-600 bg-amber-50" },
           { label: "Cards Sold", value: String(earnings?.total_cards_sold || 0), icon: CreditCard, color: "text-violet-600 bg-violet-50" },
         ].map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+          <div key={label} className="bg-card rounded-2xl border border-border shadow-sm p-4">
             <div className={`w-8 h-8 rounded-xl ${color} flex items-center justify-center mb-3`}><Icon className="w-4 h-4" /></div>
-            <p className="text-lg font-black text-slate-900">{value}</p>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1">{label}</p>
+            <p className="text-lg font-semibold text-foreground">{value}</p>
+            <p className="text-xs font-semibold capitalize text-muted-foreground mt-1">{label}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-100">
-          <h2 className="text-sm font-bold text-slate-900">Transaction History</h2>
+      <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+        <div className="px-5 py-4 border-b border-border">
+          <h2 className="text-sm font-semibold text-foreground">Transaction History</h2>
         </div>
         {transactions.length === 0 ? (
-          <div className="text-center py-12"><p className="text-xs text-slate-400">No transactions yet</p></div>
+          <div className="text-center py-12"><p className="text-xs text-muted-foreground">No transactions yet</p></div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead><tr className="border-b border-slate-100">
-                <th className="text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Type</th>
-                <th className="text-right px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Amount</th>
-                <th className="text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Description</th>
-                <th className="text-left px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Date</th>
+              <thead><tr className="border-b border-border">
+                <th className="text-left px-5 py-3 text-xs font-semibold capitalize text-muted-foreground">Type</th>
+                <th className="text-right px-5 py-3 text-xs font-semibold capitalize text-muted-foreground">Amount</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold capitalize text-muted-foreground">Description</th>
+                <th className="text-left px-5 py-3 text-xs font-semibold capitalize text-muted-foreground">Date</th>
               </tr></thead>
-              <tbody className="divide-y divide-slate-50">
+              <tbody className="divide-y divide-zinc-50">
                 {transactions.map((tx) => (
-                  <tr key={tx.id} className="hover:bg-slate-50/50">
-                    <td className="px-5 py-3"><span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${tx.type === "card_sale" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : tx.type === "commission_payment" ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-slate-50 text-slate-600 border-slate-200"}`}>{tx.type.replace(/_/g, " ")}</span></td>
-                    <td className="px-5 py-3 text-right"><span className="text-xs font-bold text-slate-900">₹{tx.amount?.toLocaleString()}</span></td>
-                    <td className="px-5 py-3"><span className="text-[11px] text-slate-500">{tx.description}</span></td>
-                    <td className="px-5 py-3"><span className="text-[11px] text-slate-500">{formatDate(tx.created_at)}</span></td>
+                  <tr key={tx.id} className="hover:bg-muted/50">
+                    <td className="px-5 py-3"><span className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize border ${tx.type === "card_sale" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : tx.type === "commission_payment" ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-muted/50 text-[#52525B] border-border"}`}>{tx.type.replace(/_/g, " ")}</span></td>
+                    <td className="px-5 py-3 text-right"><span className="text-xs font-semibold text-foreground">₹{tx.amount?.toLocaleString()}</span></td>
+                    <td className="px-5 py-3"><span className="text-xs text-muted-foreground">{tx.description}</span></td>
+                    <td className="px-5 py-3"><span className="text-xs text-muted-foreground">{formatDate(tx.created_at)}</span></td>
                   </tr>
                 ))}
               </tbody>
@@ -102,11 +102,11 @@ export default function AgentEarningsPage() {
           </div>
         )}
         {txLastPage > 1 && (
-          <div className="flex items-center justify-between px-5 py-3 border-t border-slate-100">
-            <span className="text-[11px] text-slate-500">Page {txPage} of {txLastPage}</span>
+          <div className="flex items-center justify-between px-5 py-3 border-t border-border">
+            <span className="text-xs text-muted-foreground">Page {txPage} of {txLastPage}</span>
             <div className="flex gap-1.5">
-              <button onClick={() => setTxPage((p) => Math.max(1, p - 1))} disabled={txPage <= 1} className="p-1.5 rounded-lg border border-slate-200 disabled:opacity-40"><ChevronLeft className="w-3.5 h-3.5" /></button>
-              <button onClick={() => setTxPage((p) => Math.min(txLastPage, p + 1))} disabled={txPage >= txLastPage} className="p-1.5 rounded-lg border border-slate-200 disabled:opacity-40"><ChevronRight className="w-3.5 h-3.5" /></button>
+              <button onClick={() => setTxPage((p) => Math.max(1, p - 1))} disabled={txPage <= 1} className="p-1.5 rounded-lg border border-border disabled:opacity-40"><ChevronLeft className="w-3.5 h-3.5" /></button>
+              <button onClick={() => setTxPage((p) => Math.min(txLastPage, p + 1))} disabled={txPage >= txLastPage} className="p-1.5 rounded-lg border border-border disabled:opacity-40"><ChevronRight className="w-3.5 h-3.5" /></button>
             </div>
           </div>
         )}

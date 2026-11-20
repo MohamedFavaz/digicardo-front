@@ -14,7 +14,7 @@ export function TextBlock({ config }: TextBlockProps) {
       : "text-center";
 
   return (
-    <div className={`w-full py-1 text-sm leading-relaxed text-slate-300 ${alignClass}`}>
+    <div className={`w-full py-1 text-sm leading-relaxed text-zinc-300 ${alignClass}`}>
       <p className="whitespace-pre-line">{config.content}</p>
     </div>
   );

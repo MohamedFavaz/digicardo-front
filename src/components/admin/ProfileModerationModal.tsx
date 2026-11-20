@@ -41,7 +41,7 @@ export function ProfileModerationModal({
       aria-labelledby="profile-moderation-dialog-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in-50"
     >
-      <div className="relative w-full max-w-md rounded-[32px] border border-border/80 bg-card p-6 sm:p-7 shadow-float space-y-5 animate-in zoom-in-95 select-none">
+      <div className="relative w-full max-w-md rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-float space-y-5 animate-in zoom-in-95 select-none">
         
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
@@ -50,7 +50,7 @@ export function ProfileModerationModal({
               <ShieldBan className="w-5 h-5" />
             </div>
             <div>
-              <h3 id="profile-moderation-dialog-title" className="text-base font-black text-foreground">
+              <h3 id="profile-moderation-dialog-title" className="text-base font-bold text-foreground">
                 Moderate @{profile.username}
               </h3>
               <p className="text-xs text-muted-foreground font-mono truncate max-w-xs">
@@ -76,7 +76,7 @@ export function ProfileModerationModal({
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label htmlFor="profile-new-status" className="block text-xs font-black text-foreground">
+            <label htmlFor="profile-new-status" className="block text-xs font-bold text-foreground">
               Moderation Status
             </label>
             <select
@@ -93,7 +93,7 @@ export function ProfileModerationModal({
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="profile-moderation-reason" className="block text-xs font-black text-foreground">
+            <label htmlFor="profile-moderation-reason" className="block text-xs font-bold text-foreground">
               Reason for Decision (Required for Restricted/Suspended)
             </label>
             <input
@@ -107,7 +107,7 @@ export function ProfileModerationModal({
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="profile-moderation-notes" className="block text-xs font-black text-foreground">
+            <label htmlFor="profile-moderation-notes" className="block text-xs font-bold text-foreground">
               Internal Compliance Notes
             </label>
             <textarea
@@ -137,7 +137,7 @@ export function ProfileModerationModal({
               type="submit"
               size="sm"
               disabled={submitting}
-              className="rounded-full text-xs font-black h-9 px-5 bg-purple-600 hover:bg-purple-700 text-white shadow-cta gap-1.5"
+              className="rounded-full text-xs font-bold h-9 px-5 bg-purple-600 hover:bg-purple-700 text-white shadow-cta gap-1.5"
             >
               {submitting ? (
                 <div className="w-3.5 h-3.5 rounded-full border-2 border-white/40 border-t-white animate-spin" />

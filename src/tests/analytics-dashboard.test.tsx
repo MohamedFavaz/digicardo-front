@@ -30,15 +30,15 @@ describe("Analytics Dashboard Components", () => {
   it("renders AnalyticsSummaryCards correctly with metrics and CTR", () => {
     const html = renderToStaticMarkup(<AnalyticsSummaryCards overview={mockOverview} />);
 
-    expect(html).toContain("Total Views");
-    expect(html).toContain("1250");
-    expect(html).toContain("Unique Visitors");
+    expect(html).toContain("Card views");
+    expect(html).toContain("1,250");
+    expect(html).toContain("People");
     expect(html).toContain("890");
-    expect(html).toContain("Total Clicks");
+    expect(html).toContain("Button taps");
     expect(html).toContain("420");
-    expect(html).toContain("Click-Through Rate");
+    expect(html).toContain("Tap rate");
     expect(html).toContain("33.6%");
-    expect(html).toContain("Contact Inquiries");
+    expect(html).toContain("Messages");
     expect(html).toContain("15");
   });
 
@@ -47,9 +47,10 @@ describe("Analytics Dashboard Components", () => {
       <AnalyticsDateRangeSelector period="7d" onPeriodChange={() => {}} />
     );
 
-    expect(html).toContain("Last 7 Days");
-    expect(html).toContain("Last 30 Days");
-    expect(html).toContain("Last 90 Days");
+    expect(html).toContain("Today");
+    expect(html).toContain("7 Days");
+    expect(html).toContain("30 Days");
+    expect(html).toContain("90 Days");
     expect(html).toContain("Custom");
   });
 
@@ -71,7 +72,7 @@ describe("Analytics Dashboard Components", () => {
 
     const html = renderToStaticMarkup(<AnalyticsTopBlocks blocks={mockBlocks} />);
 
-    expect(html).toContain("Top Performing Blocks");
+    expect(html).toContain("Most tapped buttons");
     expect(html).toContain("Portfolio");
     expect(html).toContain("120");
     expect(html).toContain("Join Newsletter");
@@ -86,7 +87,7 @@ describe("Analytics Dashboard Components", () => {
 
     const html = renderToStaticMarkup(<AnalyticsReferrers referrers={mockReferrers} />);
 
-    expect(html).toContain("Traffic Sources");
+    expect(html).toContain("Where visitors come from");
     expect(html).toContain("twitter.com");
     expect(html).toContain("direct");
     expect(html).toContain("50%");
@@ -100,16 +101,18 @@ describe("Analytics Dashboard Components", () => {
 
     const html = renderToStaticMarkup(<AnalyticsChart timeseries={mockTimeseries} />);
 
-    expect(html).toContain("Performance Trend");
-    expect(html).toContain("2026-08-14");
-    expect(html).toContain("2026-08-15");
+    expect(html).toContain("Views and taps over time");
+    // Dates are shown in words.
+    expect(html).toContain("14 Aug");
+    expect(html).toContain("15 Aug");
   });
 
   it("renders AnalyticsEmptyState and AnalyticsSkeleton gracefully", () => {
     const emptyHtml = renderToStaticMarkup(<AnalyticsEmptyState />);
-    expect(emptyHtml).toContain("No Analytics Data Yet");
+    expect(emptyHtml).toContain("Your story is just getting started");
+    expect(emptyHtml).toContain("Copy Profile Link");
 
     const skeletonHtml = renderToStaticMarkup(<AnalyticsSkeleton />);
-    expect(skeletonHtml).toContain("animate-pulse");
+    expect(skeletonHtml).toContain("skeleton");
   });
 });

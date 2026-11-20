@@ -9,6 +9,7 @@ import {
   Mail,
   Star,
   Filter,
+  Megaphone,
 } from "lucide-react";
 import type { NotificationCategory } from "@/types/notifications";
 import { cn } from "@/lib/utils";
@@ -19,6 +20,7 @@ export const NOTIFICATION_CATEGORIES: {
   icon: React.ReactNode;
 }[] = [
   { value: undefined, label: "All Alerts", icon: <Bell className="h-3.5 w-3.5" /> },
+  { value: "message", label: "Announcements", icon: <Megaphone className="h-3.5 w-3.5" /> },
   { value: "contact", label: "Contact Inquiries", icon: <Mail className="h-3.5 w-3.5" /> },
   { value: "domain", label: "Domains & SSL", icon: <Globe className="h-3.5 w-3.5" /> },
   { value: "subscription", label: "Billing", icon: <CreditCard className="h-3.5 w-3.5" /> },
@@ -71,7 +73,7 @@ export function NotificationFilterBar({
         className={cn(
           "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex-shrink-0 shadow-2xs border self-start sm:self-auto",
           unreadOnly
-            ? "bg-brand-50 border-brand-200 text-brand-700 font-black"
+            ? "bg-brand-50 border-brand-200 text-brand-700 font-bold"
             : "bg-card border-border/80 text-muted-foreground hover:text-foreground hover:bg-muted"
         )}
       >

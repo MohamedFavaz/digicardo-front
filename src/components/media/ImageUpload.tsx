@@ -100,7 +100,7 @@ export function ImageUpload({
       />
 
       {preview ? (
-        <div className="relative h-44 w-full overflow-hidden rounded-xl border border-slate-800 bg-slate-950">
+        <div className="relative h-44 w-full overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={preview}
@@ -132,15 +132,15 @@ export function ImageUpload({
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
-          className="flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-800 bg-slate-950/40 p-4 text-center transition-colors hover:border-indigo-500/60 hover:bg-slate-900/40"
+          className="flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-zinc-800 bg-zinc-950/40 p-4 text-center transition-colors hover:border-indigo-500/60 hover:bg-zinc-900/40"
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-indigo-400 shadow-sm">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-indigo-400 shadow-sm">
             <Upload className="h-5 w-5" />
           </div>
-          <p className="mt-2 text-xs font-semibold text-slate-200">
+          <p className="mt-2 text-xs font-semibold text-zinc-200">
             Click to upload or drag & drop
           </p>
-          <p className="text-[11px] text-slate-500">
+          <p className="text-[11px] text-zinc-500">
             JPEG, PNG, or WebP up to {maxSizeMb} MB
           </p>
         </div>

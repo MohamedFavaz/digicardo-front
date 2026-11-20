@@ -49,16 +49,16 @@ export const FeatureGate: React.FC<FeatureGateProps> = ({
   return (
     <>
       <div
-        className="rounded-2xl border border-dashed border-indigo-200 dark:border-indigo-900/60 bg-gradient-to-b from-indigo-50/40 via-white to-transparent dark:from-indigo-950/20 dark:via-slate-900/50 p-6 text-center shadow-sm"
+        className="rounded-2xl border border-dashed border-indigo-200 dark:border-indigo-900/60 bg-gradient-to-b from-indigo-50/40 via-white to-transparent dark:from-indigo-950/20 dark:via-zinc-900/50 p-6 text-center shadow-sm"
         data-testid="feature-gate-locked"
       >
         <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 mx-auto flex items-center justify-center mb-3 shadow-inner">
           <Lock className="w-6 h-6" />
         </div>
-        <h3 className="text-base font-bold text-slate-900 dark:text-white">
+        <h3 className="text-base font-bold text-zinc-900 dark:text-white">
           {title || "Unlock This Feature with Pro"}
         </h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-1 mb-4">
+        <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-md mx-auto mt-1 mb-4">
           {description || "This capability is part of Digicardo Pro and Business subscriptions. Upgrade to unlock immediate access."}
         </p>
         <Button

@@ -72,7 +72,7 @@ describe("Metadata Fallback Resolver", () => {
     const meta = resolveProfileMetadata(profile);
 
     expect(meta.title).toBe("@minimalist — Digicardo");
-    expect(meta.description).toBe("Find all links and content from @minimalist on Digicardo.");
+    expect(meta.description).toBe("Find all contact details and links from @minimalist on Digicardo.");
     expect(meta.ogImage).toBe("https://Digicardo.app/api/og/minimalist");
     expect(meta.canonicalUrl).toBe("https://Digicardo.app/minimalist");
   });
@@ -89,5 +89,18 @@ describe("Metadata Fallback Resolver", () => {
 
     const meta = resolveProfileMetadata(profile);
     expect(meta.isIndexable).toBe(false);
+  });
+
+  it("uses the agent's domain and brand for cards on an agent domain (white-label)", () => {
+    const base: PublicProfile = { username: "priya", display_name: "Priya Menon", bio: null, avatar_url: null, template_id: "vcard", agent_domain: "excellentcards.in" };
+
+    const branded = resolveProfileMetadata({ ...base, agent_brand: { name: "Excellent Cards", url: "https://excellentcards.in/" } });
+    expect(branded.canonicalUrl).toBe("https://excellentcards.in/priya");
+    expect(branded.title).toBe("Priya Menon (@priya) — Excellent Cards");
+    expect(branded.description).toBe("Find all contact details and links from Priya Menon on Excellent Cards.");
+
+    const plain = resolveProfileMetadata(base);
+    expect(plain.title).toBe("Priya Menon (@priya)");
+    expect(plain.description).not.toContain("Digicardo");
   });
 });

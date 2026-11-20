@@ -15,9 +15,11 @@ describe("sendEventBeacon", () => {
     vi.stubGlobal("document", { referrer: "https://google.com" });
   });
 
-  it("uses navigator.sendBeacon when available", () => {
+  // fetch(keepalive) is preferred because it can send JSON headers; sendBeacon is the fallback.
+  it("uses navigator.sendBeacon when fetch is unavailable", () => {
     const sendBeaconMock = vi.fn().mockReturnValue(true);
     vi.stubGlobal("navigator", { sendBeacon: sendBeaconMock });
+    vi.stubGlobal("fetch", undefined);
 
     const result = sendEventBeacon(mockEvent);
 
