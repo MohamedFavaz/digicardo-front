@@ -28,7 +28,7 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ["image/avif", "image/webp"],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2560],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 86400,
     remotePatterns: [
@@ -47,7 +47,17 @@ const nextConfig: NextConfig = {
     if (process.env.NODE_ENV !== "production") {
       return [];
     }
+    // Signed-in areas and account flows are never indexed (server-side header, so private
+    // route names here are not published anywhere).
+    const noindex = [{ key: "X-Robots-Tag", value: "noindex, nofollow" }];
+    const privatePaths = [
+      "/dashboard", "/dashboard/:path*", "/admin", "/admin/:path*", "/agent", "/agent/:path*",
+      "/agent-login", "/login", "/register", "/forgot-password", "/reset-password/:path*",
+      "/verify-email/:path*", "/account-deleted", "/setup/:path*", "/partner-preview/:path*",
+      "/internal-admin-sign-in",
+    ];
     return [
+      ...privatePaths.map((source) => ({ source, headers: noindex })),
       {
         source: "/_next/static/:path*",
         headers: [

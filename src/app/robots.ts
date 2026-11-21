@@ -1,25 +1,61 @@
 import { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/seo";
 
-const BASE_APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://Digicardo.app";
-
+/**
+ * Crawl rules. Public pages (home, card pages, partner pages) are open; signed-in areas and
+ * account flows are blocked. Next's own /_next/ assets must stay crawlable — Google needs the
+ * CSS and JS to render and rank the page.
+ */
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
       allow: "/",
+      // Exact paths only ("$" = end, "?" = query, "/" = sub-pages), so card addresses that merely
+      // start with the same letters (e.g. /adminshop) stay crawlable.
       disallow: [
-        "/dashboard",
-        "/dashboard/",
-        "/dashboard/*",
-        "/api",
+        "/api$",
+        "/api?",
         "/api/",
-        "/api/*",
-        "/login",
-        "/register",
-        "/forgot-password",
-        "/_next/",
+        "/dashboard$",
+        "/dashboard?",
+        "/dashboard/",
+        "/admin$",
+        "/admin?",
+        "/admin/",
+        "/agent$",
+        "/agent?",
+        "/agent/",
+        "/agent-login$",
+        "/agent-login?",
+        "/agent-login/",
+        "/login$",
+        "/login?",
+        "/login/",
+        "/register$",
+        "/register?",
+        "/register/",
+        "/forgot-password$",
+        "/forgot-password?",
+        "/forgot-password/",
+        "/reset-password$",
+        "/reset-password?",
+        "/reset-password/",
+        "/verify-email$",
+        "/verify-email?",
+        "/verify-email/",
+        "/account-deleted$",
+        "/account-deleted?",
+        "/account-deleted/",
+        "/setup$",
+        "/setup?",
+        "/setup/",
+        "/partner-preview$",
+        "/partner-preview?",
+        "/partner-preview/",
       ],
     },
-    sitemap: `${BASE_APP_URL}/sitemap.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

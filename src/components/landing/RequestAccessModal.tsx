@@ -81,7 +81,7 @@ export function RequestAccessModal({ open, onClose }: Props) {
             </svg>
           </div>
           <h2 className="text-lg font-bold">Request Access to Digicardo</h2>
-          <p className="text-[13px] text-indigo-100 mt-0.5">Fill in your details and we'll reach out shortly.</p>
+          <p className="text-[13px] text-indigo-100 mt-0.5">Fill in your details and we&apos;ll reach out shortly.</p>
         </div>
 
         {submitted ? (
@@ -93,7 +93,7 @@ export function RequestAccessModal({ open, onClose }: Props) {
             </div>
             <div>
               <p className="text-[16px] font-bold text-zinc-800">Request Submitted!</p>
-              <p className="text-[13px] text-zinc-500 mt-1">Thank you, <strong>{form.name.split(" ")[0]}</strong>! We'll review your request and reach out to <strong>{form.email}</strong> soon.</p>
+              <p className="text-[13px] text-zinc-500 mt-1">Thank you, <strong>{form.name.split(" ")[0]}</strong>! We&apos;ll review your request and reach out to <strong>{form.email}</strong> soon.</p>
             </div>
             <button onClick={handleClose}
               className="mt-2 px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[13px] font-bold transition-all">

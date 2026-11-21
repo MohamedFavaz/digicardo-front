@@ -80,20 +80,31 @@ export const DigicardoLogo: React.FC<DigicardoLogoProps> = ({
   const s = SIZES[size];
   if (!showWordmark) return <LogoMark size={s.mark} className={cn(iconClassName, className)} title="Digicardo" />;
 
+  // Brand wordmark: lowercase "digi" + "cardo" in the accent, with tap waves rising after the "o".
+  // Light backgrounds: navy + violet. Dark backgrounds (wordmarkClassName contains text-white): white + lime.
   const onDark = /text-white/.test(wordmarkClassName ?? "");
+  const accent = onDark ? "#DAF56B" : BRAND;
   return (
     <span className={cn("inline-flex select-none flex-col", className)}>
       <span className="inline-flex items-center gap-2">
         <span
-          className={cn("inline-flex items-start font-extrabold leading-none tracking-[-0.045em] text-[#1C1245]", s.text, wordmarkClassName)}
+          className={cn("relative inline-flex items-baseline font-extrabold leading-none tracking-[-0.04em] text-[#1C1245]", s.text, wordmarkClassName)}
           aria-label="Digicardo"
           role="img"
         >
-          <span aria-hidden="true">Digicardo</span>
-          <TapGlyph
-            className={cn("ml-[0.08em] mt-[0.04em] h-[0.62em] w-[0.62em] shrink-0", iconClassName)}
-            color={onDark ? "#B9A8FF" : BRAND}
-          />
+          <span aria-hidden="true">digi</span>
+          <span aria-hidden="true" style={{ color: accent }}>
+            cardo
+          </span>
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            fill="none"
+            overflow="visible"
+            className={cn("-ml-[0.06em] h-[0.58em] w-[0.58em] shrink-0 -translate-y-[0.46em]", iconClassName)}
+          >
+            <path d="M3 11.5A9.5 9.5 0 0 1 12.5 21M3 3.5A17.5 17.5 0 0 1 20.5 21" stroke={accent} strokeWidth="3.6" strokeLinecap="round" />
+          </svg>
         </span>
         {proBadge && <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-xs font-medium leading-none text-primary">Pro</span>}
       </span>

@@ -7,18 +7,52 @@ import { useAuth } from "@/lib/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AuthLayout } from "@/components/auth/AuthLayout";
-import { 
-  ShieldCheck, 
-  Mail, 
-  User, 
-  ArrowRight, 
-  CheckCircle2, 
-  Send,
-  Building,
-  Phone,
-  AlertCircle
-} from "lucide-react";
+import { AlertCircle, ArrowRight, AtSign, Building2, CheckCircle2, Clock, Loader2, Mail, Phone, Send, User } from "lucide-react";
+import { cn } from "@/lib/utils";
 
+/** One labelled field with an icon, matching the sign-in form. */
+function Field({
+  id,
+  label,
+  optional,
+  icon: Icon,
+  error,
+  hint,
+  children,
+}: {
+  id: string;
+  label: string;
+  optional?: boolean;
+  icon?: React.ComponentType<{ className?: string }>;
+  error?: string;
+  hint?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <label htmlFor={id} className="flex items-baseline justify-between text-sm font-medium text-foreground">
+        {label}
+        {optional && <span className="text-xs font-normal text-muted-foreground">Optional</span>}
+      </label>
+      <div className="relative">
+        {Icon && <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />}
+        {children}
+      </div>
+      {error ? (
+        <p className="flex items-start gap-1.5 text-xs font-medium text-destructive">
+          <AlertCircle className="mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+          {error}
+        </p>
+      ) : (
+        hint && <p className="text-xs text-muted-foreground">{hint}</p>
+      )}
+    </div>
+  );
+}
+
+const inputCls = (error?: string) => cn("h-11 pl-10 text-[15px]", error && "border-destructive focus-visible:ring-destructive/20");
+
+/** Public "request access" form (self sign-up is off: an admin or partner creates the account). */
 export default function RequestAccessPage() {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
@@ -32,6 +66,7 @@ export default function RequestAccessPage() {
   const [submitted, setSubmitted] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
 
   // "Claim your card" on the home page passes the wanted username as ?handle=
   React.useEffect(() => {
@@ -39,23 +74,27 @@ export default function RequestAccessPage() {
     if (handle) setDesiredHandle(handle.toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 30));
   }, []);
 
-  // Redirect if already authenticated
   React.useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/dashboard");
-    }
+    if (isAuthenticated) router.push("/dashboard");
   }, [isAuthenticated, router]);
+
+  const clearError = (key: string) => setFieldErrors((f) => (f[key] ? { ...f, [key]: "" } : f));
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
-    if (!fullName.trim() || !email.trim()) return;
+    const local: Record<string, string> = {};
+    if (!fullName.trim()) local.name = "Please enter your name.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) local.email = "Please enter a valid email address.";
+    if (phone.replace(/\D/g, "").length < 7) local.phone = "Please enter your mobile number with country code.";
+    setFieldErrors(local);
+    if (Object.keys(local).length) return;
 
     setIsSubmitting(true);
     try {
       const res = await fetch("/api/bff/v1/access-requests", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           name: fullName.trim(),
           email: email.trim(),
@@ -65,238 +104,214 @@ export default function RequestAccessPage() {
           message: useCase.trim() || undefined,
         }),
       });
-
-      const json = await res.json();
+      const json = await res.json().catch(() => null);
 
       if (!res.ok) {
-        const details = json?.error?.details;
+        const details = json?.error?.details as Record<string, string[] | string> | undefined;
         if (details && typeof details === "object") {
-          const first = Object.values(details)[0];
-          setError(Array.isArray(first) ? first[0] : String(first));
+          const pick = (v: string[] | string | undefined) => (Array.isArray(v) ? v[0] : v) || "";
+          const mapped: Record<string, string> = {
+            name: pick(details.name),
+            email: pick(details.email),
+            phone: pick(details.phone ?? details.mobile),
+            handle: pick(details.desired_username ?? details.desired_handle),
+            organization: pick(details.business_name),
+          };
+          setFieldErrors(mapped);
+          if (!Object.values(mapped).some(Boolean)) setError(pick(Object.values(details)[0]) || "Please check the form.");
         } else {
-          setError(json?.error?.message || "Failed to submit access request.");
+          setError(json?.error?.message || "Couldn't send your request. Please try again.");
         }
         return;
       }
-
       setSubmitted(true);
     } catch {
-      setError("Network request failed. Please check your connection and try again.");
+      setError("Network problem. Please check your connection and try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  return (
-    <AuthLayout
-      title="Request access"
-      subtitle="Accounts are provisioned by administrators & partner organizations."
-    >
-      {submitted ? (
-        <div className="space-y-6 text-center py-4 animate-in zoom-in-95 duration-300">
-          <div className="mx-auto w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center shadow-2xs">
-            <CheckCircle2 className="w-7 h-7" />
+  if (submitted) {
+    return (
+      <AuthLayout title="Request sent" subtitle="We'll be in touch soon.">
+        <div className="space-y-6">
+          <div className="flex items-start gap-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white">
+              <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
+            </span>
+            <div className="min-w-0">
+              <p className="font-semibold text-emerald-900">Thank you, {fullName.trim().split(/\s+/)[0]}!</p>
+              <p className="mt-1 text-sm leading-6 text-emerald-800">
+                We&apos;ve received your request
+                {desiredHandle && (
+                  <>
+                    {" "}for <span className="font-semibold">@{desiredHandle}</span>
+                  </>
+                )}
+                . Our team will set up your card and send your sign-in details to <span className="font-semibold">{email.trim()}</span>.
+              </p>
+            </div>
           </div>
-
-          <div className="space-y-2">
-            <h3 className="text-lg font-bold text-foreground">
-              Request Received!
-            </h3>
-            <p className="text-xs text-muted-foreground font-medium leading-relaxed max-w-sm mx-auto">
-              Thank you, <strong>{fullName}</strong>. Your account provisioning request for{" "}
-              <strong className="text-foreground">@{desiredHandle || "handle"}</strong> ({email}{phone ? ` · ${phone}` : ""}) has been logged. Our administrative team will review your details and reach out with your credentials.
-            </p>
-          </div>
-
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href="/login" className="w-full sm:w-auto">
-              <Button
-                variant="pill"
-                size="sm"
-                className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold text-xs h-10 px-6 rounded-lg"
-              >
-                <span>Go to Sign In</span>
-                <ArrowRight className="w-4 h-4 ml-1.5" />
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Clock className="h-4 w-4" aria-hidden="true" /> Usually within one working day.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Link href="/login">
+              <Button size="lg" className="h-11 w-full gap-2">
+                Go to sign in <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Button>
             </Link>
-
-            <Link href="/" className="w-full sm:w-auto">
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full sm:w-auto rounded-full border-border/80 bg-card hover:bg-muted font-bold text-xs shadow-2xs h-10 px-5"
-              >
-                <span>Back to Home</span>
+            <Link href="/">
+              <Button size="lg" variant="outline" className="h-11 w-full">
+                Back to home
               </Button>
             </Link>
           </div>
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-          
-          {/* Admin Provisioning Explanatory Notice */}
-          <div className="rounded-2xl border border-brand-200/80 bg-brand-50/60 p-3.5 text-xs text-brand-900 font-medium flex items-start gap-2.5 shadow-2xs">
-            <ShieldCheck className="w-4 h-4 text-brand-600 flex-shrink-0 mt-0.5" />
-            <span className="leading-relaxed">
-              Public self-registration is disabled. Please submit your access request below to receive your personalized profile credentials.
-            </span>
+      </AuthLayout>
+    );
+  }
+
+  return (
+    <AuthLayout title="Get your Digicardo" subtitle="Tell us about you and we'll set up your card. Your sign-in details arrive by email.">
+      <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+        {error && (
+          <div role="alert" className="flex items-start gap-2.5 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+            <span>{error}</span>
           </div>
+        )}
 
-          {/* Error Alert */}
-          {error && (
-            <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-xs font-bold text-rose-700 flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
-              <span>{error}</span>
-            </div>
-          )}
+        <section className="space-y-4" aria-labelledby="req-you">
+          <p id="req-you" className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            Your details
+          </p>
+          <Field id="req-name" label="Full name" icon={User} error={fieldErrors.name}>
+            <Input
+              id="req-name"
+              autoComplete="name"
+              placeholder="Your full name"
+              value={fullName}
+              onChange={(e) => {
+                setFullName(e.target.value);
+                clearError("name");
+              }}
+              aria-invalid={!!fieldErrors.name}
+              className={inputCls(fieldErrors.name)}
+            />
+          </Field>
+          <Field id="req-email" label="Email" icon={Mail} error={fieldErrors.email} hint="Your sign-in details are sent here.">
+            <Input
+              id="req-email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                clearError("email");
+              }}
+              aria-invalid={!!fieldErrors.email}
+              className={inputCls(fieldErrors.email)}
+            />
+          </Field>
+          <Field id="req-phone" label="Mobile / WhatsApp" icon={Phone} error={fieldErrors.phone}>
+            <Input
+              id="req-phone"
+              type="tel"
+              autoComplete="tel"
+              placeholder="+91 98765 43210"
+              value={phone}
+              onChange={(e) => {
+                setPhone(e.target.value);
+                clearError("phone");
+              }}
+              aria-invalid={!!fieldErrors.phone}
+              className={inputCls(fieldErrors.phone)}
+            />
+          </Field>
+        </section>
 
-          {/* Full Name */}
-          <div className="space-y-1.5">
-            <label htmlFor="req-name" className="block text-xs font-bold text-foreground">
-              Full Name <span className="text-rose-500">*</span>
-            </label>
-            <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                id="req-name"
-                type="text"
-                required
-                placeholder="Alex Rivers"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="pl-10 text-xs font-medium"
-              />
-            </div>
-          </div>
-
-          {/* Work / Personal Email */}
-          <div className="space-y-1.5">
-            <label htmlFor="req-email" className="block text-xs font-bold text-foreground">
-              Email Address <span className="text-rose-500">*</span>
-            </label>
-            <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                id="req-email"
-                type="email"
-                required
-                placeholder="you@company.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 text-xs font-medium"
-              />
-            </div>
-          </div>
-
-          {/* Mobile Number */}
-          <div className="space-y-1.5">
-            <label htmlFor="req-phone" className="block text-xs font-bold text-foreground">
-              Mobile Number <span className="text-rose-500">*</span>
-            </label>
-            <div className="relative">
-              <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                id="req-phone"
-                type="tel"
-                required
-                placeholder="+91 98765 43210"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="pl-10 text-xs font-medium"
-              />
-            </div>
-          </div>
-
-          {/* Desired Username & Organization Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <label htmlFor="req-handle" className="block text-xs font-bold text-foreground">
-                Desired Handle
-              </label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-muted-foreground font-mono">
-                  @
-                </span>
-                <Input
-                  id="req-handle"
-                  type="text"
-                  placeholder="yourname"
-                  value={desiredHandle}
-                  onChange={(e) => setDesiredHandle(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""))}
-                  className="pl-8 text-xs font-mono font-bold"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <label htmlFor="req-org" className="block text-xs font-bold text-foreground">
-                Organization / Brand
-              </label>
-              <div className="relative">
-                <Building className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  id="req-org"
-                  type="text"
-                  placeholder="Acme Studio"
-                  value={organization}
-                  onChange={(e) => setOrganization(e.target.value)}
-                  className="pl-10 text-xs font-medium"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Purpose / Note */}
-          <div className="space-y-1.5">
-            <label htmlFor="req-usecase" className="block text-xs font-bold text-foreground">
-              Intended Use Case (Optional)
-            </label>
+        <section className="space-y-4 border-t border-border pt-6" aria-labelledby="req-card">
+          <p id="req-card" className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            Your card
+          </p>
+          <Field id="req-org" label="Business or brand name" optional icon={Building2} error={fieldErrors.organization}>
+            <Input
+              id="req-org"
+              autoComplete="organization"
+              placeholder="e.g. Verma Interiors"
+              value={organization}
+              onChange={(e) => {
+                setOrganization(e.target.value);
+                clearError("organization");
+              }}
+              className={inputCls(fieldErrors.organization)}
+            />
+          </Field>
+          <Field
+            id="req-handle"
+            label="Card address you'd like"
+            optional
+            icon={AtSign}
+            error={fieldErrors.handle}
+            hint={
+              desiredHandle ? (
+                <>
+                  Your card: <span className="font-medium text-foreground">digicardo.in/{desiredHandle}</span>
+                </>
+              ) : (
+                "Letters, numbers, - and _ only."
+              )
+            }
+          >
+            <Input
+              id="req-handle"
+              autoCapitalize="none"
+              spellCheck={false}
+              placeholder="yourname"
+              value={desiredHandle}
+              onChange={(e) => {
+                setDesiredHandle(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 30));
+                clearError("handle");
+              }}
+              aria-invalid={!!fieldErrors.handle}
+              className={inputCls(fieldErrors.handle)}
+            />
+          </Field>
+          <Field id="req-usecase" label="Anything we should know?" optional>
             <textarea
               id="req-usecase"
-              rows={2}
-              placeholder="e.g. Digital business card for executive team, creator link-in-bio, NFC cards..."
+              rows={3}
+              maxLength={2000}
+              placeholder="e.g. A card for my salon, 5 cards for my team, NFC cards…"
               value={useCase}
               onChange={(e) => setUseCase(e.target.value)}
-              className="w-full rounded-2xl border border-input bg-card p-3 text-xs font-medium text-foreground outline-none focus:ring-2 focus:ring-brand-500/20 resize-none"
+              className="block w-full resize-none rounded-lg border border-input bg-card px-3.5 py-2.5 text-[15px] text-foreground outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
             />
-          </div>
+          </Field>
+        </section>
 
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            variant="pill"
-            size="lg"
-            disabled={isSubmitting || !fullName.trim() || !email.trim()}
-            className="w-full bg-primary hover:bg-primary/90 text-white font-semibold text-sm h-11 gap-2 rounded-lg"
-          >
-            {isSubmitting ? (
-              <>
-                <div className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
-                <span>Sending Request...</span>
-              </>
-            ) : (
-              <>
-                <Send className="w-4 h-4" />
-                <span>Submit Access Request</span>
-              </>
-            )}
-          </Button>
+        <Button type="submit" size="lg" disabled={isSubmitting} className="h-11 w-full gap-2">
+          {isSubmitting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> Sending…
+            </>
+          ) : (
+            <>
+              <Send className="h-4 w-4" aria-hidden="true" /> Request my card
+            </>
+          )}
+        </Button>
 
-          {/* Switch to Sign In */}
-          <div className="pt-2 text-center border-t border-border/60">
-            <p className="text-xs font-semibold text-muted-foreground">
-              Already have credentials?{" "}
-              <Link
-                href="/login"
-                className="font-semibold text-primary hover:underline"
-              >
-                Sign in to your Digicardo account
-              </Link>
-            </p>
-          </div>
-
-        </form>
-      )}
+        <p className="border-t border-border pt-5 text-center text-sm text-muted-foreground">
+          Already have an account?{" "}
+          <Link href="/login" className="font-medium text-primary hover:underline">
+            Sign in
+          </Link>
+        </p>
+      </form>
     </AuthLayout>
   );
 }

@@ -1,6 +1,8 @@
 import { MetadataRoute } from "next";
 
-const BASE_APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://Digicardo.app";
+import { SITE_URL } from "@/lib/seo";
+
+const BASE_APP_URL = SITE_URL;
 const LARAVEL_INTERNAL_URL =
   process.env.LARAVEL_INTERNAL_API_URL ||
   process.env.NEXT_PUBLIC_API_URL ||

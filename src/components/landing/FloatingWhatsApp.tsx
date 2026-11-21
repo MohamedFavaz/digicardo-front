@@ -1,131 +1,103 @@
 "use client";
 
 import * as React from "react";
-import { X, Phone, ArrowUpRight } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight, Phone, X } from "lucide-react";
 
+const CONTACTS = [
+  { name: "Support & custom cards", raw: "918593048536", tel: "+918593048536", display: "+91 85930 48536" },
+  { name: "Sales & enquiries", raw: "919526390381", tel: "+919526390381", display: "+91 95263 90381" },
+];
+
+const TEXT = encodeURIComponent("Hi Digicardo, I'd like to know more about the digital business card.");
+
+/**
+ * Floating "Chat with us" launcher: a dark pill (a rounded square on phones) that opens a small
+ * panel with both WhatsApp numbers. Matches the landing page's ink + lime palette.
+ */
 export function FloatingWhatsApp() {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const panelId = React.useId();
 
-  const contacts = [
-    {
-      name: "Support & Custom Cards",
-      number: "+91 8593048536",
-      raw: "918593048536",
-      display: "+91 85930 48536",
-      subtitle: "Instant help & card orders",
-    },
-    {
-      name: "Sales & Inquiries",
-      number: "+91 9526390381",
-      raw: "919526390381",
-      display: "+91 95263 90381",
-      subtitle: "General queries & lifetime plans",
-    },
-  ];
+  React.useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
-    <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end">
-      {/* Pop-up Card */}
-      {isOpen && (
-        <div className="mb-3 w-[calc(100vw-2.5rem)] max-w-sm sm:w-88 bg-white rounded-2xl shadow-2xl border border-zinc-200/80 overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200">
-          {/* Header */}
-          <div className="bg-[#25D366] px-5 py-4 text-white flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                <WhatsAppIcon className="w-5 h-5 fill-current" />
-              </div>
+    <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end sm:bottom-6 sm:right-6">
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            id={panelId}
+            role="dialog"
+            aria-label="Chat with Digicardo"
+            initial={{ opacity: 0, y: 12, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 12, scale: 0.97 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-3 w-[calc(100vw-2rem)] max-w-[340px] origin-bottom-right overflow-hidden rounded-[24px] bg-white shadow-[0_30px_70px_-20px_rgba(18,16,24,0.45)] ring-1 ring-black/5"
+          >
+            <div className="flex items-start justify-between gap-3 bg-[#121018] p-5 text-white">
               <div>
-                <div className="text-sm font-bold leading-tight">Digicardo WhatsApp</div>
-                <div className="text-[11px] text-emerald-100 flex items-center gap-1 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                  <span>Typically replies in minutes</span>
-                </div>
+                <p className="text-[16px] font-semibold">Talk to Digicardo</p>
+                <p className="mt-1 flex items-center gap-1.5 text-[12px] text-white/70">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#DAF56B]" aria-hidden="true" />
+                  Usually replies within minutes
+                </p>
               </div>
+              <button type="button" onClick={() => setOpen(false)} aria-label="Close" className="rounded-full p-1.5 text-white/70 transition-colors hover:bg-white/10 hover:text-white">
+                <X className="h-4 w-4" aria-hidden="true" />
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              className="text-white/80 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
-              aria-label="Close WhatsApp popup"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* Body */}
-          <div className="p-4 space-y-3 bg-zinc-50/50">
-            <p className="text-xs text-zinc-600">
-              Need assistance or want to order custom NFC cards? Chat directly with our team:
-            </p>
-
-            <div className="space-y-2">
-              {contacts.map((contact, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white p-3 rounded-xl border border-zinc-200/80 hover:border-emerald-500/50 shadow-2xs hover:shadow-sm transition-all"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-xs font-bold text-zinc-800">{contact.name}</div>
-                      <div className="text-xs font-semibold text-zinc-900 mt-0.5">{contact.display}</div>
-                      <div className="text-[10px] text-zinc-400">{contact.subtitle}</div>
-                    </div>
+            <ul className="space-y-2 p-3">
+              {CONTACTS.map((c) => (
+                <li key={c.raw} className="flex items-center gap-2 rounded-[18px] bg-[#F6F6F3] p-3 pl-4">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[12px] text-[#6B6779]">{c.name}</p>
+                    <p className="text-[15px] font-semibold tracking-[-0.01em] text-[#121018]">{c.display}</p>
                   </div>
-
-                  <div className="flex items-center gap-2 mt-2.5 pt-2 border-t border-zinc-100">
-                    <a
-                      href={`https://wa.me/${contact.raw}?text=${encodeURIComponent("Hi Digicardo, I would like to chat about the digital visiting card.")}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-bold text-white transition-opacity hover:opacity-90 active:scale-98"
-                      style={{ backgroundColor: "#25D366" }}
-                    >
-                      <WhatsAppIcon className="w-3.5 h-3.5 fill-current" />
-                      <span>Chat on WhatsApp</span>
-                      <ArrowUpRight className="w-3 h-3 opacity-80" />
-                    </a>
-                    <a
-                      href={`tel:${contact.number}`}
-                      className="inline-flex items-center justify-center p-1.5 rounded-lg text-zinc-600 bg-zinc-100 hover:bg-zinc-200 transition-colors"
-                      title={`Call ${contact.display}`}
-                    >
-                      <Phone className="w-3.5 h-3.5" />
-                    </a>
-                  </div>
-                </div>
+                  <a
+                    href={`https://wa.me/${c.raw}?text=${TEXT}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`WhatsApp ${c.display}`}
+                    className="inline-flex h-10 items-center gap-1 rounded-full bg-[#121018] px-3.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#2A2635]"
+                  >
+                    Chat <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </a>
+                  <a href={`tel:${c.tel}`} aria-label={`Call ${c.display}`} className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#121018] ring-1 ring-black/5 transition-colors hover:bg-[#ECEBE6]">
+                    <Phone className="h-4 w-4" aria-hidden="true" />
+                  </a>
+                </li>
               ))}
-            </div>
-          </div>
-        </div>
-      )}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Main trigger: a round lime button like the floating social badges on the landing page. */}
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen}
-        aria-label={isOpen ? "Close WhatsApp chat options" : "Chat with us on WhatsApp"}
-        className="group relative flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#1C1245] bg-[#DAF56B] text-[#25D366] shadow-[0_14px_30px_-10px_rgba(28,18,69,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-10px_rgba(28,18,69,0.6)] active:scale-95"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-controls={panelId}
+        aria-label={open ? "Close chat options" : "Chat with us on WhatsApp"}
+        className="group flex h-14 items-center gap-3 rounded-[18px] bg-[#121018] p-2 text-white shadow-[0_18px_40px_-14px_rgba(18,16,24,0.6)] ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-0.5 active:scale-95 sm:rounded-full sm:pr-5"
       >
-        {!isOpen && (
-          <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 flex h-3.5 w-3.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#5B3FE4] opacity-60" />
-            <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-[#DAF56B] bg-[#5B3FE4]" />
-          </span>
-        )}
-        {isOpen ? <X className="h-6 w-6 text-[#1C1245]" aria-hidden="true" /> : <WhatsAppIcon className="h-7 w-7 fill-current transition-transform group-hover:scale-110" />}
+        <span className="relative flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#DAF56B] text-[#121018] sm:rounded-full">
+          {open ? <X className="h-5 w-5" aria-hidden="true" /> : <WhatsAppIcon className="h-5 w-5 transition-transform duration-300 group-hover:rotate-[-10deg] group-hover:scale-110" />}
+        </span>
+        <span className="hidden text-[14px] font-semibold sm:inline">{open ? "Close" : "Chat with us"}</span>
       </button>
     </div>
   );
 }
 
-function WhatsAppIcon({ className = "w-5 h-5" }: { className?: string }) {
+function WhatsAppIcon({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className={className}
-      fill="currentColor"
-    >
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
       <path d="M17.472 14.382c-.301-.15-1.78-.878-2.056-.978-.276-.1-.477-.15-.678.15-.201.3-.777.978-.953 1.178-.175.2-.351.226-.652.075-.301-.15-1.27-.468-2.42-1.494-.894-.798-1.498-1.784-1.674-2.085-.176-.301-.019-.464.132-.614.136-.135.301-.351.451-.527.151-.175.201-.3.301-.501.101-.2.05-.376-.025-.526-.075-.15-.678-1.633-.929-2.238-.244-.59-.492-.51-.678-.519l-.577-.01c-.201 0-.527.075-.803.376s-1.054 1.03-1.054 2.512c0 1.482 1.079 2.912 1.23 3.113.15.201 2.122 3.24 5.141 4.544.718.311 1.279.497 1.716.636.721.23 1.377.198 1.896.12.577-.087 1.78-.727 2.031-1.429.251-.702.251-1.303.176-1.429-.076-.126-.277-.201-.578-.351z" />
       <path
         fillRule="evenodd"
