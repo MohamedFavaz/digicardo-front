@@ -68,8 +68,11 @@ function Traveller({
 
 // ── Scene 1: hero fan → stack → showcase cascade ──────────────────────────────────
 
-const FAN_R = [-12, -6, 0, 6, 12];
-const FAN_DY = [30, 8, 0, 8, 30];
+const FAN_R = [-10, -3.5, 3.5, 10];
+const FAN_DY = [26, 4, 4, 26];
+const fanOffset = (i: number) => i - (TEMPLATES.length - 1) / 2;
+/** The card that flies in first and the others slide out from. */
+const LEAD = 1;
 
 function TemplateCard({ i, priority }: { i: number; priority?: boolean }) {
   const t = TEMPLATES[i];
@@ -97,11 +100,11 @@ function HeroShowcaseDesktop() {
   const W = Math.round(clamp(Math.min(w * 0.13, (h - 500) / 1.45), 120, 210));
   const H = Math.round((W * 4) / 3);
   const headTop = 96;
-  const fanY = headTop + 44 + fs * 2.1 + 40 + H / 2; // 44 = the small H1 label above the headline
+  const fanY = headTop + fs * 2.1 + 56 + H / 2;
   const subTop = fanY + H / 2 + 56;
 
   const posesFor = (i: number): Pose[] => {
-    const off = i - 2;
+    const off = fanOffset(i);
     const fan = { x: w / 2 + off * W * 0.82, y: fanY + FAN_DY[i] * (W / 190), r: FAN_R[i], s: 1 };
     const stack = { x: w / 2 + off * 3, y: h * 0.56, r: off * 2.5, s: 0.9 };
     const cascade = { x: w * 0.5 + W * 0.6 + i * W * 0.56, y: h * 0.34 + i * h * 0.075, r: 0, s: 1.08 };
@@ -125,11 +128,8 @@ function HeroShowcaseDesktop() {
         {/* Hero copy */}
         <motion.div style={{ opacity: heroOpacity, y: heroY }} className="absolute inset-x-0 top-0 z-30" aria-hidden={phase === 1}>
           <div className="relative mx-auto max-w-[980px] px-6 text-center" style={{ paddingTop: headTop }}>
-            <h1 className="mb-4 inline-flex items-center rounded-full bg-white/80 px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-[#5B3FE4] ring-1 ring-[#5B3FE4]/15">
-              Digital business card &amp; NFC visiting card
-            </h1>
             <WordReveal
-              as="p"
+              as="h1"
               text={"A smart card for\nevery business."}
               accent={{ smart: V.violet }}
               delay={0.1}
@@ -196,27 +196,28 @@ function HeroShowcaseDesktop() {
 
         {/* The travelling cards */}
         {TEMPLATES.map((t, i) => {
-          const off = i - 2;
-          const z = phase === 1 ? 10 + i : 15 - Math.abs(off);
+          const off = fanOffset(i);
+          const lead = i === LEAD;
+          const z = phase === 1 ? 10 + i : lead ? 16 : Math.round(15 - Math.abs(off) * 2);
           return (
             <Traveller key={t.name} p={p} stops={stops} poses={posesFor(i)} w={W} h={H} z={z} lag={i * 0.018}>
               <motion.div
                 className="h-full w-full"
                 // Intro: the middle card flies in, then the others slide out from behind it.
                 initial={
-                  off === 0
+                  lead
                     ? { x: w * 0.32, y: h * 0.45, rotate: 28, opacity: 0 }
                     : { x: -off * W * 0.82, y: -FAN_DY[i] * (W / 190), rotate: -FAN_R[i], opacity: 0 }
                 }
                 animate={{ x: 0, y: 0, rotate: 0, opacity: 1 }}
                 transition={
-                  off === 0
+                  lead
                     ? { type: "spring", stiffness: 55, damping: 14, delay: 0.15 }
                     : { type: "spring", stiffness: 80, damping: 15, delay: 1.0 + Math.abs(off) * 0.12, opacity: { duration: 0.2, delay: 0.95 + Math.abs(off) * 0.12 } }
                 }
                 whileHover={{ y: -12, transition: { type: "spring", stiffness: 300, damping: 20 } }}
               >
-                <TemplateCard i={i} priority={off === 0} />
+                <TemplateCard i={i} priority={lead} />
               </motion.div>
             </Traveller>
           );

@@ -97,14 +97,14 @@ export function StatementSection() {
       </div>
 
       <motion.ul
-        className="mx-auto mt-14 grid max-w-[1180px] grid-cols-3 gap-3 sm:mt-20 sm:gap-4 lg:grid-cols-6"
+        className="mx-auto mt-14 grid max-w-[1000px] grid-cols-3 gap-3 sm:mt-20 sm:gap-4 lg:grid-cols-5"
         initial={reduce ? false : "stack"}
         whileInView="row"
         viewport={{ once: true, margin: "0px 0px -18% 0px" }}
       >
         {cards.map((card, i) => {
           // In the stack every card sits on top of the middle column, slightly fanned.
-          const centre = wide ? 2.5 : 1;
+          const centre = wide ? (cards.length - 1) / 2 : 1;
           const col = wide ? i : i - 1;
           const shift = (centre - col) * 100;
           return (

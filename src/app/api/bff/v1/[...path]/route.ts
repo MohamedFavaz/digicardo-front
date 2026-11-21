@@ -166,6 +166,11 @@ async function handleProxy(
     } else {
       rawSetCookies = splitSetCookies(upstreamResponse.headers.get("set-cookie"));
     }
+    // The request ran on a session that an account switch has since replaced: its cookies would
+    // put the browser back on the old account, so they are dropped.
+    if (upstreamResponse.headers.get("x-session-retired")) {
+      rawSetCookies = [];
+    }
 
     // Handle 204 No Content / 304 Not Modified null body responses
     if (responseStatus === 204 || responseStatus === 304) {

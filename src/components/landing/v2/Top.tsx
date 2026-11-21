@@ -71,7 +71,7 @@ export function Nav() {
         )}
       >
         <Link href="/" aria-label="Digicardo home" onClick={() => setOpen(false)}>
-          <DigicardoLogo size="sm" />
+          <DigicardoLogo size="md" className="sm:[&_[role=img]]:text-[28px]" />
         </Link>
         <nav aria-label="Main" className="hidden items-center gap-0.5 lg:flex">
           {LINKS.map((l) => (
@@ -142,7 +142,6 @@ export function Nav() {
 // ── Hero: heading + a fan of real templates ───────────────────────────────────────
 
 export const TEMPLATES = [
-  { src: "/landing/tpl-poster.webp", name: "Poster", who: "Scoops & Smiles · Ice cream parlour" },
   { src: "/landing/tpl-classic.webp", name: "Classic", who: "Rahul Verma · Interior designer" },
   { src: "/landing/tpl-showcase.webp", name: "Showcase", who: "Brightline Core · Electronics" },
   { src: "/landing/tpl-botanical.webp", name: "Botanical", who: "Dr. Meera Nair · Dental clinic" },
@@ -150,24 +149,25 @@ export const TEMPLATES = [
 ] as const;
 
 const FAN = [
-  { r: -16, y: 58 },
-  { r: -8, y: 16 },
-  { r: 0, y: 0 },
-  { r: 8, y: 16 },
-  { r: 16, y: 58 },
+  { r: -12, y: 44 },
+  { r: -4, y: 8 },
+  { r: 4, y: 8 },
+  { r: 12, y: 44 },
 ];
+/** Position of card i relative to the middle of the fan (…, -0.5, 0.5, …). */
+const fanOffset = (i: number) => i - (TEMPLATES.length - 1) / 2;
 
 function FanCard({ i, wide, progress }: { i: number; wide: boolean; progress: MotionValue<number> }) {
   const reduce = useReducedMotion();
   const t = TEMPLATES[i];
-  const off = i - 2;
-  const gap = wide ? 172 : 58;
+  const off = fanOffset(i);
+  const gap = wide ? 172 : 64;
   const f = FAN[i];
   // While the hero scrolls away the fan opens up a little more.
   const spread = useTransform(progress, [0, 1], [0, off * (wide ? 70 : 24)]);
   const lift = useTransform(progress, [0, 1], [0, -Math.abs(off) * 30]);
   return (
-    <motion.div className="absolute left-1/2 top-0" style={{ x: spread, y: lift, zIndex: 10 - Math.abs(off) }}>
+    <motion.div className="absolute left-1/2 top-0" style={{ x: spread, y: lift, zIndex: Math.round(10 - Math.abs(off) * 2) }}>
       <motion.div
         className="group relative -ml-[var(--w)] w-[calc(var(--w)*2)] [--w:62px] sm:[--w:104px]"
         initial={reduce ? false : { x: 0, y: 160, rotate: 0, opacity: 0, scale: 0.7 }}
@@ -176,7 +176,7 @@ function FanCard({ i, wide, progress }: { i: number; wide: boolean; progress: Mo
         whileHover={reduce ? undefined : { y: f.y * (wide ? 1 : 0.5) - 22, rotate: f.r * 0.4, scale: 1.04, transition: { type: "spring", stiffness: 300, damping: 20 } }}
       >
         <div className="relative aspect-[3/4] overflow-hidden rounded-[18px] bg-white shadow-[0_30px_60px_-24px_rgba(18,16,24,0.45),0_0_0_1px_rgba(18,16,24,0.06)] sm:rounded-[26px]">
-          <Image src={t.src} alt={`${t.name} template — ${t.who}`} fill sizes="(min-width: 640px) 208px, 124px" className="object-cover object-top" priority={i === 2} />
+          <Image src={t.src} alt={`${t.name} template — ${t.who}`} fill sizes="(min-width: 640px) 208px, 124px" className="object-cover object-top" priority={i === 1} />
           <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.35),transparent_40%)]" />
         </div>
       </motion.div>
@@ -206,11 +206,8 @@ export function Hero() {
       <BackdropWaves className="-right-56 bottom-0 h-[720px] w-[720px] -scale-x-100 text-[#121018]/[0.05]" />
 
       <motion.div style={{ y: textY, opacity: textOpacity }} className="relative mx-auto max-w-[980px] text-center">
-        <h1 className="mb-4 inline-flex items-center rounded-full bg-white/80 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#5B3FE4] ring-1 ring-[#5B3FE4]/15 sm:text-[12px]">
-          Digital business card &amp; NFC visiting card
-        </h1>
         <WordReveal
-          as="p"
+          as="h1"
           text={"A smart card for\nevery business."}
           accent={{ smart: V.violet }}
           delay={0.1}
