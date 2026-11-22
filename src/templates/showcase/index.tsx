@@ -331,8 +331,10 @@ function contactTiles(card: CardModel, copied: boolean, copyLink: () => void): T
   if ((payments.bank.account_number || payments.bank.ifsc) && sectionOn(card, "payments")) {
     tiles.push({ key: "bank", label: "Bank", Icon: Building2, tone: TONES.slate, onClick: () => card.setSheet({ kind: "bank" }) });
   }
-  const directions = directionsHref(contact);
-  if (directions) tiles.push({ key: "address", label: "Address", Icon: MapPin, tone: TONES.indigo, href: directions, event: "link_click" });
+  // Address shows the address itself; only the Location button opens the map.
+  if (contact.address.trim()) {
+    tiles.push({ key: "address", label: "Address", Icon: MapPin, tone: TONES.indigo, event: "cta_click", onClick: () => card.setSheet({ kind: "address" }) });
+  }
   const bookingNumber = enquiryNumber(contact);
   if (actions.booking_message && bookingNumber) {
     const href = whatsappHref(bookingNumber, actions.booking_message);

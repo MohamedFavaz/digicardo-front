@@ -26,12 +26,15 @@ import {
 } from "lucide-react";
 import { DeleteUserModal, DeleteUserTarget } from "@/components/admin/DeleteUserModal";
 import { adminImpersonate } from "@/lib/admin/impersonate";
+import { ChangeUsernameDialog } from "@/components/shared/ChangeUsernameDialog";
+import { usernameApi } from "@/lib/api/username";
 
 interface User {
   id: string;
   name: string;
   email: string;
   username?: string;
+  profile_id?: string;
   status: string;
   role: string;
   expires_at?: string;
@@ -73,6 +76,7 @@ function daysUntil(iso: string) {
 
 export default function MyLinksPage() {
   const [users, setUsers] = useState<User[]>([]);
+  const [renaming, setRenaming] = useState<User | null>(null);
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
@@ -112,6 +116,7 @@ export default function MyLinksPage() {
       const items = (j?.data?.items || []).map((u: Record<string, unknown>) => ({
         ...u,
         username: (u.profile as Record<string, unknown>)?.username,
+        profile_id: (u.profile as Record<string, unknown>)?.id,
       }));
       setUsers(items);
       setPagination(j?.data?.pagination || null);
@@ -359,6 +364,14 @@ export default function MyLinksPage() {
                                 <span>digicardo.app/{u.username}</span>
                                 <ExternalLink className="w-3 h-3" />
                               </a>
+                              <button
+                                type="button"
+                                onClick={() => setRenaming(u)}
+                                className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+                                title="Change card address"
+                              >
+                                <AtSign className="w-3 h-3" /> Edit
+                              </button>
                               {isSuspended && (
                                 <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200">
                                   Link Suspended
@@ -592,6 +605,19 @@ export default function MyLinksPage() {
       </div>
 
       {/* Delete User Modal */}
+      <ChangeUsernameDialog
+        open={renaming !== null}
+        onClose={() => setRenaming(null)}
+        currentUsername={renaming?.username ?? ""}
+        profileId={renaming?.profile_id}
+        who="this"
+        save={(name) => usernameApi.changeForUser(renaming!.id, name)}
+        onSaved={(name) => {
+          const id = renaming?.id;
+          setUsers((list) => list.map((x) => (x.id === id ? { ...x, username: name } : x)));
+          setActionFeedback(`Card address changed to /${name}. The old address forwards to it.`);
+        }}
+      />
       <DeleteUserModal
         user={deleteTarget}
         isOpen={Boolean(deleteTarget)}

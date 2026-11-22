@@ -120,6 +120,17 @@ function BankSheet({ content }: { content: CardContent }) {
   );
 }
 
+/** The full address, readable and copyable. Directions stay on the card's Location button. */
+function AddressSheet({ content }: { content: CardContent }) {
+  const address = content.contact.address.trim();
+  return (
+    <div className="flex items-start gap-3 py-1">
+      <p className="min-w-0 flex-1 whitespace-pre-line break-words text-[16px] font-medium leading-6">{address}</p>
+      <CopyButton value={address} label="address" />
+    </div>
+  );
+}
+
 function GallerySheet({ images, index, onIndex }: { images: string[]; index: number; onIndex: (i: number) => void }) {
   const count = images.length;
   const go = (delta: number) => onIndex((index + delta + count) % count);
@@ -167,6 +178,7 @@ export function CardSheets({ card }: { card: CardModel }) {
     share: "Share this card",
     qr: "Scan to open this card",
     bank: "Payment details",
+    address: "Address",
     gallery: content.gallery.title || "Photos",
   } as const;
 
@@ -175,6 +187,7 @@ export function CardSheets({ card }: { card: CardModel }) {
       {sheet.kind === "share" && <ShareSheet card={card} />}
       {sheet.kind === "qr" && <QrSheet card={card} />}
       {sheet.kind === "bank" && <BankSheet content={content} />}
+      {sheet.kind === "address" && <AddressSheet content={content} />}
       {sheet.kind === "gallery" && (
         <GallerySheet
           images={content.gallery.images}

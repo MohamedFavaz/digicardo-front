@@ -8,6 +8,8 @@ import {
   Globe, Lock, Eye, Sparkles,
 } from "lucide-react";
 import { agentImpersonate } from "@/lib/agent/impersonate";
+import { ChangeUsernameDialog } from "@/components/shared/ChangeUsernameDialog";
+import { usernameApi } from "@/lib/api/username";
 
 interface CardDetail {
   id: string;
@@ -38,6 +40,7 @@ export default function AgentCardDetailPage() {
   const [error, setError] = useState("");
   const [copied, setCopied] = useState("");
   const [impersonating, setImpersonating] = useState(false);
+  const [renaming, setRenaming] = useState(false);
 
   async function handleImpersonate() {
     if (!cardId) return;
@@ -168,6 +171,14 @@ export default function AgentCardDetailPage() {
                   <a href={profileUrl} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-lg hover:bg-emerald-50 transition-colors">
                     <ExternalLink className="w-3.5 h-3.5 text-emerald-600" />
                   </a>
+                  <button
+                    type="button"
+                    onClick={() => setRenaming(true)}
+                    className="ml-1 rounded-lg border border-border px-2.5 py-1 text-xs font-semibold text-foreground hover:bg-muted transition-colors"
+                    title="Change card address"
+                  >
+                    Change
+                  </button>
                 </div>
               </div>
             )}
@@ -259,6 +270,17 @@ export default function AgentCardDetailPage() {
           <h2 className="text-sm font-semibold text-foreground mb-2">Internal Notes</h2>
           <p className="text-xs text-[#52525B]">{card.notes}</p>
         </div>
+      )}
+      {card.profile && (
+        <ChangeUsernameDialog
+          open={renaming}
+          onClose={() => setRenaming(false)}
+          currentUsername={card.profile.username}
+          profileId={card.profile.id}
+          who="this"
+          save={(name) => usernameApi.changeForAgentCard(card.id, name)}
+          onSaved={(name) => setCard((c) => (c && c.profile ? { ...c, profile: { ...c.profile, username: name } } : c))}
+        />
       )}
     </div>
   );

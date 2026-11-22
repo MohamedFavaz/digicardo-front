@@ -15,6 +15,7 @@ export type CardSheetState =
   | { kind: "share" }
   | { kind: "qr" }
   | { kind: "bank" }
+  | { kind: "address" }
   | { kind: "gallery"; index: number };
 
 interface ColorInput {

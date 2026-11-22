@@ -62,6 +62,26 @@ const getPublicProfile = cache(async (username: string): Promise<PublicProfileRe
 });
 
 /**
+ * The card's new username when `username` is an old address of a card that was renamed (the API
+ * answers 404 with code USERNAME_MOVED). Only asked after a card wasn't found.
+ */
+const getMovedUsername = cache(async (username: string): Promise<string | null> => {
+  const normalized = username.trim().toLowerCase();
+  try {
+    const res = await fetch(`${LARAVEL_INTERNAL_URL}/api/v1/p/${encodeURIComponent(normalized)}`, {
+      headers: { Accept: "application/json" },
+      next: { revalidate: 60, tags: [`profile-${normalized}`] },
+    });
+    if (res.status !== 404) return null;
+    const payload = await res.json().catch(() => null);
+    const moved = payload?.error?.code === "USERNAME_MOVED" ? payload?.error?.details?.username : null;
+    return typeof moved === "string" && UsernameSchema.safeParse(moved).success ? moved : null;
+  } catch {
+    return null;
+  }
+});
+
+/**
  * Is this card served on the current host? Agent domains (header set by middleware) only serve
  * that agent's customers' cards — page and metadata alike, so nothing about other cards leaks.
  */
@@ -138,6 +158,9 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
 
   const profile = await getPublicProfile(username);
   if (!profile) {
+    // Renamed card: old links, QR codes and NFC cards forward to the new address.
+    const moved = await getMovedUsername(username);
+    if (moved) permanentRedirect(`/${moved}`);
     notFound();
   }
 

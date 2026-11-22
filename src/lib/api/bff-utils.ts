@@ -19,6 +19,7 @@ export const ALLOWED_PATH_PREFIXES = [
   "account",
   "admin",
   "agent",
+  "usernames",
 ];
 
 export function isPathAllowed(pathSegments: string[]): boolean {

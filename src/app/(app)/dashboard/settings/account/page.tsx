@@ -16,6 +16,7 @@ import {
 } from "@/lib/api/security";
 import { SettingsHeader } from "@/components/settings/SettingsHeader";
 import { ProfileSettingsCard } from "@/components/settings/ProfileSettingsCard";
+import { CardAddressCard } from "@/components/settings/CardAddressCard";
 import { PasswordSettingsCard } from "@/components/settings/PasswordSettingsCard";
 import { SessionsCard } from "@/components/settings/SessionsCard";
 import { SecurityAuditCard } from "@/components/settings/SecurityAuditCard";
@@ -240,6 +241,9 @@ export default function AccountSettingsPage() {
   return (
     <div className="space-y-8 animate-in fade-in-50 duration-300">
       <SettingsHeader />
+
+      {/* ── Card address (username) ── */}
+      <CardAddressCard />
 
       {/* ── Section 1: Personal Details ── */}
       <ProfileSettingsCard
