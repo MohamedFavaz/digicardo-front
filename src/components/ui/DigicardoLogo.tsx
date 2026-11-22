@@ -21,8 +21,9 @@ export function TapGlyph({ className, color = BRAND, style }: { className?: stri
   );
 }
 
-/** Square app icon: white tap symbol on a violet tile. */
+/** Square app icon: a bold white "d" with lime tap waves on a violet tile (same as public/logo.svg and the favicon). */
 export function LogoMark({ size = 28, className, title }: { size?: number; className?: string; title?: string }) {
+  const id = React.useId().replace(/:/g, "");
   return (
     <svg
       viewBox="0 0 64 64"
@@ -34,10 +35,17 @@ export function LogoMark({ size = 28, className, title }: { size?: number; class
       aria-hidden={title ? undefined : true}
       fill="none"
     >
-      <rect width="64" height="64" rx="16" fill={BRAND} />
-      <g transform="translate(14.1 14.6) scale(1.45)">
-        <circle cx="5" cy="12" r="3.2" fill="#fff" />
-        <path d="M11.5 5.5a9.2 9.2 0 0 1 0 13M17 1.8a14.5 14.5 0 0 1 0 20.4" stroke="#fff" strokeWidth="3.2" strokeLinecap="round" />
+      <defs>
+        <linearGradient id={`lm-${id}`} x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#6E52F5" />
+          <stop offset="1" stopColor="#4B30D6" />
+        </linearGradient>
+      </defs>
+      <rect width="64" height="64" rx="15" fill={`url(#lm-${id})`} />
+      <g transform="translate(-4.5 0)">
+        <circle cx="26" cy="39" r="9.5" stroke="#fff" strokeWidth="7" />
+        <rect x="32" y="13" width="7" height="36" rx="3.5" fill="#fff" />
+        <path d="M44 22.5a6.5 6.5 0 0 1 6.5 6.5M44 14.5a14.5 14.5 0 0 1 14.5 14.5" stroke="#DAF56B" strokeWidth="3.8" strokeLinecap="round" />
       </g>
     </svg>
   );
