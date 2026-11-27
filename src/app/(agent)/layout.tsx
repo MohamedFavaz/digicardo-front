@@ -3,6 +3,8 @@ import { ReactNode, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Bell, CreditCard, Gauge, Home, Inbox, LayoutTemplate, PlusCircle, Send, User, Wallet } from "lucide-react";
 import Link from "next/link";
+import { AdminViewingBanner } from "@/components/console/AdminViewingBanner";
+import { ExpiryAlert } from "@/components/partner/CardExpiry";
 import { ConsoleLoading, ConsoleShell, type ConsoleNavGroup } from "@/components/console/ConsoleShell";
 import { cn } from "@/lib/utils";
 
@@ -201,6 +203,8 @@ export default function AgentLayout({ children }: { children: ReactNode }) {
         router.push("/agent-login");
       }}
     >
+      <AdminViewingBanner />
+        <ExpiryAlert panel="agent" />
       {children}
     </ConsoleShell>
   );

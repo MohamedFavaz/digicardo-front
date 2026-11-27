@@ -102,10 +102,10 @@ export function AgentSitePanel({ agentId }: { agentId: string }) {
           }}
         >
           <label htmlFor="agent-domain" className="text-sm font-medium text-[#121212]">
-            Agent domain
+            Own domain
           </label>
           <p className="text-[13px] text-[#9A9C8F]">
-            Optional. With a domain, this agent’s cards open at <b className="font-medium text-[#5E6054]">domain/username</b> and the landing page at the domain itself. Leave empty to keep everything on the main domain.
+            Optional. With a domain, their cards open at <b className="font-medium text-[#5E6054]">domain/username</b> and the landing page at the domain itself. Leave empty to keep everything on the main domain.
           </p>
           <div className="mt-2 flex flex-col gap-2 sm:flex-row">
             <input
@@ -132,7 +132,7 @@ export function AgentSitePanel({ agentId }: { agentId: string }) {
           <div className="space-y-4 rounded-2xl border border-[#E1E1DA] bg-white/70 p-4">
             {status !== "active" && (
               <div>
-                <p className="text-sm font-medium text-[#121212]">Ask the agent to add this DNS record at their domain provider:</p>
+                <p className="text-sm font-medium text-[#121212]">Ask them to add this DNS record at their domain provider:</p>
                 {dns.a_records.length === 0 && !dns.cname_target ? (
                   <p className="mt-2 text-[13px] text-[#9A3412]">
                     The server doesn’t know where agent domains should point yet. Set <span className="font-mono">AGENT_DOMAIN_A_RECORDS</span> and/or{" "}
@@ -180,7 +180,7 @@ export function AgentSitePanel({ agentId }: { agentId: string }) {
               <p className="flex items-start gap-2 rounded-xl bg-[#EEF2E4] p-3 text-[13px] text-[#343C22]">
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                 <span>
-                  <b className="font-medium">{site.domain}</b> is live. This agent’s cards now use{" "}
+                  <b className="font-medium">{site.domain}</b> is live. Their cards now use{" "}
                   <span className="font-mono">{site.domain}/username</span>; old links on the main domain redirect there.
                 </span>
               </p>
@@ -196,7 +196,7 @@ export function AgentSitePanel({ agentId }: { agentId: string }) {
                     type="button"
                     disabled={busy !== null}
                     onClick={() => {
-                      if (confirm(`Make ${site.domain} live now without a DNS check? Only do this if the domain already points to Digicardo — otherwise this agent’s card links will break.`)) {
+                      if (confirm(`Make ${site.domain} live now without a DNS check? Only do this if the domain already points to Digicardo — otherwise their card links will break.`)) {
                         void run("activate", () => adminAgentSiteApi.activate(agentId));
                       }
                     }}
@@ -210,7 +210,7 @@ export function AgentSitePanel({ agentId }: { agentId: string }) {
                 type="button"
                 disabled={busy !== null}
                 onClick={() => {
-                  if (confirm(`Remove ${site.domain}? This agent’s cards go back to the main domain.`)) void run("remove", () => adminAgentSiteApi.remove(agentId));
+                  if (confirm(`Remove ${site.domain}? Their cards go back to the main domain.`)) void run("remove", () => adminAgentSiteApi.remove(agentId));
                 }}
                 className="inline-flex h-10 items-center gap-2 rounded-full px-4 text-sm font-medium text-destructive hover:bg-[#FDECEC] disabled:opacity-50"
               >

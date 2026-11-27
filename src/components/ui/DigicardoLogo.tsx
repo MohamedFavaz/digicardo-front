@@ -88,7 +88,7 @@ export const DigicardoLogo: React.FC<DigicardoLogoProps> = ({
   const s = SIZES[size];
   if (!showWordmark) return <LogoMark size={s.mark} className={cn(iconClassName, className)} title="Digicardo" />;
 
-  // Brand wordmark: lowercase "digi" + "cardo" in the accent, with tap waves rising after the "o".
+  // Brand wordmark: "Digi" (capital D) + "cardo" in the accent, with tap waves rising after the "o".
   // Light backgrounds: navy + violet. Dark backgrounds (wordmarkClassName contains text-white): white + lime.
   const onDark = /text-white/.test(wordmarkClassName ?? "");
   const accent = onDark ? "#DAF56B" : BRAND;
@@ -100,7 +100,7 @@ export const DigicardoLogo: React.FC<DigicardoLogoProps> = ({
           aria-label="Digicardo"
           role="img"
         >
-          <span aria-hidden="true">digi</span>
+          <span aria-hidden="true">Digi</span>
           <span aria-hidden="true" style={{ color: accent }}>
             cardo
           </span>

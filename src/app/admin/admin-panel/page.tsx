@@ -3,24 +3,20 @@ import { useEffect, useState, useCallback, FormEvent } from "react";
 import Link from "next/link";
 import {
   UserPlus,
-  Users,
-  ShieldAlert,
   CheckCircle2,
   AlertCircle,
-  Key,
   Copy,
   Check,
   ExternalLink,
   Trash2,
   Search,
   Calendar,
-  CreditCard,
   AtSign,
   Mail,
   User as UserIcon,
   Clock,
   Sparkles,
-  Inbox
+  Inbox,
 } from "lucide-react";
 import { DeleteUserModal, DeleteUserTarget } from "@/components/admin/DeleteUserModal";
 
@@ -82,28 +78,9 @@ export default function AdminPanelPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
-  const [accountType, setAccountType] = useState<"customer" | "agent">("customer");
   const [credentials, setCredentials] = useState<{ email?: string; username: string; plain_password: string } | null>(null);
-  const [agentCredentials, setAgentCredentials] = useState<{
-    id?: string;
-    name: string;
-    email: string;
-    password?: string;
-    card_limit: number;
-    card_price: number;
-    agent_commission: number;
-  } | null>(null);
 
   const [form, setForm] = useState({ name: "", email: "", username: "", validity_plan_id: "" });
-  const [agentForm, setAgentForm] = useState({
-    name: "",
-    email: "",
-    mobile: "",
-    password: "",
-    card_limit: "50",
-    card_price: "500",
-    agent_commission: "200",
-  });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState("");
@@ -283,92 +260,6 @@ export default function AdminPanelPage() {
     }
   }
 
-  async function handleCreateAgent(e: FormEvent) {
-    e.preventDefault();
-    setErrors({});
-    setServerError("");
-    const errs: Record<string, string> = {};
-    if (!agentForm.name.trim()) errs.name = "Full name is required";
-    if (!agentForm.email.trim()) errs.email = "Email is required";
-    if (!agentForm.password.trim()) errs.password = "Password is required";
-    if (agentForm.password.trim().length < 8) errs.password = "Password must be at least 8 characters";
-
-    const cardLimitNum = parseInt(agentForm.card_limit) || 0;
-    const priceNum = parseFloat(agentForm.card_price) || 0;
-    const commNum = parseFloat(agentForm.agent_commission) || 0;
-
-    if (cardLimitNum < 1) errs.card_limit = "Must allow at least 1 card";
-    if (commNum > priceNum) errs.agent_commission = "Commission cannot exceed card price";
-
-    if (Object.keys(errs).length) {
-      setErrors(errs);
-      return;
-    }
-
-    setCreating(true);
-    try {
-      const payload: Record<string, unknown> = {
-        name: agentForm.name.trim(),
-        email: agentForm.email.trim().toLowerCase(),
-        password: agentForm.password.trim(),
-        card_limit: cardLimitNum,
-        card_price: priceNum,
-        agent_commission: commNum,
-        restore_on_delete: true,
-      };
-      if (agentForm.mobile.trim()) {
-        payload.mobile = agentForm.mobile.trim();
-      }
-
-      const res = await fetch("/api/bff/v1/admin/agents", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(payload),
-      });
-      const json = await res.json();
-
-      if (!res.ok || !json.success) {
-        const errorDetails = json.error?.details || json.details || json.errors;
-        if (errorDetails && typeof errorDetails === "object") {
-          const fieldErrs: Record<string, string> = {};
-          Object.entries(errorDetails).forEach(([k, v]) => {
-            fieldErrs[k] = Array.isArray(v) ? (v as string[])[0] : String(v);
-          });
-          setErrors(fieldErrs);
-        } else {
-          setServerError(json.error?.message || json.message || "Failed to create agent account.");
-        }
-        return;
-      }
-
-      setAgentCredentials({
-        id: json.data?.id,
-        name: agentForm.name.trim(),
-        email: agentForm.email.trim().toLowerCase(),
-        password: agentForm.password.trim(),
-        card_limit: cardLimitNum,
-        card_price: priceNum,
-        agent_commission: commNum,
-      });
-
-      setAgentForm({
-        name: "",
-        email: "",
-        mobile: "",
-        password: "",
-        card_limit: "50",
-        card_price: "500",
-        agent_commission: "200",
-      });
-      setActionFeedback("Agent partner created successfully! Credentials ready below.");
-    } catch {
-      setServerError("Network error. Please try again.");
-    } finally {
-      setCreating(false);
-    }
-  }
-
   const selectedPlan = plans.find(p => p.id === form.validity_plan_id);
 
   const filteredUsers = users.filter(u => {
@@ -497,93 +388,6 @@ export default function AdminPanelPage() {
             </div>
           )}
 
-          {/* Credentials Display Card (Agent Partner) */}
-          {agentCredentials && (
-            <div className="bg-gradient-to-br from-emerald-950 via-zinc-900 to-zinc-950 border border-emerald-500/40 rounded-2xl p-5 text-white shadow-xl space-y-4 animate-in fade-in">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs">
-                  <Sparkles className="w-4 h-4" />
-                  <span>Agent Account Ready</span>
-                </div>
-                <button
-                  onClick={() => setAgentCredentials(null)}
-                  className="text-muted-foreground hover:text-white text-xs font-semibold"
-                >
-                  ✕ Dismiss
-                </button>
-              </div>
-
-              <p className="text-xs text-zinc-300">
-                This agent account has been created. The agent can immediately log in to the Agent Portal.
-              </p>
-
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-800/80 border border-zinc-700">
-                  <div className="min-w-0">
-                    <span className="text-xs capitalize font-semibold text-muted-foreground block">Agent Portal</span>
-                    <span className="font-mono text-emerald-300 font-semibold truncate block">
-                      {typeof window !== "undefined" ? window.location.origin : ""}/agent-login
-                    </span>
-                  </div>
-                  <CopyButton
-                    text={`${typeof window !== "undefined" ? window.location.origin : ""}/agent-login`}
-                    label="portal URL"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-800/80 border border-zinc-700">
-                  <div className="min-w-0">
-                    <span className="text-xs capitalize font-semibold text-muted-foreground block">Login Email</span>
-                    <span className="font-mono text-emerald-300 font-semibold truncate block">{agentCredentials.email}</span>
-                  </div>
-                  <CopyButton text={agentCredentials.email} label="email" />
-                </div>
-
-                {agentCredentials.password && (
-                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-800/80 border border-zinc-700">
-                    <div className="min-w-0">
-                      <span className="text-xs capitalize font-semibold text-muted-foreground block">Password</span>
-                      <span className="font-mono text-amber-300 font-semibold truncate block">
-                        {agentCredentials.password}
-                      </span>
-                    </div>
-                    <CopyButton text={agentCredentials.password} label="password" />
-                  </div>
-                )}
-
-                <div className="p-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700/60 text-xs text-zinc-300 flex items-center justify-between">
-                  <span>Card Quota: <strong className="text-white">{agentCredentials.card_limit} cards</strong></span>
-                  <span>Commission: <strong className="text-emerald-400">₹{agentCredentials.agent_commission} / card</strong></span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 pt-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const origin = typeof window !== "undefined" ? window.location.origin : "";
-                    const text = `Digicardo Agent Credentials:\nAgent Portal: ${origin}/agent-login\nEmail: ${agentCredentials.email}\nPassword: ${agentCredentials.password || ""}\nCard Quota: ${agentCredentials.card_limit} cards\nCommission: ₹${agentCredentials.agent_commission}`;
-                    navigator.clipboard.writeText(text);
-                    setActionFeedback("Agent login details copied to clipboard!");
-                    setTimeout(() => setActionFeedback(null), 3000);
-                  }}
-                  className="flex-1 h-9 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-zinc-950 text-xs font-semibold transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <Copy className="w-3.5 h-3.5" />
-                  <span>Copy Agent Credentials</span>
-                </button>
-                <a
-                  href="/agent-login"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-3 h-9 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold transition-all border border-zinc-700 flex items-center justify-center gap-1"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  <span>Open Portal</span>
-                </a>
-              </div>
-            </div>
-          )}
 
           {/* Account Creation Card */}
           <div className="bg-card border border-border rounded-2xl overflow-hidden">
@@ -594,63 +398,18 @@ export default function AdminPanelPage() {
                 </div>
                 <div>
                   <h2 className="text-sm font-semibold text-foreground">
-                    {accountType === "customer" ? "New Customer Card" : "New Agent Partner"}
+                    New Customer Card
                   </h2>
                   <p className="text-xs text-muted-foreground">
-                    {accountType === "customer"
-                      ? "Account credentials & validity tier"
-                      : "Create partner login with card quota & commission"}
+                    Account credentials & validity tier
                   </p>
                 </div>
               </div>
 
-              <Link
-                href="/admin/agents"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
-                title="View All Agents"
-              >
-                <span>Agents</span>
-                <span>&rarr;</span>
-              </Link>
             </div>
 
-            {/* Account Type Tabs */}
-            <div className="p-4 pb-0">
-              <div className="grid grid-cols-2 p-1 bg-zinc-100 rounded-xl text-xs font-semibold">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAccountType("customer");
-                    setErrors({});
-                    setServerError("");
-                  }}
-                  className={`py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${accountType === "customer"
-                      ? "bg-card text-foreground shadow-xs"
-                      : "text-[#52525B] hover:text-foreground"
-                    }`}
-                >
-                  <CreditCard className="w-3.5 h-3.5" />
-                  <span>Customer Card</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAccountType("agent");
-                    setErrors({});
-                    setServerError("");
-                  }}
-                  className={`py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${accountType === "agent"
-                      ? "bg-card text-emerald-800 shadow-xs"
-                      : "text-[#52525B] hover:text-foreground"
-                    }`}
-                >
-                  <Users className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Agent Partner</span>
-                </button>
-              </div>
-            </div>
 
-            {accountType === "customer" ? (
+            {(
               <form onSubmit={handleCreate} className="p-5 space-y-4">
                 {serverError && (
                   <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
@@ -757,151 +516,7 @@ export default function AdminPanelPage() {
                   </button>
                 </div>
               </form>
-            ) : (
-              <form onSubmit={handleCreateAgent} className="p-5 space-y-4">
-                {serverError && (
-                  <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                    <span>{serverError}</span>
-                  </div>
-                )}
 
-                <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200/70 text-xs text-emerald-900">
-                  <strong>Agent Partner Account:</strong> Creates an account with agent credentials that can immediately log in at <code>/agent-login</code>.
-                </div>
-
-                {/* Agent Full Name */}
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-[#52525B] capitalize flex items-center gap-1">
-                    <UserIcon className="w-3 h-3 text-muted-foreground" />
-                    <span>Agent Name *</span>
-                  </label>
-                  <input
-                    value={agentForm.name}
-                    onChange={e => setAgentForm(p => ({ ...p, name: e.target.value }))}
-                    placeholder="e.g. Rahul Sharma"
-                    className={`w-full h-9 px-3 rounded-xl border text-xs text-[#52525B] placeholder-zinc-400 focus:outline-none focus:border-zinc-400 transition-all ${errors.name ? "border-red-400 bg-red-50/20" : "border-border"
-                      }`}
-                  />
-                  {errors.name && <p className="text-xs text-red-500 font-semibold">{errors.name}</p>}
-                </div>
-
-                {/* Agent Login Email */}
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-[#52525B] capitalize flex items-center gap-1">
-                    <Mail className="w-3 h-3 text-muted-foreground" />
-                    <span>Login Email *</span>
-                  </label>
-                  <input
-                    type="email"
-                    value={agentForm.email}
-                    onChange={e => setAgentForm(p => ({ ...p, email: e.target.value }))}
-                    placeholder="agent@example.com"
-                    className={`w-full h-9 px-3 rounded-xl border text-xs text-[#52525B] placeholder-zinc-400 focus:outline-none focus:border-zinc-400 transition-all ${errors.email ? "border-red-400 bg-red-50/20" : "border-border"
-                      }`}
-                  />
-                  {errors.email && <p className="text-xs text-red-500 font-semibold">{errors.email}</p>}
-                </div>
-
-                {/* Agent Mobile (Optional) */}
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-[#52525B] capitalize flex items-center gap-1">
-                    <span>Mobile Number (Optional)</span>
-                  </label>
-                  <input
-                    value={agentForm.mobile}
-                    onChange={e => setAgentForm(p => ({ ...p, mobile: e.target.value }))}
-                    placeholder="+91 98765 43210"
-                    className={`w-full h-9 px-3 rounded-xl border text-xs text-[#52525B] placeholder-zinc-400 focus:outline-none focus:border-zinc-400 transition-all ${errors.mobile ? "border-red-400 bg-red-50/20" : "border-border"
-                      }`}
-                  />
-                  {errors.mobile && <p className="text-xs text-red-500 font-semibold">{errors.mobile}</p>}
-                </div>
-
-                {/* Agent Password */}
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-[#52525B] capitalize flex items-center gap-1">
-                      <Key className="w-3 h-3 text-muted-foreground" />
-                      <span>Password *</span>
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const rand = "Agent@" + Math.floor(100000 + Math.random() * 900000);
-                        setAgentForm(p => ({ ...p, password: rand }));
-                      }}
-                      className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 cursor-pointer"
-                    >
-                      Generate Secure Password
-                    </button>
-                  </div>
-                  <input
-                    type="text"
-                    value={agentForm.password}
-                    onChange={e => setAgentForm(p => ({ ...p, password: e.target.value }))}
-                    placeholder="Min. 8 characters (e.g. Agent@2026)"
-                    className={`w-full h-9 px-3 rounded-xl border text-xs font-mono text-[#52525B] placeholder-zinc-400 focus:outline-none focus:border-zinc-400 transition-all ${errors.password ? "border-red-400 bg-red-50/20" : "border-border"
-                      }`}
-                  />
-                  {errors.password && <p className="text-xs text-red-500 font-semibold">{errors.password}</p>}
-                </div>
-
-                {/* Quota & Pricing Grid */}
-                <div className="grid grid-cols-3 gap-2.5 pt-1">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[#52525B] capitalize">Card Limit *</label>
-                    <input
-                      type="number"
-                      min="1"
-                      value={agentForm.card_limit}
-                      onChange={e => setAgentForm(p => ({ ...p, card_limit: e.target.value }))}
-                      className="w-full h-9 px-2 rounded-xl border border-border text-xs text-center font-semibold text-[#52525B]"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[#52525B] capitalize">Price (₹)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={agentForm.card_price}
-                      onChange={e => setAgentForm(p => ({ ...p, card_price: e.target.value }))}
-                      className="w-full h-9 px-2 rounded-xl border border-border text-xs text-center font-semibold text-[#52525B]"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-[#52525B] capitalize">Commission (₹)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={agentForm.agent_commission}
-                      onChange={e => setAgentForm(p => ({ ...p, agent_commission: e.target.value }))}
-                      className="w-full h-9 px-2 rounded-xl border border-border text-xs text-center font-semibold text-emerald-700"
-                    />
-                  </div>
-                </div>
-                {errors.agent_commission && (
-                  <p className="text-xs text-red-500 font-semibold">{errors.agent_commission}</p>
-                )}
-
-                <div className="p-2.5 rounded-xl bg-muted/50 border border-border text-xs flex items-center justify-between">
-                  <span className="text-[#52525B] font-medium">Platform Profit per Card:</span>
-                  <span className="font-semibold text-foreground">
-                    ₹{Math.max(0, (parseFloat(agentForm.card_price) || 0) - (parseFloat(agentForm.agent_commission) || 0))}
-                  </span>
-                </div>
-
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    disabled={creating}
-                    className="w-full h-10 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer active:scale-98"
-                  >
-                    <Users className="w-4 h-4" />
-                    <span>{creating ? "Creating Agent…" : "Create Agent Partner"}</span>
-                  </button>
-                </div>
-              </form>
             )}
           </div>
         </div>

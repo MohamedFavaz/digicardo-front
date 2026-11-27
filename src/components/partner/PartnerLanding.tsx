@@ -15,7 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { resolveMediaUrl } from "@/lib/utils";
-import { partnerThemeVars, whatsappLink, type PartnerCard, type PartnerContent, type PartnerSectionKey } from "@/lib/partner/types";
+import { PARTNER_LOGO_PX, partnerThemeVars, whatsappLink, type PartnerCard, type PartnerContent, type PartnerSectionKey } from "@/lib/partner/types";
 import { PartnerPhone, SAMPLE_CARDS } from "./PartnerPhone";
 import { PartnerLeadForm } from "./PartnerLeadForm";
 
@@ -74,7 +74,8 @@ function GhostCta({ href, children }: { href: string; children: React.ReactNode 
   );
 }
 
-function BrandMark({ content, size = 36 }: { content: PartnerContent; size?: number }) {
+function BrandMark({ content, size: forced }: { content: PartnerContent; size?: number }) {
+  const size = forced ?? PARTNER_LOGO_PX[content.brand.logo_size ?? "medium"] ?? 36;
   const logo = content.brand.logo_url ? resolveMediaUrl(content.brand.logo_url) : null;
   if (logo) {
     // eslint-disable-next-line @next/next/no-img-element -- agent logo
@@ -386,7 +387,7 @@ export function PartnerLanding({
     <div style={vars} className="min-h-screen bg-[var(--lp-bg)] text-[var(--lp-ink)] antialiased [font-family:var(--font-nestly),system-ui,sans-serif]">
       {/* ── Nav ── */}
       <header className="sticky top-0 z-40 px-3 pt-3 sm:px-5">
-        <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-3 rounded-full border border-[var(--lp-line)] bg-[color-mix(in_srgb,var(--lp-surface)_78%,transparent)] pl-3 pr-2 backdrop-blur-xl">
+        <div className="mx-auto flex min-h-16 max-w-[1200px] items-center justify-between gap-3 rounded-full py-1.5 border border-[var(--lp-line)] bg-[color-mix(in_srgb,var(--lp-surface)_78%,transparent)] pl-3 pr-2 backdrop-blur-xl">
           <a href="#top" className="flex min-w-0 items-center gap-2.5">
             <BrandMark content={content} />
             <span className="truncate text-[17px] font-medium tracking-tight">{content.brand.name}</span>

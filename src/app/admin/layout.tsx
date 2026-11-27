@@ -18,10 +18,7 @@ import {
   ShieldCheck,
   Sparkles,
   UserCog,
-  UserPlus,
-  Users,
-  Wallet,
-} from "lucide-react";
+  Wallet, Building2, PlusCircle } from "lucide-react";
 import { ConsoleLoading, ConsoleShell, type ConsoleNavGroup } from "@/components/console/ConsoleShell";
 import NotFound from "@/app/not-found";
 
@@ -80,7 +77,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     {
       label: "Customers",
       items: [
-        { title: "Users", href: "/admin/admin-panel", icon: Users, mobile: true },
         { title: "Cards", href: "/admin/my-links", icon: IdCard, mobile: true },
         { title: "Renewals", href: "/admin/renewals", icon: CalendarClock, badge: expiring },
         { title: "Access requests", mobileTitle: "Requests", href: "/admin/access-requests", icon: Inbox, badge: pendingRequests, mobile: true },
@@ -90,6 +86,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       label: "Partners",
       items: [
         { title: "Agents", href: "/admin/agents", icon: UserCog },
+        { title: "Franchises", href: "/admin/franchises", icon: Building2 },
         { title: "Agent cards", href: "/admin/agent-cards", icon: LayoutGrid },
         { title: "Payouts", href: "/admin/agent-finance", icon: Wallet },
       ],
@@ -128,15 +125,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       role="Admin"
       homeHref="/admin/dashboard"
       nav={nav}
-      primaryAction={{ label: "Add user", href: "/admin/admin-panel", icon: UserPlus }}
+      primaryAction={{ label: "Create card", href: "/admin/cards/create", icon: PlusCircle }}
       user={admin}
-      accountLinks={[
-        { label: "Admin settings", href: "/admin/settings", icon: Settings },
-        { label: "Open my card editor", href: "/dashboard", icon: IdCard },
-      ]}
+      accountLinks={[{ label: "Admin settings", href: "/admin/settings", icon: Settings }]}
       onSignOut={async () => {
         await fetch("/api/bff/v1/auth/logout", { method: "POST", credentials: "include" }).catch(() => {});
-        router.push("/");
+        router.push("/admin-login");
       }}
     >
       {children}

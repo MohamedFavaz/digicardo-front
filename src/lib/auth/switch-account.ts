@@ -53,7 +53,7 @@ async function holdApiCalls(): Promise<() => void> {
   };
 }
 
-function setImpersonationFlags(role: "admin" | "agent" | null): void {
+function setImpersonationFlags(role: "admin" | "agent" | "franchise" | "franchise_owner" | null): void {
   try {
     if (role) {
       localStorage.setItem("digicardo_impersonating", "true");
@@ -72,7 +72,7 @@ function setImpersonationFlags(role: "admin" | "agent" | null): void {
  * Admin "Open as customer" / agent "Customize card": signs in as the customer and opens their
  * dashboard. Throws with a readable message when the server refuses (the page stays usable).
  */
-export async function startImpersonation(path: string, role: "admin" | "agent"): Promise<void> {
+export async function startImpersonation(path: string, role: "admin" | "agent" | "franchise" | "franchise_owner"): Promise<void> {
   const release = await holdApiCalls();
   try {
     const res = await rawFetch(path, { method: "POST", credentials: "include", headers: { Accept: "application/json" } });

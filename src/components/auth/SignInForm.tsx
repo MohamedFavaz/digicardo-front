@@ -9,7 +9,7 @@ import { PasswordInput } from "@/components/auth/PasswordInput";
 import { cn } from "@/lib/utils";
 
 /**
- * The one sign-in form used by card owners (/login), admins (hidden ADMIN_LOGIN_PATH page) and agents
+ * The one sign-in form used by card owners (/login), admins (/admin-login) and agents
  * (/agent-login). Each page owns the submit logic; this only renders the fields.
  */
 export interface SignInFormProps {

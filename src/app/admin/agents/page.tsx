@@ -16,6 +16,7 @@ import {
   Mail,
 } from "lucide-react";
 import type { AgentUser } from "@/types/agent";
+import { OpenPanelButton } from "@/components/admin/OpenPanelButton";
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return "—";
@@ -197,6 +198,9 @@ export default function AdminAgentsPage() {
                           <div>
                             <p className="text-xs font-semibold text-foreground">{agent.name}</p>
                             <p className="text-xs text-muted-foreground">{agent.email}</p>
+                            <div className="mt-1.5">
+                              <OpenPanelButton userId={agent.id} label="Impersonate" small disabled={agent.status !== "active"} />
+                            </div>
                           </div>
                         </div>
                       </td>

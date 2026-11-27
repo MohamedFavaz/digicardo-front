@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { ExpiryLabel } from "@/components/partner/CardExpiry";
 import {
   Search, CreditCard, PlusCircle, ExternalLink, Eye, Trash2,
   ChevronLeft, ChevronRight, Loader2, ToggleLeft, ToggleRight, Sparkles,
@@ -223,6 +224,7 @@ export default function AgentCardsPage() {
                   <th className="px-5 py-3 text-xs font-semibold capitalize text-muted-foreground">Status</th>
                   <th className="px-5 py-3 text-xs font-semibold capitalize text-muted-foreground text-right">Revenue</th>
                   <th className="px-5 py-3 text-xs font-semibold capitalize text-muted-foreground">Created</th>
+                  <th className="px-5 py-3 text-xs font-semibold capitalize text-muted-foreground">Expires</th>
                   <th className="px-5 py-3 text-xs font-semibold capitalize text-muted-foreground text-center">Actions</th>
                 </tr>
               </thead>
@@ -252,6 +254,9 @@ export default function AgentCardsPage() {
                     </td>
                     <td className="px-5 py-3.5">
                       <span className="text-xs text-muted-foreground">{formatDate(card.created_at)}</span>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <ExpiryLabel expiresAt={card.customer_user?.expires_at} plan={card.customer_user?.validity_label} />
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center justify-center gap-1.5">

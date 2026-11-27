@@ -7,7 +7,16 @@ function firstError(json: unknown, fallback: string): string {
   return (err?.details && Object.values(err.details).flat()[0]) || err?.message || fallback;
 }
 
+/** The same landing-page API serves the agent panel and the franchise owner's panel. */
+function panelPath(path: string): string {
+  if (typeof window !== "undefined" && window.location.pathname.startsWith("/franchise") && path.startsWith("/agent/")) {
+    return "/franchise/" + path.slice("/agent/".length);
+  }
+  return path;
+}
+
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
+  path = panelPath(path);
   const isForm = typeof FormData !== "undefined" && init?.body instanceof FormData;
   const res = await fetch(`/api/bff/v1${path}`, {
     credentials: "include",

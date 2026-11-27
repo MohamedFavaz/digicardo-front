@@ -31,17 +31,20 @@ export function AppShell({ children, className }: AppShellProps) {
     (typeof document !== "undefined" && document.cookie.includes("digicardo_impersonating=true"))
   );
 
-  // If an agent account visits the user studio directly without impersonating, redirect to Agent Portal
+  // Agents and admins don't have a card editor of their own: visiting it directly (not while
+  // viewing a customer's card) sends them to their panel.
   React.useEffect(() => {
-    if (mounted && user?.role === "agent" && !isImpersonating) {
-      router.replace("/agent/dashboard");
-    }
+    if (!mounted || isImpersonating) return;
+    if (user?.role === "agent") router.replace("/agent/dashboard");
+    else if (user?.role === "franchise" || user?.role === "franchise_staff") router.replace("/franchise/dashboard");
+    else if (user?.role === "admin") router.replace("/admin/dashboard");
   }, [mounted, user, isImpersonating, router]);
 
   const impersonatorRole =
     user?.impersonator_role ||
     (typeof window !== "undefined" ? localStorage.getItem("digicardo_impersonator_role") : null);
-  const isAgentMode = impersonatorRole === "agent";
+  const isFranchiseMode = impersonatorRole === "franchise";
+  const isAgentMode = impersonatorRole === "agent" || isFranchiseMode;
 
   // Full-page navigation (see lib/auth/switch-account): the button stays in its "Returning…" state.
   const handleStopImpersonation = () => {
@@ -68,7 +71,7 @@ export function AppShell({ children, className }: AppShellProps) {
             >
               <div className="flex min-w-0 items-center gap-2.5 text-sm">
                 <ShieldCheck className="h-4 w-4 shrink-0 text-[#C4B5FD]" aria-hidden="true" />
-                <span className="shrink-0 font-semibold">{isAgentMode ? "Agent mode" : "Admin mode"}</span>
+                <span className="shrink-0 font-semibold">{isFranchiseMode ? "Franchise mode" : isAgentMode ? "Agent mode" : "Admin mode"}</span>
                 <span className="hidden text-white/70 sm:inline">·</span>
                 <span className="truncate text-white/80">
                   {isAgentMode ? "Editing the card for " : "Managing "}
@@ -86,7 +89,7 @@ export function AppShell({ children, className }: AppShellProps) {
                 ) : (
                   <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                 )}
-                {isExiting ? "Returning…" : isAgentMode ? "Back to agent panel" : "Back to admin"}
+                {isExiting ? "Returning…" : isFranchiseMode ? "Back to franchise panel" : isAgentMode ? "Back to agent panel" : "Back to admin"}
               </button>
             </div>
           )}

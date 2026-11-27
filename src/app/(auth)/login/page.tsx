@@ -31,6 +31,8 @@ export default function LoginPage() {
         router.push("/admin/dashboard");
       } else if (user.role === "agent") {
         router.push("/agent/dashboard");
+      } else if (user.role === "franchise" || user.role === "franchise_staff") {
+        router.push("/franchise/dashboard");
       } else {
         router.push(returnUrl);
       }
@@ -66,6 +68,8 @@ export default function LoginPage() {
       // Route users to their dedicated portal based on their role
       if (loggedInUser?.role === "agent") {
         window.location.href = "/agent/dashboard";
+      } else if (loggedInUser?.role === "franchise" || loggedInUser?.role === "franchise_staff") {
+        window.location.href = "/franchise/dashboard";
       } else {
         window.location.href = returnUrl === "/dashboard" || !returnUrl ? "/dashboard" : returnUrl;
       }

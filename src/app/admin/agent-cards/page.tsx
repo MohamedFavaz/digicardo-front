@@ -15,10 +15,8 @@ import {
   User,
   UserCog,
   AlertCircle,
-  LogIn,
 } from "lucide-react";
 import type { AgentCard } from "@/types/agent";
-import { adminImpersonate } from "@/lib/admin/impersonate";
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return "—";
@@ -112,17 +110,6 @@ export default function AdminAgentCardsPage() {
       });
       fetchCards();
     } finally {
-      setActionLoading(null);
-    }
-  }
-
-  async function handleOpenAsCustomer(card: AgentCard) {
-    if (!card.customer_user_id) return;
-    setActionLoading(card.id);
-    try {
-      await adminImpersonate(card.customer_user_id);
-    } catch (e) {
-      alert(e instanceof Error ? e.message : "Couldn't open this customer's account.");
       setActionLoading(null);
     }
   }
@@ -266,17 +253,6 @@ export default function AdminAgentCardsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-center gap-1.5">
-                          {card.customer_user_id && (
-                            <button
-                              onClick={() => void handleOpenAsCustomer(card)}
-                              disabled={actionLoading === card.id}
-                              className="inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#343C22] px-3 text-xs font-medium text-white transition-colors hover:bg-[#4B5634] disabled:opacity-50"
-                              title="Open as customer: edit this card as its owner"
-                            >
-                              {actionLoading === card.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <LogIn className="h-3.5 w-3.5" />}
-                              Open as customer
-                            </button>
-                          )}
                           {card.profile?.username && (
                             <Link
                               href={`/${card.profile.username}`}

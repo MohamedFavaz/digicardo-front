@@ -2,14 +2,14 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
-  role: 'admin' | 'user' | 'agent';
+  role: 'admin' | 'user' | 'agent' | 'franchise' | 'franchise_staff';
   status: 'active' | 'suspended' | 'pending';
   email_verified_at: string | null;
   created_at: string;
   updated_at: string;
   is_impersonated?: boolean;
   impersonator_admin_name?: string | null;
-  impersonator_role?: 'admin' | 'agent' | null;
+  impersonator_role?: 'admin' | 'agent' | 'franchise' | 'franchise_owner' | null;
 }
 
 export interface LoginInput {

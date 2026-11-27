@@ -19,6 +19,7 @@ export const ALLOWED_PATH_PREFIXES = [
   "account",
   "admin",
   "agent",
+  "franchise",
   "usernames",
 ];
 

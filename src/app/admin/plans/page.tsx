@@ -2,6 +2,7 @@
 
 import { useEffect, useState, FormEvent, useCallback } from "react";
 import Link from "next/link";
+import { FranchisePlansPanel } from "@/components/admin/FranchisePlansPanel";
 import {
   Sparkles,
   CreditCard,
@@ -486,6 +487,9 @@ export default function AdminValidityPlansPage() {
       </div>
 
       {/* ── Create New Plan Modal ── */}
+      {/* Which plans each franchise can sell, and its default */}
+      <FranchisePlansPanel />
+
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
           <div className="bg-card rounded-2xl p-6 sm:p-7 max-w-md w-full shadow-2xl border border-border animate-in fade-in zoom-in-95 duration-200">

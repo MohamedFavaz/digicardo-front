@@ -36,8 +36,12 @@ export interface PartnerFaq {
   a: string;
 }
 
+/** Logo size on the landing page (top bar / footer). */
+export type PartnerLogoSize = "small" | "medium" | "large" | "xl";
+export const PARTNER_LOGO_PX: Record<PartnerLogoSize, number> = { small: 30, medium: 36, large: 48, xl: 60 };
+
 export interface PartnerContent {
-  brand: { name: string; tagline: string; logo_url: string };
+  brand: { name: string; tagline: string; logo_url: string; logo_size?: PartnerLogoSize };
   theme: { preset: PartnerPreset; accent: string };
   hero: { eyebrow: string; title: string; highlight: string; subtitle: string; image_url: string; cta_label: string; secondary_label: string };
   stats: PartnerStat[];

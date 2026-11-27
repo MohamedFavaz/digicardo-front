@@ -64,7 +64,7 @@ function timeAgo(iso?: string) {
 }
 
 const QUICK_ACTIONS: { label: string; text: string; href: string; icon: LucideIcon }[] = [
-  { label: "Add a user", text: "Create a customer account and card", href: "/admin/admin-panel", icon: UserPlus },
+  { label: "Create a card", text: "Make a digital card for a customer", href: "/admin/cards/create", icon: UserPlus },
   { label: "Add an agent", text: "Give a partner their own portal", href: "/admin/agents/create", icon: UserCog },
   { label: "Edit plans", text: "Validity periods and prices", href: "/admin/plans", icon: Sparkles },
   { label: "See all cards", text: "Every live card and its owner", href: "/admin/my-links", icon: IdCard },
@@ -153,8 +153,8 @@ export default function AdminDashboardPage() {
             <ButtonLink href="/admin/access-requests" variant="secondary" icon={Inbox}>
               Access requests
             </ButtonLink>
-            <ButtonLink href="/admin/admin-panel" icon={UserPlus}>
-              Add user
+            <ButtonLink href="/admin/cards/create" icon={UserPlus}>
+              Create card
             </ButtonLink>
           </>
         }
@@ -171,7 +171,7 @@ export default function AdminDashboardPage() {
               {users?.active ?? 0} active{users?.suspended ? ` · ${users.suspended} suspended` : ""}
             </>
           }
-          href="/admin/admin-panel"
+          href="/admin/my-links"
         />
         <StatCard label="Live cards" icon={IdCard} loading={loading} value={totalProfiles} hint="Public card pages" href="/admin/my-links" />
         <StatCard

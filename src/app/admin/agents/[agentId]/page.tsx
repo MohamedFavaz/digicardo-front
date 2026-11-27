@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import type { AgentUser } from "@/types/agent";
 import { AgentSitePanel } from "@/components/admin/AgentSitePanel";
+import { OpenPanelButton } from "@/components/admin/OpenPanelButton";
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return "—";
@@ -222,6 +223,7 @@ export default function AgentDetailPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <OpenPanelButton userId={agent.id} label="Impersonate" disabled={agent.status !== "active"} />
             {agent.status === "active" ? (
               <button onClick={handleDeactivate} disabled={actionLoading}
                 className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-amber-200 bg-card text-xs font-semibold text-amber-700 hover:bg-amber-50 transition-all disabled:opacity-50">

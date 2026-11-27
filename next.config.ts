@@ -52,9 +52,9 @@ const nextConfig: NextConfig = {
     const noindex = [{ key: "X-Robots-Tag", value: "noindex, nofollow" }];
     const privatePaths = [
       "/dashboard", "/dashboard/:path*", "/admin", "/admin/:path*", "/agent", "/agent/:path*",
-      "/agent-login", "/login", "/register", "/forgot-password", "/reset-password/:path*",
+      "/agent-login", "/franchise", "/franchise/:path*", "/franchise-login", "/login", "/register", "/forgot-password", "/reset-password/:path*",
       "/verify-email/:path*", "/account-deleted", "/setup/:path*", "/partner-preview/:path*",
-      "/internal-admin-sign-in",
+      "/internal-admin-sign-in", "/admin-login",
     ];
     return [
       ...privatePaths.map((source) => ({ source, headers: noindex })),

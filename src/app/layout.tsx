@@ -3,6 +3,7 @@ import { SEO_DESCRIPTION, SEO_KEYWORDS, SEO_TITLE, SITE_NAME, SITE_URL } from "@
 import localFont from "next/font/local";
 import { Suspense } from "react";
 import { RouteProgressBar } from "@/components/ui/RouteProgressBar";
+import { MetaPixel } from "@/components/analytics/MetaPixel";
 import "./globals.css";
 
 
@@ -51,7 +52,11 @@ export const metadata: Metadata = {
   // Paste the code from Google Search Console / Bing Webmaster Tools into these env vars.
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
-    other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } : undefined,
+    // Bing + Meta (Facebook) domain verification codes, when set in the environment.
+    other: {
+      ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } : {}),
+      ...(process.env.NEXT_PUBLIC_FB_DOMAIN_VERIFICATION ? { "facebook-domain-verification": process.env.NEXT_PUBLIC_FB_DOMAIN_VERIFICATION } : {}),
+    },
   },
 };
 
@@ -75,6 +80,9 @@ export default function RootLayout({
           <RouteProgressBar />
         </Suspense>
         {children}
+        <Suspense fallback={null}>
+          <MetaPixel />
+        </Suspense>
       </body>
 
     </html>

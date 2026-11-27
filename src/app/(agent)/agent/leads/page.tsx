@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AlertCircle, ChevronLeft, ChevronRight, Inbox, LayoutTemplate, Mail, MessageCircle, Phone, Trash2 } from "lucide-react";
 import { ButtonLink, ConsolePage, EmptyState, PageHeader, StatusPill } from "@/components/console/ui";
 import { agentSiteApi, type AgentLead } from "@/lib/api/agent-site";
@@ -19,6 +20,8 @@ function when(iso: string) {
 
 /** Agent: enquiries from the landing page's "Get your card" form. */
 export default function AgentLeadsPage() {
+  // Also used by the franchise owner's panel (/franchise/leads).
+  const siteHref = usePathname().startsWith("/franchise") ? "/franchise/site" : "/agent/site";
   const [page, setPage] = React.useState(1);
   const [data, setData] = React.useState<Awaited<ReturnType<typeof agentSiteApi.leads>> | null>(null);
   const [error, setError] = React.useState<string | null>(null);
@@ -57,7 +60,7 @@ export default function AgentLeadsPage() {
         title="Leads"
         meta={data && data.unread > 0 ? <StatusPill tone="primary">{data.unread} new</StatusPill> : undefined}
         description="People who asked for a card on your landing page."
-        actions={<ButtonLink href="/agent/site" variant="secondary" icon={LayoutTemplate}>Landing page</ButtonLink>}
+        actions={<ButtonLink href={siteHref} variant="secondary" icon={LayoutTemplate}>Landing page</ButtonLink>}
       />
       {error && (
         <p className="flex items-center gap-2 rounded-2xl border border-[#F5C2C2] bg-[#FDECEC] p-3 text-sm text-[#991B1B]">
@@ -78,7 +81,7 @@ export default function AgentLeadsPage() {
             text={
               <>
                 When someone fills in the form on your landing page, it appears here and you get a notification.{" "}
-                <Link href="/agent/site" className="font-medium text-[#343C22] underline-offset-4 hover:underline">
+                <Link href={siteHref} className="font-medium text-[#343C22] underline-offset-4 hover:underline">
                   Edit your page
                 </Link>
               </>

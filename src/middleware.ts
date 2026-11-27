@@ -9,12 +9,11 @@ const INTERNAL_SECRET =
   process.env.INTERNAL_SERVICE_SECRET || "local-internal-service-secret";
 
 /**
- * Hidden admin sign-in. The page lives at an internal route that can't be opened directly; it is
- * only served at the secret path in ADMIN_LOGIN_PATH (a server-side setting, never sent to
- * browsers). Leave ADMIN_LOGIN_PATH empty to switch admin sign-in off.
+ * Admin sign-in is at /admin-login (owner decision 2026-11-28: no hidden address). The page lives at
+ * an internal route that can't be opened directly. ADMIN_LOGIN_PATH, if set, is an extra address.
  */
 const ADMIN_SIGN_IN_ROUTE = "/internal-admin-sign-in";
-const ADMIN_LOGIN_PATH = (process.env.ADMIN_LOGIN_PATH || "").trim().replace(/^\/+|\/+$/g, "");
+const ADMIN_LOGIN_PATHS = ["admin-login", (process.env.ADMIN_LOGIN_PATH || "").trim().replace(/^\/+|\/+$/g, "")].filter(Boolean);
 
 export async function middleware(request: NextRequest) {
   const rawHost = request.headers.get("host") || request.nextUrl.host;
@@ -25,7 +24,10 @@ export async function middleware(request: NextRequest) {
   if (pathname === ADMIN_SIGN_IN_ROUTE || pathname.startsWith(`${ADMIN_SIGN_IN_ROUTE}/`)) {
     return NextResponse.rewrite(new URL("/_not-found", request.url), { status: 404 });
   }
-  if (ADMIN_LOGIN_PATH && pathname === `/${ADMIN_LOGIN_PATH}` && (!host || isSystemDomain(host))) {
+  if (pathname === "/admin/login") {
+    return NextResponse.redirect(new URL("/admin-login", request.url), 308);
+  }
+  if (ADMIN_LOGIN_PATHS.some((p) => pathname === `/${p}`) && (!host || isSystemDomain(host))) {
     const response = NextResponse.rewrite(new URL(ADMIN_SIGN_IN_ROUTE, request.url));
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
     response.headers.set("Cache-Control", "no-store");
@@ -106,5 +108,8 @@ export const config = {
      * - Static asset files (.png, .jpg, .svg, .webp, .ico, etc.)
      */
     "/((?!api|_next|admin|dashboard|setup|storage|login|register|forgot-password|reset-password|verify-email|.*\\.(?:ico|png|jpg|jpeg|svg|webp|gif|css|js|woff|woff2|ttf|eot)$).*)",
+    // Admin sign-in (the pattern above skips everything starting with "admin").
+    "/admin-login",
+    "/admin/login",
   ],
 };

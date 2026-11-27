@@ -66,6 +66,8 @@ export interface AgentCard {
     email: string;
     username?: string;
     status: string;
+    expires_at?: string | null;
+    validity_label?: string | null;
   };
   agent?: {
     id: string;

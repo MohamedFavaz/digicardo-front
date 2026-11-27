@@ -25,6 +25,9 @@ export const usernameApi = {
   /** Agent: one of the agent's cards. */
   changeForAgentCard: (cardId: string, username: string) =>
     apiClient.patch<UsernameChangeResult>(`/agent/cards/${encodeURIComponent(cardId)}/username`, { username }),
+  /** Franchise owner / staff: a card of their franchise. */
+  changeForFranchiseCard: (cardId: string, username: string) =>
+    apiClient.patch<UsernameChangeResult>(`/franchise/cards/${encodeURIComponent(cardId)}/username`, { username }),
 };
 
 /** The most useful message from a failed change (the field error when there is one). */

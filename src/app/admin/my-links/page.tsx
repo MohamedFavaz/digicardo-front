@@ -8,21 +8,15 @@ import {
   Trash2,
   UserPlus,
   CheckCircle2,
-  AlertCircle,
-  Clock,
   ShieldAlert,
-  CreditCard,
   AtSign,
-  User as UserIcon,
   ChevronLeft,
   ChevronRight,
-  Filter,
   LogIn,
   KeyRound,
   Loader2,
   ArrowRight,
   MoreVertical,
-  ShieldCheck,
 } from "lucide-react";
 import { DeleteUserModal, DeleteUserTarget } from "@/components/admin/DeleteUserModal";
 import { adminImpersonate } from "@/lib/admin/impersonate";
@@ -37,11 +31,18 @@ interface User {
   profile_id?: string;
   status: string;
   role: string;
+  /** Set when an agent or franchise made this customer — those are impersonated from their panel. */
+  agent_id?: string | null;
   expires_at?: string;
   validity_label?: string;
   plan_price_paid?: number;
   created_at: string;
   plan_price_currency?: string;
+}
+
+/** Admin impersonates only customers the admin made — not agents, franchises or their customers. */
+function canImpersonate(u: User): boolean {
+  return u.role === "user" && !u.agent_id;
 }
 
 interface Pagination {
@@ -108,7 +109,8 @@ export default function MyLinksPage() {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({ per_page: "20", page: String(page) });
+      // Only cards the admin made; agent/franchise cards are managed from their panels.
+      const params = new URLSearchParams({ per_page: "20", page: String(page), made_by: "admin" });
       if (filter !== "all") params.set("filter", filter);
       if (search.trim()) params.set("search", search.trim());
       const r = await fetch(`/api/bff/v1/admin/users?${params}`, { credentials: "include" });
@@ -226,18 +228,11 @@ export default function MyLinksPage() {
         </div>
         <div className="flex items-center gap-2.5">
           <Link
-            href="/admin/agents/create"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold transition-all cursor-pointer"
-          >
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>New Agent</span>
-          </Link>
-          <Link
-            href="/admin/admin-panel"
+            href="/admin/cards/create"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm font-semibold transition-all shadow-xs cursor-pointer"
           >
             <UserPlus className="w-4 h-4" />
-            <span>New Customer</span>
+            <span>Create card</span>
           </Link>
         </div>
       </div>
@@ -380,43 +375,47 @@ export default function MyLinksPage() {
                             </div>
 
                             {/* Direct Studio Login Shortcut */}
-                            <button
-                              type="button"
-                              onClick={() => handleImpersonate(u)}
-                              disabled={impersonatingId === u.id || deleting}
-                              title="Direct login to this user's studio without credentials"
-                              className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-[#4A32C0] w-fit transition-colors group cursor-pointer"
-                            >
-                              {impersonatingId === u.id ? (
-                                <>
-                                  <Loader2 className="w-3 h-3 animate-spin text-primary" />
-                                  <span className="text-primary">Entering studio...</span>
-                                </>
-                              ) : (
-                                <>
-                                  <KeyRound className="w-3 h-3 text-primary group-hover:scale-110 transition-transform" />
-                                  <span>Direct Studio Login</span>
-                                  <ArrowRight className="w-2.5 h-2.5 opacity-60 group-hover:translate-x-0.5 transition-transform" />
-                                </>
-                              )}
-                            </button>
+                            {canImpersonate(u) && (
+                              <button
+                                type="button"
+                                onClick={() => handleImpersonate(u)}
+                                disabled={impersonatingId === u.id || deleting}
+                                title="Direct login to this user's studio without credentials"
+                                className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-[#4A32C0] w-fit transition-colors group cursor-pointer"
+                              >
+                                {impersonatingId === u.id ? (
+                                  <>
+                                    <Loader2 className="w-3 h-3 animate-spin text-primary" />
+                                    <span className="text-primary">Opening…</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <KeyRound className="w-3 h-3 text-primary group-hover:scale-110 transition-transform" />
+                                    <span>Impersonate</span>
+                                    <ArrowRight className="w-2.5 h-2.5 opacity-60 group-hover:translate-x-0.5 transition-transform" />
+                                  </>
+                                )}
+                              </button>
+                            )}
                           </div>
                         ) : (
                           <div className="flex flex-col gap-1">
                             <span className="text-muted-foreground italic text-xs">No handle set</span>
-                            <button
-                              type="button"
-                              onClick={() => handleImpersonate(u)}
-                              disabled={impersonatingId === u.id || deleting}
-                              className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-[#4A32C0] w-fit cursor-pointer"
-                            >
-                              {impersonatingId === u.id ? (
-                                <Loader2 className="w-3 h-3 animate-spin" />
-                              ) : (
-                                <LogIn className="w-3 h-3" />
-                              )}
-                              <span>Login as User</span>
-                            </button>
+                            {canImpersonate(u) && (
+                              <button
+                                type="button"
+                                onClick={() => handleImpersonate(u)}
+                                disabled={impersonatingId === u.id || deleting}
+                                className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-[#4A32C0] w-fit cursor-pointer"
+                              >
+                                {impersonatingId === u.id ? (
+                                  <Loader2 className="w-3 h-3 animate-spin" />
+                                ) : (
+                                  <LogIn className="w-3 h-3" />
+                                )}
+                                <span>Impersonate</span>
+                              </button>
+                            )}
                           </div>
                         )}
                       </td>
@@ -472,24 +471,26 @@ export default function MyLinksPage() {
                       <td className="px-5 py-3.5 text-right">
                         <div className="flex items-center justify-end gap-2 row-action-menu relative">
                           {/* Direct Login as User (Primary Quick Action) */}
-                          <button
-                            onClick={() => handleImpersonate(u)}
-                            disabled={impersonatingId === u.id || deleting || toggling === u.id}
-                            title="Direct Login to User Studio without credentials"
-                            className="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border border-border bg-card text-[#52525B] hover:bg-muted/50 hover:text-black disabled:opacity-50 flex items-center gap-1.5 cursor-pointer group"
-                          >
-                            {impersonatingId === u.id ? (
-                              <>
-                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                <span>Entering...</span>
-                              </>
-                            ) : (
-                              <>
-                                <LogIn className="w-3.5 h-3.5 text-[#52525B] group-hover:text-black transition-colors" />
-                                <span>Login as User</span>
-                              </>
-                            )}
-                          </button>
+                          {canImpersonate(u) && (
+                            <button
+                              onClick={() => handleImpersonate(u)}
+                              disabled={impersonatingId === u.id || deleting || toggling === u.id}
+                              title="Direct Login to User Studio without credentials"
+                              className="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border border-border bg-card text-[#52525B] hover:bg-muted/50 hover:text-black disabled:opacity-50 flex items-center gap-1.5 cursor-pointer group"
+                            >
+                              {impersonatingId === u.id ? (
+                                <>
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                  <span>Entering...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <LogIn className="w-3.5 h-3.5 text-[#52525B] group-hover:text-black transition-colors" />
+                                  <span>Impersonate</span>
+                                </>
+                              )}
+                            </button>
+                          )}
 
                           {/* 3-Dot More Actions Menu (Suspend & Delete) */}
                           <div className="relative">

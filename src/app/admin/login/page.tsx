@@ -1,6 +1,6 @@
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 
-// The admin sign-in page is hidden (secret ADMIN_LOGIN_PATH); this old address no longer exists.
+// Admin sign-in lives at /admin-login (the middleware also redirects this address).
 export default function OldAdminLoginPage() {
-  notFound();
+  redirect("/admin-login");
 }

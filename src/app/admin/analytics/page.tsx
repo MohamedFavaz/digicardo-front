@@ -1,222 +1,240 @@
 "use client";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import {
-  BarChart3,
-  Users,
-  Link2,
-  ShieldAlert,
-  TrendingUp,
-  Activity,
-} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Activity, BarChart3, Building2, CreditCard, Eye, IndianRupee, Layers, Radio, UserCog, Users } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { ButtonLink, ConsolePage, EmptyState, PageHeader, Panel, StatCard } from "@/components/console/ui";
+import { FilterTabs } from "@/components/console/Pager";
+import { BarList, CHART, ChartTip, Legend, SOURCE_LABEL, dayLabel, monthLabel, num, rupeeTick } from "@/components/analytics/charts";
+import { franchiseApi, rupees } from "@/lib/franchise/api";
+import { TEMPLATE_MANIFESTS } from "@/templates/manifests";
 
-interface KPI {
-  label: string;
-  value: string | number;
-  icon: typeof Users;
-  sub?: string;
-  color: string;
+type Range = "7" | "30" | "90" | "365";
+type Source = "admin" | "agents" | "franchises";
+const SOURCES: Source[] = ["admin", "agents", "franchises"];
+
+interface Platform {
+  days: number;
+  totals: { cards: number; live: number; agents: number; franchises: number; staff: number; revenue_12m: number; views: number; taps: number };
+  by_source: Record<Source, number>;
+  status: { live: number; expiring: number; expired: number; hidden: number; blocked: number };
+  cards_monthly: ({ month: string } & Record<Source, number>)[];
+  money_monthly: ({ month: string } & Record<Source, number>)[];
+  daily: { date: string; views: number; taps: number }[];
+  top_cards: { id: string; name: string; username?: string | null; source: Source; views: number }[];
+  partners: { id: string; name: string; type: "agents" | "franchises"; cards: number; revenue: number }[];
+  templates: { template: string; cards: number }[];
 }
 
+/** Singular label for one card. */
+const ONE_SOURCE: Record<Source, string> = { admin: "Admin card", agents: "Agent card", franchises: "Franchise card" };
 
+const monthFull = (l: string) => `${monthLabel(l)} ${l.slice(0, 4)}`;
 
-function BarChart({ points, max }: { points: { label: string; value: number }[]; max: number }) {
-  return (
-    <div className="flex items-end gap-2 h-36 px-2 pt-6">
-      {points.map((p, i) => {
-        const heightPct = max > 0 ? (p.value / max) * 100 : 5;
-        return (
-          <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
-            <span className="text-xs font-semibold text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity">
-              {p.value}
-            </span>
-            <div className="w-full bg-zinc-100 rounded-t-lg h-24 flex items-end overflow-hidden">
-              <div
-                className="w-full bg-gradient-to-t from-indigo-600 to-indigo-400 rounded-t-lg transition-all duration-500 group-hover:from-indigo-700 group-hover:to-indigo-500"
-                style={{ height: `${Math.max(heightPct, 8)}%` }}
-              />
-            </div>
-            <span className="text-xs font-semibold text-muted-foreground truncate w-full text-center">
-              {p.label}
-            </span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
+/** Admin Analytics: the whole platform in charts. */
 export default function AdminAnalyticsPage() {
+  const [range, setRange] = useState<Range>("30");
+  const [data, setData] = useState<Platform | null>(null);
   const [loading, setLoading] = useState(true);
-  const [metrics, setMetrics] = useState<{
-    users: { total: number; active: number; suspended: number };
-    profiles: { total: number };
-  } | null>(null);
-  const [signups, setSignups] = useState<{ label: string; value: number }[]>([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/bff/v1/admin/overview", { credentials: "include" }).then(r => r.json()),
-      fetch("/api/bff/v1/admin/analytics/signups/monthly", { credentials: "include" }).then(r => r.json()),
-    ])
-      .then(([ov, signupsData]) => {
-        setMetrics(ov?.data?.metrics);
-        const raw: { month: string; count: number }[] = signupsData?.data?.signups || [];
-        setSignups(raw.slice(-8).map(m => ({ label: m.month?.slice(0, 3) || "", value: Number(m.count) })));
+    setLoading(true);
+    franchiseApi<Platform>(`admin/analytics/platform?days=${range}`)
+      .then((r) => {
+        setData(r.data);
+        setError("");
       })
+      .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [range]);
 
-  const total = metrics?.users?.total ?? 0;
-  const active = metrics?.users?.active ?? 0;
-  const suspended = metrics?.users?.suspended ?? 0;
-  const profiles = metrics?.profiles?.total ?? 0;
-  const activeRate = total > 0 ? ((active / total) * 100).toFixed(0) : "0";
-  const maxSignups = signups.reduce((m, p) => Math.max(m, p.value), 0);
+  const daily = useMemo(() => {
+    if (!data) return [];
+    if (data.days < 365) return data.daily;
+    const weeks: { date: string; views: number; taps: number }[] = [];
+    data.daily.forEach((d, i) => {
+      if (i % 7 === 0) weeks.push({ date: d.date, views: 0, taps: 0 });
+      weeks[weeks.length - 1].views += d.views;
+      weeks[weeks.length - 1].taps += d.taps;
+    });
+    return weeks;
+  }, [data]);
 
-
-  const kpis: KPI[] = [
-    { label: "Total Users", value: loading ? "…" : total, icon: Users, sub: `${active} active accounts`, color: "bg-indigo-50 text-indigo-600" },
-    { label: "Public Profiles", value: loading ? "…" : profiles, icon: Link2, sub: "live bio pages", color: "bg-violet-50 text-violet-600" },
-    { label: "Suspended Accounts", value: loading ? "…" : suspended, icon: ShieldAlert, sub: "enforced suspensions", color: "bg-amber-50 text-amber-600" },
-    { label: "Platform Active Rate", value: loading ? "…" : `${activeRate}%`, icon: TrendingUp, sub: "healthy standing", color: "bg-emerald-50 text-emerald-600" },
-  ];
+  const t = data?.totals;
+  const first = loading && !data;
+  const sourceLegend = SOURCES.map((s) => ({ label: SOURCE_LABEL[s], color: CHART.source[s] }));
+  const templateName = (id: string) => (TEMPLATE_MANIFESTS as Record<string, { name: string }>)[id]?.name ?? (id === "unknown" ? "Not set" : id);
+  const periodLabel = range === "365" ? "Last year" : `Last ${range} days`;
 
   return (
-    <div suppressHydrationWarning className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground">Analytics</h1>
-          </div>
-          <p className="mt-1 text-[15px] text-muted-foreground">
-            User growth, registrations, and profile engagement metrics.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/admin/accounts"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm font-semibold transition-all shadow-xs cursor-pointer"
-          >
-            <Activity className="w-4 h-4" />
-            <span>Revenue</span>
-          </Link>
-        </div>
+    <ConsolePage>
+      <PageHeader
+        title="Analytics"
+        description="The whole platform in charts: cards, money, visitors, partners and designs."
+        actions={
+          <>
+            <FilterTabs<Range>
+              label="Time range for visitors"
+              value={range}
+              onChange={setRange}
+              options={[
+                { id: "7", label: "7 days" },
+                { id: "30", label: "30 days" },
+                { id: "90", label: "90 days" },
+                { id: "365", label: "1 year" },
+              ]}
+            />
+            <ButtonLink href="/admin/accounts" variant="secondary" icon={Activity}>
+              Revenue
+            </ButtonLink>
+          </>
+        }
+      />
+
+      {error && <p className="rounded-xl bg-[#FDECEC] px-4 py-3 text-sm text-destructive">{error}</p>}
+
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <StatCard label="Customer cards" icon={CreditCard} loading={first} value={num(t?.cards ?? 0)} hint={data ? `${num(data.status.live)} live · ${num(data.status.expired)} expired` : undefined} href="/admin/my-links" />
+        <StatCard label="Partners" icon={UserCog} loading={first} value={num((t?.agents ?? 0) + (t?.franchises ?? 0))} hint={t ? `${t.agents} agents · ${t.franchises} franchises · ${t.staff} staff` : undefined} href="/admin/franchises" />
+        <StatCard label="Revenue (12 months)" icon={IndianRupee} loading={first} value={rupees(t?.revenue_12m)} hint="Plans sold + partner cards" href="/admin/accounts" />
+        <StatCard label="Card views" icon={Eye} loading={first} value={num(t?.views ?? 0)} hint={`${num(t?.taps ?? 0)} taps · ${periodLabel.toLowerCase()}`} />
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {kpis.map(k => {
-          const Icon = k.icon;
-          return (
-            <div key={k.label} className="bg-card border border-border rounded-2xl p-5 hover:shadow-xs transition-all">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold capitalize text-muted-foreground">{k.label}</span>
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${k.color}`}>
-                  <Icon className="w-4 h-4" />
-                </div>
-              </div>
-              <div className="mt-2">
-                <span className="text-2xl font-semibold tracking-tight text-foreground">{k.value}</span>
-                {k.sub && <p className="text-xs text-muted-foreground font-medium mt-1">{k.sub}</p>}
-              </div>
-            </div>
-          );
-        })}
+      <Panel title="Visitors" icon={Eye} description="Card views and button taps across every card.">
+        <div className="px-5 pt-3"><Legend items={[{ label: "Card views", color: CHART.views, line: true }, { label: "Taps", color: CHART.taps, line: true }]} /></div>
+        <div className="h-72 px-2 py-4">
+          {first ? null : data && data.totals.views + data.totals.taps === 0 ? (
+            <EmptyState icon={Eye} title="No visitors in this period" />
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={daily} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
+                <CartesianGrid stroke={CHART.grid} vertical={false} />
+                <XAxis dataKey="date" tickFormatter={dayLabel} tick={{ fill: CHART.axis, fontSize: 11 }} axisLine={false} tickLine={false} minTickGap={24} />
+                <YAxis allowDecimals={false} tick={{ fill: CHART.axis, fontSize: 11 }} axisLine={false} tickLine={false} width={40} />
+                <Tooltip content={<ChartTip format={(l) => (data?.days === 365 ? `Week of ${dayLabel(l)}` : dayLabel(l))} />} cursor={{ stroke: CHART.axis, strokeDasharray: "3 3" }} />
+                <Line isAnimationActive={false} type="monotone" dataKey="views" name="Card views" stroke={CHART.views} strokeWidth={2} dot={false} activeDot={{ r: 5, stroke: "#FBFBF8", strokeWidth: 2 }} />
+                <Line isAnimationActive={false} type="monotone" dataKey="taps" name="Taps" stroke={CHART.taps} strokeWidth={2} dot={false} activeDot={{ r: 5, stroke: "#FBFBF8", strokeWidth: 2 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </Panel>
+
+      {/* Cards and money per month — separate charts (different units), stacked by who made them. */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Panel title="Cards made per month" icon={BarChart3} description="Last 12 months, by who made them">
+        <div className="px-5 pt-3"><Legend items={sourceLegend} /></div>
+          <div className="h-72 px-2 py-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data?.cards_monthly ?? []} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
+                <CartesianGrid stroke={CHART.grid} vertical={false} />
+                <XAxis dataKey="month" tickFormatter={monthLabel} tick={{ fill: CHART.axis, fontSize: 11 }} axisLine={false} tickLine={false} />
+                <YAxis allowDecimals={false} tick={{ fill: CHART.axis, fontSize: 11 }} axisLine={false} tickLine={false} width={32} />
+                <Tooltip content={<ChartTip total format={monthFull} />} cursor={{ fill: "rgba(90,122,31,0.08)" }} />
+                {SOURCES.map((s, i) => (
+                  <Bar key={s} isAnimationActive={false} dataKey={s} name={SOURCE_LABEL[s]} stackId="cards" fill={CHART.source[s]} stroke="#FBFBF8" strokeWidth={1} radius={i === SOURCES.length - 1 ? [4, 4, 0, 0] : 0} maxBarSize={28} />
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Panel>
+        <Panel title="Money per month" icon={IndianRupee} description="Plans sold by admin + what partners pay per card">
+        <div className="px-5 pt-3"><Legend items={sourceLegend} /></div>
+          <div className="h-72 px-2 py-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data?.money_monthly ?? []} margin={{ top: 8, right: 12, bottom: 0, left: 8 }}>
+                <CartesianGrid stroke={CHART.grid} vertical={false} />
+                <XAxis dataKey="month" tickFormatter={monthLabel} tick={{ fill: CHART.axis, fontSize: 11 }} axisLine={false} tickLine={false} />
+                <YAxis tickFormatter={rupeeTick} tick={{ fill: CHART.axis, fontSize: 11 }} axisLine={false} tickLine={false} width={48} />
+                <Tooltip content={<ChartTip money total format={monthFull} />} cursor={{ fill: "rgba(90,122,31,0.08)" }} />
+                {SOURCES.map((s, i) => (
+                  <Bar key={s} isAnimationActive={false} dataKey={s} name={SOURCE_LABEL[s]} stackId="money" fill={CHART.source[s]} stroke="#FBFBF8" strokeWidth={1} radius={i === SOURCES.length - 1 ? [4, 4, 0, 0] : 0} maxBarSize={28} />
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Panel>
       </div>
 
-      {/* Charts & Breakdown Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Monthly Signups Chart (7 cols) */}
-        <div className="lg:col-span-7 bg-card border border-border rounded-2xl overflow-hidden">
-          <div className="p-4 border-b border-border flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-[#52525B]" />
-              <h2 className="text-xs font-semibold text-foreground capitalize">New Registrations Trend</h2>
-            </div>
-            <span className="text-xs text-muted-foreground">Past 8 Months</span>
-          </div>
-
-          <div className="p-5">
-            {loading ? (
-              <div className="h-36 bg-zinc-100 rounded-xl animate-pulse" />
-            ) : signups.length === 0 ? (
-              <div className="h-36 flex items-center justify-center text-xs text-muted-foreground">
-                No monthly registration records available yet.
-              </div>
-            ) : (
-              <BarChart points={signups} max={maxSignups} />
-            )}
-          </div>
-        </div>
-
-        {/* Status Distribution (5 cols) */}
-        <div className="lg:col-span-5 bg-card border border-border rounded-2xl overflow-hidden">
-          <div className="p-4 border-b border-border">
-            <h2 className="text-xs font-semibold text-foreground capitalize">Account Standing Distribution</h2>
-          </div>
-
-          <div className="p-5 space-y-4">
-            {/* Active Users */}
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-[#52525B] flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                  Active Accounts
-                </span>
-                <span className="font-semibold text-foreground">
-                  {active} ({total > 0 ? ((active / total) * 100).toFixed(0) : 0}%)
-                </span>
-              </div>
-              <div className="w-full h-2 rounded-full bg-zinc-100 overflow-hidden">
-                <div
-                  className="h-full bg-emerald-500 rounded-full transition-all duration-500"
-                  style={{ width: `${total > 0 ? (active / total) * 100 : 0}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Suspended Users */}
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-[#52525B] flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-amber-500" />
-                  Suspended Accounts
-                </span>
-                <span className="font-semibold text-foreground">
-                  {suspended} ({total > 0 ? ((suspended / total) * 100).toFixed(0) : 0}%)
-                </span>
-              </div>
-              <div className="w-full h-2 rounded-full bg-zinc-100 overflow-hidden">
-                <div
-                  className="h-full bg-amber-500 rounded-full transition-all duration-500"
-                  style={{ width: `${total > 0 ? (suspended / total) * 100 : 0}%` }}
-                />
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-border">
-              <div className="p-3 rounded-xl bg-muted/50 border border-border flex items-center justify-between text-xs">
-                <span className="text-muted-foreground font-medium">Profiles Created</span>
-                <span className="font-semibold text-foreground text-sm">{profiles} Total</span>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="grid gap-4 lg:grid-cols-3">
+        <Panel title="Who made the cards" icon={Layers} description="All time">
+          {data ? (
+            <BarList rows={SOURCES.map((s) => ({ key: s, label: SOURCE_LABEL[s], value: data.by_source[s], color: CHART.source[s] }))} color={CHART.views} />
+          ) : (
+            <EmptyState icon={Layers} title="Loading…" />
+          )}
+        </Panel>
+        <Panel title="Card status" icon={Radio} description="Right now">
+          {data ? (
+            <BarList
+              rows={[
+                { key: "live", label: "Live", value: data.status.live, color: CHART.status.live },
+                { key: "expiring", label: "Live, expiring within a week", value: data.status.expiring, color: CHART.status.expiring },
+                { key: "expired", label: "Expired", value: data.status.expired, color: CHART.status.expired },
+                { key: "hidden", label: "Hidden by owner", value: data.status.hidden, color: CHART.status.hidden },
+                { key: "blocked", label: "Suspended / moderated", value: data.status.blocked, color: CHART.status.blocked },
+              ]}
+              color={CHART.status.live}
+            />
+          ) : (
+            <EmptyState icon={Radio} title="Loading…" />
+          )}
+        </Panel>
+        <Panel title="Designs used" icon={CreditCard} description="Customer cards per design">
+          {data && data.templates.length > 0 ? (
+            <BarList rows={data.templates.map((x) => ({ key: x.template, label: templateName(x.template), value: x.cards }))} color={CHART.views} />
+          ) : (
+            <EmptyState icon={CreditCard} title={first ? "Loading…" : "No cards yet"} />
+          )}
+        </Panel>
       </div>
 
-      {/* The user directory lives on Users (no duplicate list here). */}
-      <Link
-        href="/admin/admin-panel"
-        className="flex items-center justify-between gap-4 rounded-[22px] border border-[#E9E9E2] bg-[#FBFBF8] p-5 transition-colors hover:bg-white"
-      >
-        <span>
-          <span className="block text-[15px] font-medium text-foreground">Looking for a specific account?</span>
-          <span className="block text-sm text-muted-foreground">Search, open and manage every user on the Users page.</span>
-        </span>
-        <span className="inline-flex h-10 shrink-0 items-center rounded-full bg-[#343C22] px-4 text-sm font-medium text-white">Open Users</span>
-      </Link>
-    </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Panel title="Top partners" icon={Building2} description="Agents and franchises by cards made (all time)">
+        <div className="px-5 pt-3"><Legend items={[{ label: "Agent", color: CHART.source.agents }, { label: "Franchise", color: CHART.source.franchises }]} /></div>
+          {data && data.partners.length > 0 ? (
+            <BarList
+              rows={data.partners.map((p) => ({
+                key: p.id,
+                label: (
+                  <>
+                    {p.name} <span className="text-[#6B6D63]">· {p.type === "franchises" ? "Franchise" : "Agent"}</span>
+                  </>
+                ),
+                value: p.cards,
+                color: CHART.source[p.type],
+                extra: <span className="ml-3 font-normal text-[#6B6D63]">{rupees(p.revenue)}</span>,
+              }))}
+              color={CHART.source.agents}
+              valueLabel={(v) => `${num(v)} card${v === 1 ? "" : "s"}`}
+            />
+          ) : (
+            <EmptyState icon={Users} title={first ? "Loading…" : "No partner cards yet"} />
+          )}
+        </Panel>
+        <Panel title="Most viewed cards" icon={Eye} description={periodLabel}>
+          {data && data.top_cards.length > 0 ? (
+            <BarList
+              rows={data.top_cards.map((c) => ({
+                key: c.id,
+                label: (
+                  <>
+                    {c.name}
+                    {c.username && <span className="text-[#6B6D63]"> · /{c.username}</span>}
+                  </>
+                ),
+                value: c.views,
+                color: CHART.source[c.source],
+                extra: <span className="ml-3 font-normal text-[#6B6D63]">{ONE_SOURCE[c.source]}</span>,
+              }))}
+              color={CHART.views}
+              valueLabel={(v) => `${num(v)} views`}
+            />
+          ) : (
+            <EmptyState icon={Eye} title={first ? "Loading…" : "No views in this period"} />
+          )}
+        </Panel>
+      </div>
+    </ConsolePage>
   );
 }

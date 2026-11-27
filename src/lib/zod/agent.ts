@@ -55,6 +55,8 @@ export const createAgentCardSchema = z.object({
   template_id: z.string().optional().or(z.literal("")),
   password: z.string().min(8, "Password must be at least 8 characters"),
   notes: z.string().max(500).optional().or(z.literal("")),
+  /** One of the admin's validity plans (sets when the card expires); empty = no expiry. */
+  validity_plan_id: z.string().max(26).optional(),
 });
 export type CreateAgentCardInput = z.infer<typeof createAgentCardSchema>;
 

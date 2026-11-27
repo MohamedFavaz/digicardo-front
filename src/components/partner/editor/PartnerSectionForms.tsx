@@ -4,7 +4,7 @@ import * as React from "react";
 import { Check } from "lucide-react";
 import { ListEditor, newId, Switch, TextAreaField, TextField, UrlField } from "@/components/card-editor/fields";
 import { cn, resolveMediaUrl } from "@/lib/utils";
-import { PARTNER_PRESETS, type PartnerCard, type PartnerContent, type PartnerFaq, type PartnerPackage, type PartnerPreset, type PartnerStat, type PartnerStep, type PartnerTestimonial } from "@/lib/partner/types";
+import { PARTNER_LOGO_PX, PARTNER_PRESETS, type PartnerCard, type PartnerContent, type PartnerLogoSize, type PartnerFaq, type PartnerPackage, type PartnerPreset, type PartnerStat, type PartnerStep, type PartnerTestimonial } from "@/lib/partner/types";
 import { PartnerImageField } from "./PartnerImageField";
 
 type Set = <K extends keyof PartnerContent>(key: K, value: PartnerContent[K]) => void;
@@ -21,6 +21,35 @@ export function BrandForm({ content, set }: { content: PartnerContent; set: Set 
         <TextField id="lp-tagline" label="Tagline" optional value={b.tagline} maxLength={80} onChange={(tagline) => set("brand", { ...b, tagline })} />
       </div>
       <PartnerImageField id="lp-logo" label="Logo" hint="Square logos look best. You can crop it." shape="square" crop value={b.logo_url} onChange={(logo_url) => set("brand", { ...b, logo_url })} />
+      <div>
+        <p className="text-sm font-medium text-foreground" id="lp-logo-size">Logo size</p>
+        <div role="radiogroup" aria-labelledby="lp-logo-size" className="mt-2 inline-flex flex-wrap gap-1 rounded-full bg-muted p-1">
+          {(
+            [
+              ["small", "Small"],
+              ["medium", "Medium"],
+              ["large", "Large"],
+              ["xl", "Extra large"],
+            ] as [PartnerLogoSize, string][]
+          ).map(([id, label]) => {
+            const on = (b.logo_size ?? "medium") === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                role="radio"
+                aria-checked={on}
+                onClick={() => set("brand", { ...b, logo_size: id })}
+                className={cn("flex h-9 items-center gap-2 rounded-full px-3.5 text-sm transition", on ? "bg-white font-medium text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
+              >
+                <span className="rounded bg-current opacity-40" style={{ width: PARTNER_LOGO_PX[id] / 3, height: PARTNER_LOGO_PX[id] / 3 }} aria-hidden="true" />
+                {label}
+              </button>
+            );
+          })}
+        </div>
+        <p className="mt-1 text-xs text-muted-foreground">How big your logo looks in the page&apos;s top bar and footer.</p>
+      </div>
       <div>
         <p className="text-sm font-medium text-foreground">Design</p>
         <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
