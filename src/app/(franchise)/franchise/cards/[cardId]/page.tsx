@@ -34,6 +34,7 @@ export default function FranchiseCardPage() {
   const [plans, setPlans] = useState<{ id: string; name: string; months: number; price: number; currency_symbol: string }[]>([]);
   const [renewPlan, setRenewPlan] = useState("");
   const [renewed, setRenewed] = useState("");
+  const [renewAmount, setRenewAmount] = useState("");
 
   useEffect(() => {
     franchiseApi<{ id: string; name: string; months: number; price: number; currency_symbol: string }[]>("franchise/cards/plans")
@@ -230,7 +231,7 @@ export default function FranchiseCardPage() {
         )}
       </Panel>
 
-      <Panel title="Renew" description="Extend this card with a plan. An expired card goes live again straight away.">
+      <Panel title="Renew" description="Extend this card with a plan. An expired card goes live again straight away. Renewal money is all the franchise's: no commission.">
         <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-end">
           <label className="flex-1 space-y-1.5 text-sm">
             <span className="text-muted-foreground">Plan</span>
@@ -253,16 +254,30 @@ export default function FranchiseCardPage() {
               })()}
             </span>
           </label>
+          <label className="space-y-1.5 text-sm sm:w-44">
+            <span className="text-muted-foreground">Amount collected (₹)</span>
+            <input
+              type="number"
+              min={0}
+              inputMode="decimal"
+              className={input}
+              value={renewAmount}
+              onChange={(e) => setRenewAmount(e.target.value)}
+              placeholder={String(Number(plans.find((p) => p.id === renewPlan)?.price ?? 0))}
+            />
+          </label>
           <button
             type="button"
             disabled={!!busy || !renewPlan}
             onClick={() =>
               run("renew", async () => {
                 const plan = plans.find((p) => p.id === renewPlan);
-                if (!confirm(`Renew "${card.card_name}" with the ${plan?.name ?? ""} plan?`)) return;
-                const r = await franchiseApi<FranchiseCard>(`franchise/cards/${card.id}/renew`, { method: "POST", body: { validity_plan_id: renewPlan } });
+                const amount = renewAmount !== "" ? Number(renewAmount) : Number(plan?.price ?? 0);
+                if (!confirm(`Renew "${card.card_name}" with the ${plan?.name ?? ""} plan? Amount collected: ${rupees(amount)}.`)) return;
+                const r = await franchiseApi<FranchiseCard>(`franchise/cards/${card.id}/renew`, { method: "POST", body: { validity_plan_id: renewPlan, amount } });
                 setCard({ ...card, ...r.data });
-                setRenewed("Renewed.");
+                setRenewAmount("");
+                setRenewed(`Renewed. ${rupees(amount)} recorded as renewal money.`);
                 setTimeout(() => setRenewed(""), 3000);
               })
             }

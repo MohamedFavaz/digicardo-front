@@ -19,6 +19,7 @@ interface Handover {
 
 interface Mine {
   collected: number;
+  renewals?: number;
   earned: number;
   to_hand_over: number;
   handed_over: number;
@@ -133,19 +134,19 @@ export default function FranchiseCashPage() {
         description={
           owner
             ? "Staff collect money from customers, keep their commission and hand the rest to you. Confirm each handover when you receive it."
-            : "You keep your commission from the money customers pay you. Hand the rest to your franchise owner and record it here; it counts once they confirm."
+            : "You keep your commission from the money customers pay you for new cards. Renewal money has no commission: hand all of it over. Record each handover here; it counts once the owner confirms."
         }
       />
 
       {owner ? (
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-          <StatCard label="Still with staff" icon={Banknote} value={rupees(withStaff)} hint="Collected − commission − handed over" tone={withStaff > 0 ? "warning" : "neutral"} />
+          <StatCard label="Still with staff" icon={Banknote} value={rupees(withStaff)} hint="Collected + renewals − commission − handed over" tone={withStaff > 0 ? "warning" : "neutral"} />
           <StatCard label="Waiting for you to confirm" icon={Clock} value={rupees(pendingTotal)} hint="Handovers staff recorded" tone={pendingTotal > 0 ? "warning" : "neutral"} />
           <StatCard label="Received from staff" icon={CheckCircle2} value={rupees(handedTotal)} hint="Confirmed, all time" />
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          <StatCard label="Collected from customers" icon={Wallet} loading={!mine} value={rupees(mine?.collected)} />
+          <StatCard label="Collected from customers" icon={Wallet} loading={!mine} value={rupees((mine?.collected ?? 0) + (mine?.renewals ?? 0))} hint={mine?.renewals ? `Includes ${rupees(mine.renewals)} renewals (no commission)` : undefined} />
           <StatCard label="My commission (kept)" icon={HandCoins} loading={!mine} value={rupees(mine?.earned)} />
           <StatCard label="Handed over (confirmed)" icon={CheckCircle2} loading={!mine} value={rupees(mine?.handed_over)} hint={mine && mine.pending_handover > 0 ? `${rupees(mine.pending_handover)} waiting for owner` : undefined} />
           <StatCard
@@ -160,11 +161,12 @@ export default function FranchiseCashPage() {
 
       {owner && staff.length > 0 && (
         <Panel title="Each staff member" description="Collected from customers, commission they keep, and what they still hold.">
-          <DataTable head={["Staff", "Collected", "Commission", "To hand over", "Handed over", "Waiting", "Still with staff"]}>
+          <DataTable head={["Staff", "Collected", "Renewals", "Commission", "To hand over", "Handed over", "Waiting", "Still with staff"]}>
             {staff.map((s) => (
               <tr key={s.id}>
                 <td className="px-5 py-3 font-medium text-foreground">{s.name}</td>
                 <td className="whitespace-nowrap px-5 py-3">{rupees(s.sales)}</td>
+                <td className="whitespace-nowrap px-5 py-3">{s.renewals ? rupees(s.renewals) : "—"}</td>
                 <td className="whitespace-nowrap px-5 py-3">{rupees(s.earned)}</td>
                 <td className="whitespace-nowrap px-5 py-3">{rupees(Math.max(0, s.to_hand_over ?? 0))}</td>
                 <td className="whitespace-nowrap px-5 py-3">{rupees(s.handed_over)}</td>

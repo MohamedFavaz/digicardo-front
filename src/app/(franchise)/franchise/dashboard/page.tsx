@@ -21,7 +21,7 @@ interface Dashboard {
   commission_owed?: number;
   cash_with_staff?: number;
   pending_handovers?: number;
-  earnings?: { collected: number; staff_commission: number; digicardo_cost: number; net: number; this_month_collected: number };
+  earnings?: { collected: number; renewals?: number; staff_commission: number; digicardo_cost: number; net: number; this_month_collected: number };
   my_commission?: { commission_type: "fixed" | "percentage"; commission_value: number; earned: number; paid: number; balance: number; cash_due?: number; pending_handover?: number };
 }
 
@@ -84,7 +84,7 @@ export default function FranchiseDashboardPage() {
               icon={IndianRupee}
               loading={loading}
               value={rupees(Math.abs(data?.my_commission?.cash_due ?? 0))}
-              hint={data?.my_commission?.pending_handover ? `${rupees(data.my_commission.pending_handover)} waiting for owner` : "Collected − your commission"}
+              hint={data?.my_commission?.pending_handover ? `${rupees(data.my_commission.pending_handover)} waiting for owner` : "Collected + renewals − your commission"}
               href="/franchise/cash"
               tone={(data?.my_commission?.cash_due ?? 0) > 0 ? "warning" : "neutral"}
             />
@@ -93,20 +93,21 @@ export default function FranchiseDashboardPage() {
       </div>
 
       {owner && (
-        <Panel title="Your earnings" icon={TrendingUp} description="All cards your franchise has made, all time.">
-          <div className="grid grid-cols-2 gap-px bg-[#E9E9E2] lg:grid-cols-4">
+        <Panel title="Your earnings" icon={TrendingUp} description="All cards your franchise has made and renewed, all time.">
+          <div className="grid grid-cols-2 gap-px bg-[#E9E9E2] lg:grid-cols-5">
             {[
-              { label: "Total collected", value: data?.earnings?.collected, hint: `${rupees(data?.earnings?.this_month_collected)} this month`, sign: "" },
+              { label: "Collected for cards", value: data?.earnings?.collected, hint: `${rupees(data?.earnings?.this_month_collected)} this month (with renewals)`, sign: "" },
+              { label: "Renewals", value: data?.earnings?.renewals ?? 0, hint: "All yours: no commission", sign: "+" },
               { label: "Staff commission", value: data?.earnings?.staff_commission, hint: "Paid or owed to staff", sign: "−" },
               { label: "Paid to Digicardo", value: data?.earnings?.digicardo_cost, hint: "Card price per card", sign: "−" },
               { label: "Your net earnings", value: data?.earnings?.net, hint: "What the franchise keeps", sign: "=" },
             ].map((x, i) => (
-              <div key={x.label} className={`bg-[#FBFBF8] px-5 py-4 ${i === 3 ? "bg-[#F1F5E8]" : ""}`}>
+              <div key={x.label} className={`bg-[#FBFBF8] px-5 py-4 ${i === 4 ? "col-span-2 bg-[#F1F5E8] lg:col-span-1" : ""}`}>
                 <p className="text-sm text-muted-foreground">
                   {x.sign && <span className="mr-1 font-semibold text-foreground">{x.sign}</span>}
                   {x.label}
                 </p>
-                <p className={`mt-1 text-[26px] font-light tracking-tight ${i === 3 ? "text-[#3F5520]" : "text-[#121212]"}`}>
+                <p className={`mt-1 text-[26px] font-light tracking-tight ${i === 4 ? "text-[#3F5520]" : "text-[#121212]"}`}>
                   {loading ? <span className="skeleton inline-block h-6 w-20 rounded-md align-middle" /> : rupees(x.value)}
                 </p>
                 <p className="text-xs text-muted-foreground">{x.hint}</p>

@@ -36,6 +36,7 @@ export default function FranchiseRenewalsPage() {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [choice, setChoice] = useState<Record<string, string>>({});
+  const [amounts, setAmounts] = useState<Record<string, string>>({});
   const [tab, setTab] = useState<Tab>("all");
   const [busy, setBusy] = useState<string | null>(null);
   const [done, setDone] = useState<string[]>([]);
@@ -57,11 +58,12 @@ export default function FranchiseRenewalsPage() {
   async function renew(row: Row) {
     const planId = choice[row.id] || defaultPlan;
     const plan = plans.find((p) => p.id === planId);
-    if (!plan || !confirm(`Renew "${row.card_name}" with the ${plan.name} plan?`)) return;
+    const amount = amounts[row.id] ? Number(amounts[row.id]) : Number(plan?.price ?? 0);
+    if (!plan || !confirm(`Renew "${row.card_name}" with the ${plan.name} plan? Amount collected: ₹${amount.toLocaleString("en-IN")}.`)) return;
     setBusy(row.id);
     setError("");
     try {
-      await franchiseApi(`franchise/cards/${row.id}/renew`, { method: "POST", body: { validity_plan_id: planId } });
+      await franchiseApi(`franchise/cards/${row.id}/renew`, { method: "POST", body: { validity_plan_id: planId, amount } });
       setDone((d) => [...d, row.id]);
       setTimeout(() => {
         setDone((d) => d.filter((x) => x !== row.id));
@@ -84,8 +86,8 @@ export default function FranchiseRenewalsPage() {
         title="Renewals"
         description={
           me.is_owner
-            ? "Expired cards and cards that expire in the next 30 days. Renew with a plan: an expired card goes live again straight away."
-            : "Your expired cards and the ones that expire in the next 30 days."
+            ? "Expired cards and cards that expire in the next 30 days. Renew with a plan: an expired card goes live again straight away. Renewal money is all the franchise's, with no staff commission."
+            : "Your expired cards and the ones that expire in the next 30 days. Renewals carry no commission: hand the full amount to the owner."
         }
       />
 
@@ -110,7 +112,7 @@ export default function FranchiseRenewalsPage() {
         ) : shown.length === 0 ? (
           <EmptyState icon={CalendarClock} title="Nothing to renew" text="No cards have expired and none expire in the next 30 days." />
         ) : (
-          <DataTable head={me.is_owner ? ["Card", "Made by", "Expiry", "Plan", ""] : ["Card", "Expiry", "Plan", ""]}>
+          <DataTable head={me.is_owner ? ["Card", "Made by", "Expiry", "Plan", "Collected (₹)", ""] : ["Card", "Expiry", "Plan", "Collected (₹)", ""]}>
             {shown.map((r) => (
               <tr key={r.id} className="align-middle">
                 <td className="px-5 py-3">
@@ -137,6 +139,18 @@ export default function FranchiseRenewalsPage() {
                       </option>
                     ))}
                   </select>
+                </td>
+                <td className="px-5 py-3">
+                  <input
+                    type="number"
+                    min={0}
+                    inputMode="decimal"
+                    aria-label={`Amount collected for ${r.card_name}`}
+                    value={amounts[r.id] ?? ""}
+                    onChange={(e) => setAmounts((a) => ({ ...a, [r.id]: e.target.value }))}
+                    placeholder={String(Number(plans.find((p) => p.id === (choice[r.id] || defaultPlan))?.price ?? 0))}
+                    className="h-9 w-28 rounded-full border border-border bg-white px-3 text-sm"
+                  />
                 </td>
                 <td className="px-5 py-3 text-right">
                   {done.includes(r.id) ? (

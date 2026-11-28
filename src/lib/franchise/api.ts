@@ -84,7 +84,9 @@ export interface StaffSummary {
   earned: number;
   paid: number;
   balance: number;
-  /** Collected − commission. */
+  /** Renewal money this person collected (no commission: all of it goes to the owner). */
+  renewals?: number;
+  /** Collected + renewals − commission. */
   to_hand_over?: number;
   /** Cash handed to the owner and confirmed. */
   handed_over?: number;
