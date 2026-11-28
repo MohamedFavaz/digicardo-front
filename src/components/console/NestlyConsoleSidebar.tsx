@@ -72,10 +72,31 @@ export function NestlyConsoleSidebar({
   const menuRef = React.useRef<HTMLDivElement>(null);
   const navRef = React.useRef<HTMLElement>(null);
 
+  // Which edges have more items hidden past them; drives the top/bottom fades.
+  const [overflow, setOverflow] = React.useState({ top: false, bottom: false });
+  const updateOverflow = React.useCallback(() => {
+    const el = navRef.current;
+    if (!el) return;
+    const top = el.scrollTop > 2;
+    const bottom = el.scrollTop + el.clientHeight < el.scrollHeight - 2;
+    setOverflow((o) => (o.top === top && o.bottom === bottom ? o : { top, bottom }));
+  }, []);
+
+  React.useEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+    updateOverflow();
+    const ro = new ResizeObserver(updateOverflow);
+    ro.observe(el);
+    if (el.firstElementChild) ro.observe(el.firstElementChild);
+    return () => ro.disconnect();
+  }, [updateOverflow, nav]);
+
   // Keep the current page's item in view when the menu is longer than the screen.
   React.useEffect(() => {
     navRef.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ block: "nearest" });
-  }, [pathname]);
+    updateOverflow();
+  }, [pathname, updateOverflow]);
 
   React.useEffect(() => setMenuOpen(false), [pathname]);
   React.useEffect(() => {
@@ -93,7 +114,7 @@ export function NestlyConsoleSidebar({
   const PrimaryIcon = primaryAction?.icon ?? Plus;
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-[264px] shrink-0 flex-col px-4 py-4 md:flex">
+    <aside className="sticky top-0 hidden h-screen w-[296px] shrink-0 flex-col border-r border-[#343C22]/[0.12] px-5 py-5 md:flex">
       <Link href={homeHref} prefetch={false} className="flex items-center gap-2 px-3" aria-label="Digicardo home">
         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#343C22]">
           <TapGlyph className="h-5 w-5" color="#FFFFFF" />
@@ -120,19 +141,26 @@ export function NestlyConsoleSidebar({
       <nav
         ref={navRef}
         aria-label="Main"
-        // A soft fade at the bottom hints that the list scrolls when it is longer than the screen.
-        className="mt-3 min-h-0 flex-1 space-y-2.5 overflow-y-auto pb-6 pr-1 [mask-image:linear-gradient(to_bottom,black_calc(100%-28px),transparent)] [scrollbar-width:thin]"
+        onScroll={updateOverflow}
+        // Slim scrollbar that only shows on hover; fades appear only on edges with hidden items.
+        className="console-nav-scroll -mx-2 mt-4 min-h-0 flex-1 overflow-y-auto px-2 py-1"
+        style={{
+          maskImage: `linear-gradient(to bottom, ${overflow.top ? "transparent" : "black"}, black 24px, black calc(100% - 32px), ${overflow.bottom ? "transparent" : "black"})`,
+          WebkitMaskImage: `linear-gradient(to bottom, ${overflow.top ? "transparent" : "black"}, black 24px, black calc(100% - 32px), ${overflow.bottom ? "transparent" : "black"})`,
+        }}
       >
-        {nav.map((group, i) => (
-          <div key={group.label ?? i}>
-            {group.label && <p className="mb-0.5 px-4 text-[10.5px] font-medium uppercase tracking-[0.14em] text-[#9A9C8F]">{group.label}</p>}
-            <div className="space-y-0.5">
-              {group.items.map((item) => (
-                <Pill key={item.href} item={item} active={isSidebarItemActive(pathname, item)} />
-              ))}
+        <div className="space-y-4 pb-2">
+          {nav.map((group, i) => (
+            <div key={group.label ?? i}>
+              {group.label && <p className="mb-1 px-4 text-[10.5px] font-medium uppercase tracking-[0.14em] text-[#9A9C8F]">{group.label}</p>}
+              <div className="space-y-1">
+                {group.items.map((item) => (
+                  <Pill key={item.href} item={item} active={isSidebarItemActive(pathname, item)} />
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </nav>
 
       <div className={cn("space-y-1.5", footerNav.length > 0 ? "pt-2" : "pt-1")}>
