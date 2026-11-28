@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { CreditCard, Gauge, IndianRupee, Loader2, Save, Trash2, Users } from "lucide-react";
 import { ConsolePage, DataTable, EmptyState, PageHeader, Panel, StatCard, StatusPill } from "@/components/console/ui";
 import { OpenPanelButton } from "@/components/admin/OpenPanelButton";
+import { FranchisePricing, franchisePaysLabel, type FranchisePayMode } from "@/components/admin/FranchisePricing";
 import { AgentSitePanel } from "@/components/admin/AgentSitePanel";
 import { FranchiseApiError, commissionLabel, franchiseApi, rupees, shortDate, type StaffSummary } from "@/lib/franchise/api";
 
@@ -16,7 +17,7 @@ interface Detail {
     status: string;
     created_at: string;
     agent_quota?: { card_limit: number; cards_used: number } | null;
-    commission_config?: { card_price: string | number } | null;
+    commission_config?: { card_price: string | number; franchise_fee?: string | number | null } | null;
   };
   performance: { total_cards: number; active_cards: number; total_revenue: number };
   staff: StaffSummary[];
@@ -28,7 +29,8 @@ export default function AdminFranchisePage() {
   const { franchiseId } = useParams<{ franchiseId: string }>();
   const router = useRouter();
   const [data, setData] = useState<Detail | null>(null);
-  const [form, setForm] = useState({ name: "", email: "", mobile: "", password: "", card_limit: "", card_price: "" });
+  const [form, setForm] = useState({ name: "", email: "", mobile: "", password: "", card_limit: "", card_price: "", franchise_fee: "" });
+  const [payMode, setPayMode] = useState<FranchisePayMode>("fee");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState("");
   const [note, setNote] = useState("");
@@ -45,7 +47,9 @@ export default function AdminFranchisePage() {
           password: "",
           card_limit: String(f.agent_quota?.card_limit ?? 0),
           card_price: f.commission_config ? String(Number(f.commission_config.card_price)) : "",
+          franchise_fee: f.commission_config?.franchise_fee != null ? String(Number(f.commission_config.franchise_fee)) : "",
         });
+        setPayMode(f.commission_config?.franchise_fee != null ? "fee" : "per_card");
       })
       .catch((e) => setErrors({ form: e.message }));
   }, [franchiseId]);
@@ -129,7 +133,7 @@ export default function AdminFranchisePage() {
         <StatCard label="Cards made" icon={CreditCard} value={data.performance.total_cards} hint={`${data.performance.active_cards} live`} />
         <StatCard label="Credits used" icon={Gauge} value={`${f.agent_quota?.cards_used ?? 0} / ${f.agent_quota?.card_limit ?? 0}`} />
         <StatCard label="Staff" icon={Users} value={data.staff.length} />
-        <StatCard label="Billed to franchise" icon={IndianRupee} value={rupees(data.performance.total_revenue)} hint={f.commission_config ? `${rupees(f.commission_config.card_price)} per card` : undefined} />
+        <StatCard label="Billed to franchise" icon={IndianRupee} value={rupees(data.performance.total_revenue)} hint={franchisePaysLabel(f.commission_config)} />
       </div>
 
       <Panel title="Staff" description="Added and managed by the franchise owner.">
@@ -170,8 +174,12 @@ export default function AdminFranchisePage() {
               mobile: form.mobile || null,
               card_limit: Number(form.card_limit || 0),
             };
-            if (form.card_price !== "") {
-              body.card_price = Number(form.card_price);
+            if (payMode === "fee") {
+              body.franchise_fee = Number(form.franchise_fee || 0);
+              body.agent_commission = 0;
+            } else {
+              body.franchise_fee = null;
+              body.card_price = Number(form.card_price || 0);
               body.agent_commission = 0;
             }
             if (form.password) body.password = form.password;
@@ -183,7 +191,15 @@ export default function AdminFranchisePage() {
           {field("mobile", "Mobile", { type: "tel" })}
           {field("password", "New password (optional)", { type: "text", autoComplete: "new-password" })}
           {field("card_limit", "Card credits", { type: "number", min: 0 })}
-          {field("card_price", "Price per card (₹)", { type: "number", min: 0 })}
+          <FranchisePricing
+            mode={payMode}
+            fee={form.franchise_fee}
+            price={form.card_price}
+            onMode={setPayMode}
+            onFee={(v) => setForm({ ...form, franchise_fee: v })}
+            onPrice={(v) => setForm({ ...form, card_price: v })}
+            errors={errors}
+          />
           <div className="flex items-center gap-3 sm:col-span-2">
             <button type="submit" disabled={!!busy} className="inline-flex h-10 items-center gap-2 rounded-full bg-[#343C22] px-4 text-sm font-medium text-white hover:bg-[#4B5634] disabled:opacity-60">
               {busy === "settings" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}

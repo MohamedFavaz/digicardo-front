@@ -6,7 +6,8 @@ import { ConsolePage, DataTable, EmptyState, PageHeader, Panel, StatusPill } fro
 import { Pager } from "@/components/console/Pager";
 import { OpenPanelButton } from "@/components/admin/OpenPanelButton";
 import { createFranchiseSchema } from "@/lib/zod/franchise";
-import { FranchiseApiError, franchiseApi, rupees, shortDate } from "@/lib/franchise/api";
+import { FranchisePricing, franchisePaysLabel, type FranchisePayMode } from "@/components/admin/FranchisePricing";
+import { FranchiseApiError, franchiseApi, shortDate } from "@/lib/franchise/api";
 
 interface FranchiseRow {
   id: string;
@@ -18,11 +19,11 @@ interface FranchiseRow {
   staff_count: number;
   cards_count: number;
   agent_quota?: { card_limit: number; cards_used: number } | null;
-  commission_config?: { card_price: string | number } | null;
+  commission_config?: { card_price: string | number; franchise_fee?: string | number | null } | null;
 }
 
 const input = "h-10 w-full rounded-xl border border-border bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#343C22]/20";
-const EMPTY = { name: "", email: "", mobile: "", password: "", card_limit: "50", card_price: "" };
+const EMPTY = { name: "", email: "", mobile: "", password: "", card_limit: "50", card_price: "", franchise_fee: "" };
 
 export default function AdminFranchisesPage() {
   const [rows, setRows] = useState<FranchiseRow[] | null>(null);
@@ -32,6 +33,7 @@ export default function AdminFranchisesPage() {
   const [query, setQuery] = useState("");
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState(EMPTY);
+  const [payMode, setPayMode] = useState<FranchisePayMode>("fee");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
 
@@ -47,7 +49,12 @@ export default function AdminFranchisesPage() {
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
-    const clean = Object.fromEntries(Object.entries(form).filter(([, v]) => v !== ""));
+    const clean: Record<string, string> = Object.fromEntries(Object.entries(form).filter(([, v]) => v !== ""));
+    // Only the chosen way of paying is sent; the other field is dropped.
+    if (payMode === "fee") delete clean.card_price;
+    else delete clean.franchise_fee;
+    if (payMode === "fee" && !clean.franchise_fee) return setErrors({ franchise_fee: "Enter the franchise fee (₹0 if free)." });
+    if (payMode === "per_card" && !clean.card_price) return setErrors({ card_price: "Enter the price per card (₹0 if free)." });
     const parsed = createFranchiseSchema.safeParse(clean);
     if (!parsed.success) {
       const errs: Record<string, string> = {};
@@ -109,7 +116,7 @@ export default function AdminFranchisesPage() {
         ) : rows.length === 0 ? (
           <EmptyState icon={Building2} title={query ? "No franchises found" : "No franchises yet"} text="Create a franchise to give a partner their own panel with staff logins." />
         ) : (
-          <DataTable head={["Franchise", "Staff", "Cards", "Card credits", "Price per card", "Since", "Status", ""]}>
+          <DataTable head={["Franchise", "Staff", "Cards", "Card credits", "Pays", "Since", "Status", ""]}>
             {rows.map((f) => (
               <tr key={f.id}>
                 <td className="px-5 py-3">
@@ -121,7 +128,7 @@ export default function AdminFranchisesPage() {
                 <td className="px-5 py-3">{f.staff_count}</td>
                 <td className="px-5 py-3">{f.cards_count}</td>
                 <td className="whitespace-nowrap px-5 py-3">{f.agent_quota ? `${f.agent_quota.cards_used} / ${f.agent_quota.card_limit}` : "—"}</td>
-                <td className="px-5 py-3">{f.commission_config ? rupees(f.commission_config.card_price) : "—"}</td>
+                <td className="whitespace-nowrap px-5 py-3">{franchisePaysLabel(f.commission_config)}</td>
                 <td className="whitespace-nowrap px-5 py-3 text-muted-foreground">{shortDate(f.created_at)}</td>
                 <td className="px-5 py-3">
                   <StatusPill tone={f.status === "active" ? "success" : "danger"}>{f.status === "active" ? "Active" : "Suspended"}</StatusPill>
@@ -151,10 +158,16 @@ export default function AdminFranchisesPage() {
               {field("mobile", "Mobile (optional)", { type: "tel" })}
             </div>
             {field("password", "Password", { type: "text", autoComplete: "new-password" }, "At least 8 characters. Share it with the owner.")}
-            <div className="grid gap-4 sm:grid-cols-2">
-              {field("card_limit", "Card credits", { type: "number", min: 1 }, "How many cards the franchise can make.")}
-              {field("card_price", "Price per card (₹)", { type: "number", min: 0 }, "What the franchise pays you per card.")}
-            </div>
+            {field("card_limit", "Card credits", { type: "number", min: 1 }, "How many cards the franchise can make.")}
+            <FranchisePricing
+              mode={payMode}
+              fee={form.franchise_fee}
+              price={form.card_price}
+              onMode={setPayMode}
+              onFee={(v) => setForm({ ...form, franchise_fee: v })}
+              onPrice={(v) => setForm({ ...form, card_price: v })}
+              errors={errors}
+            />
             {errors.form && <p className="text-sm text-destructive">{errors.form}</p>}
             <div className="flex justify-end gap-2">
               <button type="button" onClick={() => setCreating(false)} className="h-10 rounded-full px-4 text-sm font-medium hover:bg-muted">

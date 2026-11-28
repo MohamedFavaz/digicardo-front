@@ -59,5 +59,7 @@ export const createFranchiseSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
   card_limit: z.coerce.number().int().min(1, "Must allow at least 1 card").max(100000),
   card_price: z.coerce.number().min(0).optional(),
+  /** One-time franchise fee; when set the franchise pays ₹0 per card. */
+  franchise_fee: z.coerce.number().min(0, "Cannot be negative").optional(),
 });
 export type CreateFranchiseInput = z.infer<typeof createFranchiseSchema>;
