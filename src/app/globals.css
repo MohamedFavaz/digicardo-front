@@ -359,6 +359,36 @@
   display: none;
 }
 
+/* Console sidebar nav: slim thumb, hidden until the list is hovered or focused. */
+.console-nav-scroll {
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+.console-nav-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.console-nav-scroll::-webkit-scrollbar-button {
+  display: none;
+}
+.console-nav-scroll::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 99px;
+}
+.console-nav-scroll:hover::-webkit-scrollbar-thumb,
+.console-nav-scroll:focus-within::-webkit-scrollbar-thumb {
+  background: rgba(52, 60, 34, 0.22);
+}
+@supports not selector(::-webkit-scrollbar) {
+  .console-nav-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  .console-nav-scroll:hover,
+  .console-nav-scroll:focus-within {
+    scrollbar-color: rgba(52, 60, 34, 0.22) transparent;
+  }
+}
+
 /* ══════════════════════════════════════════════════
    FOCUS & SELECTION
 ════════════════════════════════════════════════════ */
