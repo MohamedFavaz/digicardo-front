@@ -17,7 +17,9 @@ import {
   Loader2,
   ArrowRight,
   MoreVertical,
+  Repeat2,
 } from "lucide-react";
+import { ConvertCardModal, ConvertCardTarget } from "@/components/admin/ConvertCardModal";
 import { DeleteUserModal, DeleteUserTarget } from "@/components/admin/DeleteUserModal";
 import { adminImpersonate } from "@/lib/admin/impersonate";
 import { ChangeUsernameDialog } from "@/components/shared/ChangeUsernameDialog";
@@ -33,6 +35,7 @@ interface User {
   role: string;
   /** Set when an agent or franchise made this customer — those are impersonated from their panel. */
   agent_id?: string | null;
+  mobile?: string | null;
   expires_at?: string;
   validity_label?: string;
   plan_price_paid?: number;
@@ -92,6 +95,9 @@ export default function MyLinksPage() {
   const [actionFeedback, setActionFeedback] = useState<string | null>(null);
   const [impersonatingId, setImpersonatingId] = useState<string | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  // Screen position of the open row menu: fixed so the table's scroll box can't clip it.
+  const [menuPos, setMenuPos] = useState<{ top?: number; bottom?: number; right: number } | null>(null);
+  const [converting, setConverting] = useState<ConvertCardTarget | null>(null);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -100,9 +106,17 @@ export default function MyLinksPage() {
         setOpenMenuId(null);
       }
     };
+    // The menu is fixed on screen, so close it when the page or table scrolls.
+    const close = () => setOpenMenuId(null);
     if (openMenuId) {
       document.addEventListener("click", handleClickOutside);
-      return () => document.removeEventListener("click", handleClickOutside);
+      window.addEventListener("scroll", close, true);
+      window.addEventListener("resize", close);
+      return () => {
+        document.removeEventListener("click", handleClickOutside);
+        window.removeEventListener("scroll", close, true);
+        window.removeEventListener("resize", close);
+      };
     }
   }, [openMenuId]);
 
@@ -215,7 +229,7 @@ export default function MyLinksPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground">Cards</h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">Admin Direct Cards</h1>
             {pagination && (
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-zinc-100 text-[#52525B] border border-border">
                 {pagination.total} Profiles
@@ -223,7 +237,7 @@ export default function MyLinksPage() {
             )}
           </div>
           <p className="text-muted-foreground text-xs mt-1 leading-relaxed font-medium">
-            Monitor public profile links, verify subscriptions, and manage account status.
+            Cards created directly by admin. Monitor public profile links, verify subscriptions, and manage account status.
           </p>
         </div>
         <div className="flex items-center gap-2.5">
@@ -232,7 +246,7 @@ export default function MyLinksPage() {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm font-semibold transition-all shadow-xs cursor-pointer"
           >
             <UserPlus className="w-4 h-4" />
-            <span>Create card</span>
+            <span>Create Admin Direct Card</span>
           </Link>
         </div>
       </div>
@@ -316,7 +330,7 @@ export default function MyLinksPage() {
                   </td>
                 </tr>
               ) : (
-                users.map((u, index) => {
+                users.map((u) => {
                   const expired = u.expires_at ? new Date(u.expires_at) < new Date() : false;
                   const expiringIn = u.expires_at && !expired ? daysUntil(u.expires_at) : null;
                   const expiringSoon = expiringIn !== null && expiringIn <= 7;
@@ -363,7 +377,7 @@ export default function MyLinksPage() {
                                 type="button"
                                 onClick={() => setRenaming(u)}
                                 className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
-                                title="Change card address"
+                                title="Change Admin Direct Card address"
                               >
                                 <AtSign className="w-3 h-3" /> Edit
                               </button>
@@ -498,6 +512,14 @@ export default function MyLinksPage() {
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
+                                const r = e.currentTarget.getBoundingClientRect();
+                                const right = window.innerWidth - r.right;
+                                // Open upwards only when there isn't room below.
+                                setMenuPos(
+                                  window.innerHeight - r.bottom < 220
+                                    ? { bottom: window.innerHeight - r.top + 6, right }
+                                    : { top: r.bottom + 6, right }
+                                );
                                 setOpenMenuId(openMenuId === u.id ? null : u.id);
                               }}
                               title="More profile actions"
@@ -509,10 +531,10 @@ export default function MyLinksPage() {
                               <MoreVertical className="w-4 h-4" />
                             </button>
 
-                            {openMenuId === u.id && (
+                            {openMenuId === u.id && menuPos && (
                               <div
-                                className={`absolute right-0 z-50 w-52 bg-card rounded-2xl border border-border shadow-xl py-1.5 text-left text-xs select-none transition-all ${index >= users.length - 2 ? "bottom-full mb-1.5" : "top-full mt-1.5"
-                                  }`}
+                                style={menuPos}
+                                className="fixed z-50 w-60 bg-card rounded-2xl border border-border shadow-xl py-1.5 text-left text-xs select-none"
                               >
                                 {/* Suspend / Reactivate Profile Link */}
                                 <button
@@ -539,6 +561,22 @@ export default function MyLinksPage() {
                                     </>
                                   )}
                                 </button>
+
+                                {/* Convert to agent / franchise */}
+                                {canImpersonate(u) && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setOpenMenuId(null);
+                                      setConverting({ id: u.id, name: u.name, email: u.email, username: u.username, mobile: u.mobile });
+                                    }}
+                                    disabled={toggling === u.id || deleting || impersonatingId === u.id}
+                                    className="w-full px-3.5 py-2.5 flex items-center gap-2.5 text-[#343C22] hover:bg-zinc-50 transition-colors cursor-pointer font-semibold"
+                                  >
+                                    <Repeat2 className="w-4 h-4 flex-shrink-0" />
+                                    <span>Convert to Agent / Franchise</span>
+                                  </button>
+                                )}
 
                                 <div className="my-1 border-t border-border" />
 
@@ -616,7 +654,21 @@ export default function MyLinksPage() {
         onSaved={(name) => {
           const id = renaming?.id;
           setUsers((list) => list.map((x) => (x.id === id ? { ...x, username: name } : x)));
-          setActionFeedback(`Card address changed to /${name}. The old address forwards to it.`);
+          setActionFeedback(`Admin Direct Card address changed to /${name}. The old address forwards to it.`);
+        }}
+      />
+      <ConvertCardModal
+        card={converting}
+        onClose={() => setConverting(null)}
+        onConverted={({ type, partnerId, partnerName }) => {
+          const id = converting?.id;
+          setConverting(null);
+          setUsers((list) => list.filter((x) => x.id !== id));
+          setPagination((p) => (p ? { ...p, total: Math.max(0, p.total - 1) } : p));
+          setActionFeedback(
+            `Card converted. ${partnerName} is now ${type === "franchise" ? "a franchise" : "an agent"} and the card is managed from their panel (/admin/${type === "franchise" ? "franchises" : "agents"}/${partnerId}).`
+          );
+          setTimeout(() => setActionFeedback(null), 8000);
         }}
       />
       <DeleteUserModal

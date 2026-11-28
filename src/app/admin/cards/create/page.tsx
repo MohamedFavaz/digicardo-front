@@ -149,7 +149,7 @@ function CreateCard() {
       setCreated(r.data);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
-      setErrors(err instanceof FranchiseApiError && Object.keys(err.fields).length ? err.fields : { form: err instanceof Error ? err.message : "Couldn't create the card." });
+      setErrors(err instanceof FranchiseApiError && Object.keys(err.fields).length ? err.fields : { form: err instanceof Error ? err.message : "Couldn't create the Admin Direct Card." });
     } finally {
       setSaving(false);
     }
@@ -169,7 +169,7 @@ function CreateCard() {
   if (created) {
     const url = `${window.location.origin}/${created.credentials.username}`;
     const rows = [
-      { key: "url", label: "Card link", value: url },
+      { key: "url", label: "Admin Direct Card link", value: url },
       { key: "email", label: "Login email", value: created.credentials.email },
       { key: "password", label: "Password", value: created.credentials.plain_password },
     ];
@@ -179,9 +179,9 @@ function CreateCard() {
           <span className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[#E7F6EC] text-[#1E7B43]">
             <CheckCircle2 className="h-7 w-7" />
           </span>
-          <h1 className="text-[28px] font-normal tracking-tight text-[#121212]">Card created</h1>
+          <h1 className="text-[28px] font-normal tracking-tight text-[#121212]">Admin Direct Card created</h1>
           <p className="mt-1 text-[15px] text-muted-foreground">
-            {created.user.name}&apos;s card is live.{" "}
+            {created.user.name}&apos;s Admin Direct Card is live.{" "}
             {created.user.expires_at ? `Valid until ${fmtDate(new Date(created.user.expires_at))}${created.user.validity_label ? ` (${created.user.validity_label})` : ""}.` : "It doesn't expire."}
           </p>
         </div>
@@ -209,17 +209,17 @@ function CreateCard() {
               try {
                 await adminImpersonate(created.user.id);
               } catch (e) {
-                alert(e instanceof Error ? e.message : "Couldn't open the card.");
+                alert(e instanceof Error ? e.message : "Couldn't open the Admin Direct Card.");
                 setOpening(false);
               }
             }}
             className="inline-flex h-11 items-center gap-2 rounded-full bg-[#343C22] px-5 text-sm font-medium text-white hover:bg-[#4B5634] disabled:opacity-60"
           >
             {opening ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
-            Impersonate & design the card
+            Impersonate & design the Admin Direct Card
           </button>
           <a href={url} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full border border-border bg-white px-5 text-sm font-medium hover:bg-muted">
-            <ExternalLink className="h-4 w-4" /> Open card
+            <ExternalLink className="h-4 w-4" /> Open Admin Direct Card
           </a>
           <button
             type="button"
@@ -235,7 +235,7 @@ function CreateCard() {
         </div>
         <p className="text-center text-sm">
           <Link href="/admin/my-links" className="font-medium text-[#343C22] hover:underline">
-            See all cards
+            See all Admin Direct Cards
           </Link>
         </p>
       </ConsolePage>
@@ -245,11 +245,11 @@ function CreateCard() {
   // ── Form
   return (
     <ConsolePage>
-      <PageHeader title="Create card" description="Make a digital card for a customer: their details, the card address, a design and a plan." back={{ href: "/admin/my-links", label: "Cards" }} />
+      <PageHeader title="Create Admin Direct Card" description="Make an Admin Direct Card for a customer: their details, the card address, a design and a plan." back={{ href: "/admin/my-links", label: "Admin Direct Cards" }} />
 
       <form onSubmit={submit} className="grid gap-5 lg:grid-cols-[1fr_340px]">
         <div className="space-y-5">
-          <Step n={1} title="Customer" text="Who the card is for. They sign in with this email.">
+          <Step n={1} title="Customer" text="Who the Admin Direct Card is for. They sign in with this email.">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <Label icon={User} htmlFor="cc-name">Full name</Label>
@@ -274,7 +274,7 @@ function CreateCard() {
             </div>
           </Step>
 
-          <Step n={2} title="Card address" text="The link the customer shares. It can be changed later; the old link keeps working.">
+          <Step n={2} title="Admin Direct Card address" text="The link the customer shares. It can be changed later; the old link keeps working.">
             <Label icon={AtSign} htmlFor="cc-username">Address</Label>
             <div className="flex items-stretch overflow-hidden rounded-xl border border-border bg-white focus-within:border-[#343C22] focus-within:ring-2 focus-within:ring-[#343C22]/15">
               <span className="flex items-center bg-muted px-3 font-mono text-sm text-muted-foreground">{host}/</span>
@@ -325,7 +325,7 @@ function CreateCard() {
             </div>
           </Step>
 
-          <Step n={4} title="Plan" text="How long the card stays live. It switches off when the plan ends and comes back on renewal.">
+          <Step n={4} title="Plan" text="How long the Admin Direct Card stays live. It switches off when the plan ends and comes back on renewal.">
             <div role="radiogroup" aria-label="Plan" className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {[{ id: "", name: "No expiry", price: 0, currency_symbol: "", months: 0, is_active: true }, ...plans].map((p) => {
                 const on = planId === p.id;
@@ -346,7 +346,7 @@ function CreateCard() {
             </div>
             <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
               <CalendarClock className="h-3.5 w-3.5" />
-              {expiry ? `The card will expire on ${expiry}.` : "The card will not expire."}
+              {expiry ? `The Admin Direct Card will expire on ${expiry}.` : "The Admin Direct Card will not expire."}
             </p>
           </Step>
         </div>
@@ -362,7 +362,7 @@ function CreateCard() {
               <dl className="space-y-2 text-sm">
                 {[
                   ["Customer", form.name || "—"],
-                  ["Card link", form.username ? `${host}/${form.username}` : "—"],
+                  ["Admin Direct Card link", form.username ? `${host}/${form.username}` : "—"],
                   ["Design", TEMPLATES.find((t) => t.id === templateId)?.name ?? "—"],
                   ["Plan", plan ? `${plan.name} · ${plan.currency_symbol}${Number(plan.price).toLocaleString("en-IN")}` : "No expiry"],
                   ["Expires", expiry ?? "Never"],
@@ -376,7 +376,7 @@ function CreateCard() {
               {errors.form && <p className="rounded-xl bg-[#FDECEC] px-3 py-2 text-sm text-destructive">{errors.form}</p>}
               <button type="submit" disabled={saving} className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#343C22] text-sm font-medium text-white hover:bg-[#4B5634] disabled:opacity-60">
                 {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Palette className="h-4 w-4" />}
-                Create card
+                Create Admin Direct Card
               </button>
             </div>
           </Panel>

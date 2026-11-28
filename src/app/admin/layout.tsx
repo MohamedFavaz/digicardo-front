@@ -18,7 +18,7 @@ import {
   ShieldCheck,
   Sparkles,
   UserCog,
-  Wallet, Building2, PlusCircle } from "lucide-react";
+  Wallet, Building2 } from "lucide-react";
 import { ConsoleLoading, ConsoleShell, type ConsoleNavGroup } from "@/components/console/ConsoleShell";
 import NotFound from "@/app/not-found";
 
@@ -77,7 +77,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     {
       label: "Customers",
       items: [
-        { title: "Cards", href: "/admin/my-links", icon: IdCard, mobile: true },
+        { title: "Admin Direct Cards", mobileTitle: "Direct Cards", href: "/admin/my-links", icon: IdCard, mobile: true },
         { title: "Renewals", href: "/admin/renewals", icon: CalendarClock, badge: expiring },
         { title: "Access requests", mobileTitle: "Requests", href: "/admin/access-requests", icon: Inbox, badge: pendingRequests, mobile: true },
       ],
@@ -125,7 +125,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       role="Admin"
       homeHref="/admin/dashboard"
       nav={nav}
-      primaryAction={{ label: "Create card", href: "/admin/cards/create", icon: PlusCircle }}
       user={admin}
       accountLinks={[{ label: "Admin settings", href: "/admin/settings", icon: Settings }]}
       onSignOut={async () => {

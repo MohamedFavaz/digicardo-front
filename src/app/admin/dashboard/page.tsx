@@ -64,10 +64,10 @@ function timeAgo(iso?: string) {
 }
 
 const QUICK_ACTIONS: { label: string; text: string; href: string; icon: LucideIcon }[] = [
-  { label: "Create a card", text: "Make a digital card for a customer", href: "/admin/cards/create", icon: UserPlus },
+  { label: "Create Admin Direct Card", text: "Make an Admin Direct Card for a customer", href: "/admin/cards/create", icon: UserPlus },
   { label: "Add an agent", text: "Give a partner their own portal", href: "/admin/agents/create", icon: UserCog },
   { label: "Edit plans", text: "Validity periods and prices", href: "/admin/plans", icon: Sparkles },
-  { label: "See all cards", text: "Every live card and its owner", href: "/admin/my-links", icon: IdCard },
+  { label: "See Admin Direct Cards", text: "Every Admin Direct Card and its owner", href: "/admin/my-links", icon: IdCard },
 ];
 
 export default function AdminDashboardPage() {
@@ -154,7 +154,7 @@ export default function AdminDashboardPage() {
               Access requests
             </ButtonLink>
             <ButtonLink href="/admin/cards/create" icon={UserPlus}>
-              Create card
+              Create Admin Direct Card
             </ButtonLink>
           </>
         }

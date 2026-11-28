@@ -214,7 +214,7 @@ export default function AdminAccessRequestsPage() {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-white text-sm font-semibold transition-all shadow-xs cursor-pointer"
           >
             <UserPlus className="w-4 h-4" />
-            <span>Create card</span>
+            <span>Create Admin Direct Card</span>
           </Link>
         </div>
       </div>
